@@ -1,0 +1,2442 @@
+<!DOCTYPE html>
+<html lang="en" class="h-full">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>Global Industries, Mysore - Wholesale Portal</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <style>
+        body { font-family: 'Inter', sans-serif; background-color: #f1f5f9; color: #0f172a; font-size: 14px; }
+        .touch-target { min-height: 48px; min-width: 48px; }
+        @media print {
+            body * { visibility: hidden; }
+            #printable-report, #printable-report * { visibility: visible; }
+            #printable-report { position: absolute; left: 0; top: 0; width: 100%; }
+        }
+    </style>
+</head>
+<body class="h-full flex flex-col justify-between">
+
+    <div id="app" class="flex-1 flex flex-col max-w-lg mx-auto w-full bg-white shadow-2xl overflow-hidden relative border-x border-slate-200/60">
+        
+        <!-- HEADER -->
+        <header class="bg-gradient-to-r from-slate-900 to-slate-800 text-white py-1.5 px-6 flex justify-between items-center shadow-lg">
+            <div class="flex items-center space-x-3.5">
+                <div class="bg-indigo-600 text-white w-12 h-12 rounded-2xl flex items-center justify-center font-bold text-base shadow-sm">GI</div>
+                <div>
+                    <h1 class="font-bold text-base md:text-lg tracking-wide">GLOBAL INDUSTRIES</h1>
+                    <p class="text-xs text-slate-300 font-medium">Mysore • Wholesale Portal</p>
+                </div>
+            </div>
+            <div id="header-actions" class="flex items-center space-x-1.5"></div>
+        </header>
+
+        <!-- MAIN VIEW PORT -->
+        <main id="main-content" class="flex-1 overflow-y-auto p-5 pb-32"></main>
+
+        <!-- BOTTOM NAVIGATION CART BAR -->
+        <div id="bottom-bar" class="hidden absolute bottom-0 left-0 right-0 bg-white/95 backdrop-blur-md border-t border-slate-200 p-4 shadow-2xl flex justify-between items-center z-40">
+            <div class="flex items-center space-x-3">
+                <span id="cart-item-count" class="text-xs font-bold bg-slate-900 text-white px-3.5 py-1.5 rounded-full shadow-xs">0 items</span>
+                <span id="cart-total-amount" class="font-bold text-slate-900 text-base">₹0.00</span>
+            </div>
+            <button onclick="goToCheckout()" class="bg-indigo-600 hover:bg-indigo-700 text-white px-6 py-3 rounded-2xl font-semibold text-xs transition shadow-md active:scale-95 flex items-center space-x-1.5">
+                <span>Checkout</span><span>&rarr;</span>
+            </button>
+        </div>
+
+        <!-- PRODUCT EDIT MODAL -->
+        <div id="product-edit-modal" class="hidden fixed inset-0 bg-slate-900/60 backdrop-blur-xs z-50 flex items-center justify-center p-4">
+            <div class="bg-white rounded-3xl max-w-sm w-full p-6 shadow-2xl space-y-4 text-sm border border-slate-100 max-h-[90vh] overflow-y-auto">
+                <div class="flex justify-between items-center border-b border-slate-100 pb-3">
+                    <h3 class="font-bold text-slate-900">Edit Product Details</h3>
+                    <button onclick="closeEditProductModal()" class="text-slate-400 hover:text-slate-700 font-bold text-lg w-8 h-8 flex items-center justify-center rounded-full hover:bg-slate-100 transition">✕</button>
+                </div>
+                <input type="hidden" id="edit-prod-id">
+                <div class="text-center">
+                    <div id="edit-prod-img-preview" class="mb-2 flex justify-center"></div>
+                    <label class="block text-xs font-semibold text-slate-700 mb-1">Image URL</label>
+                    <input type="text" id="edit-prod-img" oninput="updateEditImgPreview(this.value)" class="w-full border border-slate-200 rounded-2xl p-2.5 text-xs bg-slate-50 focus:bg-white focus:outline-none focus:ring-2 focus:ring-indigo-600 transition">
+                </div>
+                <div>
+                    <label class="block text-xs font-semibold text-slate-700 mb-1">Product Name</label>
+                    <input type="text" id="edit-prod-name" class="w-full border border-slate-200 rounded-2xl p-3 bg-slate-50/50 focus:bg-white focus:outline-none focus:ring-2 focus:ring-indigo-600 transition">
+                </div>
+                <div class="grid grid-cols-2 gap-3">
+                    <div>
+                        <label class="block text-xs font-semibold text-slate-700 mb-1">Category</label>
+                        <input type="text" id="edit-prod-cat" class="w-full border border-slate-200 rounded-2xl p-3 bg-slate-50/50 focus:bg-white focus:outline-none focus:ring-2 focus:ring-indigo-600 transition">
+                    </div>
+                    <div>
+                        <label class="block text-xs font-semibold text-slate-700 mb-1">Stock Qty</label>
+                        <input type="number" id="edit-prod-stock" class="w-full border border-slate-200 rounded-2xl p-3 bg-slate-50/50 focus:bg-white focus:outline-none focus:ring-2 focus:ring-indigo-600 transition">
+                    </div>
+                </div>
+                <div>
+                    <label class="block text-xs font-semibold text-slate-700 mb-1">Assigned Vendor</label>
+                    <select id="edit-prod-vendor" class="w-full border border-slate-200 rounded-2xl p-3 text-sm bg-white focus:outline-none focus:ring-2 focus:ring-indigo-600 transition"></select>
+                </div>
+                <div class="grid grid-cols-2 gap-3">
+                    <div>
+                        <label class="block text-xs font-semibold text-slate-700 mb-1">Selling Price (₹)</label>
+                        <input type="number" id="edit-prod-price" class="w-full border border-slate-200 rounded-2xl p-3 bg-slate-50/50 focus:bg-white focus:outline-none focus:ring-2 focus:ring-indigo-600 font-bold text-emerald-700 transition">
+                    </div>
+                    <div>
+                        <label class="block text-xs font-semibold text-slate-700 mb-1">Cost Price (₹)</label>
+                        <input type="number" id="edit-prod-cost" class="w-full border border-slate-200 rounded-2xl p-3 bg-slate-50/50 focus:bg-white focus:outline-none focus:ring-2 focus:ring-indigo-600 transition">
+                    </div>
+                </div>
+
+                <!-- WEIGHT METAL OPTIONS FOR EDIT -->
+                <div class="space-y-2 pt-2 border-t border-slate-100">
+                    <label class="flex items-center space-x-2 cursor-pointer">
+                        <input type="checkbox" id="edit-prod-is-weight" onchange="toggleEditWeightDropdown(this.checked)" class="w-4 h-4 text-indigo-600 rounded-md border-slate-300">
+                        <span class="text-xs font-bold text-slate-700">Is this a Weight-Based Metal Item?</span>
+                    </label>
+                    <div id="edit-metal-type-container" class="hidden">
+                        <label class="block text-xs font-semibold text-slate-700 mb-1">Select Metal Type</label>
+                        <select id="edit-prod-metal-type" class="w-full border border-slate-200 rounded-2xl p-3 text-sm bg-white focus:outline-none focus:ring-2 focus:ring-indigo-600 transition">
+                            <option value="Aluminium">Aluminium</option>
+                            <option value="Steel">Steel</option>
+                            <option value="Iron cast">Iron cast</option>
+                        </select>
+                    </div>
+                </div>
+
+                <div class="flex space-x-2 pt-2">
+                    <button onclick="saveProductEdit()" class="flex-1 bg-indigo-600 hover:bg-indigo-700 text-white py-3.5 rounded-2xl font-semibold transition shadow-md active:scale-95 text-xs">Save Changes</button>
+                    <button onclick="deleteProductFromModal()" class="bg-rose-50 hover:bg-rose-100 text-rose-700 px-5 py-3.5 rounded-2xl font-semibold transition border border-rose-200 text-xs">Delete</button>
+                </div>
+            </div>
+        </div>
+
+        <!-- CREATE PRODUCT MODAL -->
+        <div id="product-create-modal" class="hidden fixed inset-0 bg-slate-900/60 backdrop-blur-xs z-50 flex items-center justify-center p-4">
+            <div class="bg-white rounded-3xl max-w-sm w-full p-6 shadow-2xl space-y-4 text-sm border border-slate-100 max-h-[90vh] overflow-y-auto">
+                <div class="flex justify-between items-center border-b border-slate-100 pb-3">
+                    <h3 class="font-bold text-slate-900">Create New Product</h3>
+                    <button onclick="closeProductCreateModal()" class="text-slate-400 hover:text-slate-700 font-bold text-lg w-8 h-8 flex items-center justify-center rounded-full hover:bg-slate-100 transition">✕</button>
+                </div>
+                <div class="space-y-3">
+                    <input type="text" id="new-prod-id" placeholder="SKU / ID (Optional)" class="w-full border border-slate-200 rounded-2xl p-3 text-sm bg-white focus:outline-none focus:ring-2 focus:ring-indigo-600 transition">
+                    <input type="text" id="new-prod-name" placeholder="Product Name" class="w-full border border-slate-200 rounded-2xl p-3 text-sm bg-white focus:outline-none focus:ring-2 focus:ring-indigo-600 transition">
+                    <input type="text" id="new-prod-cat" placeholder="Category" class="w-full border border-slate-200 rounded-2xl p-3 text-sm bg-white focus:outline-none focus:ring-2 focus:ring-indigo-600 transition">
+                    <div>
+                        <label class="block text-xs font-semibold text-slate-700 mb-1">Select Vendor</label>
+                        <select id="new-prod-vendor" class="w-full border border-slate-200 rounded-2xl p-3 text-sm bg-white focus:outline-none focus:ring-2 focus:ring-indigo-600 transition"></select>
+                    </div>
+                    <div class="grid grid-cols-2 gap-2">
+                        <input type="number" id="new-prod-price" placeholder="Sell Price (₹)" class="border border-slate-200 rounded-2xl p-3 text-sm bg-white focus:outline-none focus:ring-2 focus:ring-indigo-600 transition">
+                        <input type="number" id="new-prod-cost" placeholder="Cost (₹)" class="border border-slate-200 rounded-2xl p-3 text-sm bg-white focus:outline-none focus:ring-2 focus:ring-indigo-600 transition">
+                    </div>
+                    <input type="number" id="new-prod-stock" placeholder="Stock Qty" class="w-full border border-slate-200 rounded-2xl p-3 text-sm bg-white focus:outline-none focus:ring-2 focus:ring-indigo-600 transition">
+                    <input type="text" id="new-prod-img" placeholder="Image URL" class="w-full border border-slate-200 rounded-2xl p-3 text-sm bg-white focus:outline-none focus:ring-2 focus:ring-indigo-600 transition">
+
+                    <!-- WEIGHT METAL OPTIONS FOR CREATE -->
+                    <div class="space-y-2 pt-2 border-t border-slate-100">
+                        <label class="flex items-center space-x-2 cursor-pointer">
+                            <input type="checkbox" id="new-prod-is-weight" onchange="toggleCreateWeightDropdown(this.checked)" class="w-4 h-4 text-indigo-600 rounded-md border-slate-300">
+                            <span class="text-xs font-bold text-slate-700">Is this a Weight-Based Metal Item?</span>
+                        </label>
+                        <div id="create-metal-type-container" class="hidden">
+                            <label class="block text-xs font-semibold text-slate-700 mb-1">Select Metal Type</label>
+                            <select id="new-prod-metal-type" class="w-full border border-slate-200 rounded-2xl p-3 text-sm bg-white focus:outline-none focus:ring-2 focus:ring-indigo-600 transition">
+                                <option value="Aluminium">Aluminium</option>
+                                <option value="Steel">Steel</option>
+                                <option value="Iron cast">Iron cast</option>
+                            </select>
+                        </div>
+                    </div>
+
+                    <button onclick="addNewProduct()" class="w-full bg-slate-900 hover:bg-slate-800 text-white py-3.5 rounded-2xl font-semibold transition shadow-sm">Save Product</button>
+                </div>
+            </div>
+        </div>
+
+        <!-- CREATE CUSTOMER MODAL -->
+        <div id="customer-create-modal" class="hidden fixed inset-0 bg-slate-900/60 backdrop-blur-xs z-50 flex items-center justify-center p-4">
+            <div class="bg-white rounded-3xl max-w-sm w-full p-6 shadow-2xl space-y-4 text-sm border border-slate-100">
+                <div class="flex justify-between items-center border-b border-slate-100 pb-3">
+                    <h3 id="cust-modal-heading" class="font-bold text-slate-900">Create New Customer</h3>
+                    <button onclick="closeCustomerCreateModal()" class="text-slate-400 hover:text-slate-700 font-bold text-lg w-8 h-8 flex items-center justify-center rounded-full hover:bg-slate-100 transition">✕</button>
+                </div>
+                <input type="hidden" id="cust-edit-id">
+                <div class="space-y-3">
+                    <input type="text" id="new-cust-shop" placeholder="Shop Name" class="w-full border border-slate-200 rounded-2xl p-3 text-sm bg-white focus:outline-none focus:ring-2 focus:ring-indigo-600 transition">
+                    <input type="text" id="new-cust-name" placeholder="Full Name" class="w-full border border-slate-200 rounded-2xl p-3 text-sm bg-white focus:outline-none focus:ring-2 focus:ring-indigo-600 transition">
+                    <input type="text" id="new-cust-contact" placeholder="Contact Number" class="w-full border border-slate-200 rounded-2xl p-3 text-sm bg-white focus:outline-none focus:ring-2 focus:ring-indigo-600 transition">
+                    <input type="email" id="new-cust-email" placeholder="Email ID" class="w-full border border-slate-200 rounded-2xl p-3 text-sm bg-white focus:outline-none focus:ring-2 focus:ring-indigo-600 transition">
+                    <textarea id="new-cust-address" placeholder="Address" rows="2" class="w-full border border-slate-200 rounded-2xl p-3 text-sm bg-white focus:outline-none focus:ring-2 focus:ring-indigo-600 transition"></textarea>
+                    <button onclick="saveCustomerData()" class="w-full bg-slate-900 hover:bg-slate-800 text-white py-3.5 rounded-2xl font-semibold transition shadow-sm">Save Customer</button>
+                </div>
+            </div>
+        </div>
+
+        <!-- CREATE VENDOR MODAL -->
+        <div id="vendor-create-modal" class="hidden fixed inset-0 bg-slate-900/60 backdrop-blur-xs z-50 flex items-center justify-center p-4">
+            <div class="bg-white rounded-3xl max-w-sm w-full p-6 shadow-2xl space-y-4 text-sm border border-slate-100">
+                <div class="flex justify-between items-center border-b border-slate-100 pb-3">
+                    <h3 id="vend-modal-heading" class="font-bold text-slate-900">Create New Vendor</h3>
+                    <button onclick="closeVendorCreateModal()" class="text-slate-400 hover:text-slate-700 font-bold text-lg w-8 h-8 flex items-center justify-center rounded-full hover:bg-slate-100 transition">✕</button>
+                </div>
+                <input type="hidden" id="vend-edit-id">
+                <div class="space-y-3">
+                    <input type="text" id="new-vend-name" placeholder="Vendor Name" class="w-full border border-slate-200 rounded-2xl p-3 text-sm bg-white focus:outline-none focus:ring-2 focus:ring-indigo-600 transition">
+                    <input type="text" id="new-vend-person" placeholder="Contact Person" class="w-full border border-slate-200 rounded-2xl p-3 text-sm bg-white focus:outline-none focus:ring-2 focus:ring-indigo-600 transition">
+                    <input type="text" id="new-vend-contact" placeholder="Contact Number" class="w-full border border-slate-200 rounded-2xl p-3 text-sm bg-white focus:outline-none focus:ring-2 focus:ring-indigo-600 transition">
+                    <input type="text" id="new-vend-desc" placeholder="Description (What he sells)" class="w-full border border-slate-200 rounded-2xl p-3 text-sm bg-white focus:outline-none focus:ring-2 focus:ring-indigo-600 transition">
+                    <input type="email" id="new-vend-email" placeholder="Email ID" class="w-full border border-slate-200 rounded-2xl p-3 text-sm bg-white focus:outline-none focus:ring-2 focus:ring-indigo-600 transition">
+                    <textarea id="new-vend-address" placeholder="Address Details" rows="2" class="w-full border border-slate-200 rounded-2xl p-3 text-sm bg-white focus:outline-none focus:ring-2 focus:ring-indigo-600 transition"></textarea>
+                    <button onclick="saveVendorData()" class="w-full bg-slate-900 hover:bg-slate-800 text-white py-3.5 rounded-2xl font-semibold transition shadow-sm">Save Vendor</button>
+                </div>
+            </div>
+        </div>
+
+        <!-- UPDATE USER PASSWORD MODAL -->
+        <div id="user-password-modal" class="hidden fixed inset-0 bg-slate-900/60 backdrop-blur-xs z-50 flex items-center justify-center p-4">
+            <div class="bg-white rounded-3xl max-w-sm w-full p-6 shadow-2xl space-y-4 text-sm border border-slate-100">
+                <div class="flex justify-between items-center border-b border-slate-100 pb-3">
+                    <h3 class="font-bold text-slate-900">Update User Password</h3>
+                    <button onclick="closeUserPasswordModal()" class="text-slate-400 hover:text-slate-700 font-bold text-lg w-8 h-8 flex items-center justify-center rounded-full hover:bg-slate-100 transition">✕</button>
+                </div>
+                <input type="hidden" id="update-user-id">
+                <p class="text-xs text-slate-500">Updating password for user: <strong id="update-user-name" class="text-slate-900"></strong></p>
+                <div>
+                    <label class="block text-xs font-semibold text-slate-700 mb-1.5">New Password</label>
+                    <input type="password" id="update-user-pass" placeholder="••••••••" class="w-full border border-slate-200 rounded-2xl p-3 text-sm bg-slate-50 focus:bg-white focus:outline-none focus:ring-2 focus:ring-indigo-600 transition">
+                </div>
+                <button onclick="saveUserPassword()" class="w-full bg-slate-900 hover:bg-slate-800 text-white py-3.5 rounded-2xl text-xs font-semibold transition shadow-sm active:scale-95">Save New Password</button>
+            </div>
+        </div>
+
+        <!-- SKU LOOKUP MODAL -->
+        <div id="sku-lookup-modal" class="hidden fixed inset-0 bg-slate-900/60 backdrop-blur-xs z-50 flex items-center justify-center p-4">
+            <div class="bg-white rounded-3xl max-w-md w-full p-6 shadow-2xl space-y-4 max-h-[90vh] overflow-y-auto text-sm border border-slate-100">
+                <div class="flex justify-between items-center border-b border-slate-100 pb-3">
+                    <h3 class="font-bold text-slate-900">🔍 Item SKU / Description Lookup</h3>
+                    <button onclick="closeSkuLookupModal()" class="text-slate-400 hover:text-slate-700 font-bold text-lg w-8 h-8 flex items-center justify-center rounded-full hover:bg-slate-100 transition">✕</button>
+                </div>
+                <div>
+                    <input type="text" id="sku-search-input" placeholder="Type SKU, Model, or Description..." oninput="filterSkuLookup(this.value)" class="w-full border border-slate-200 rounded-2xl p-3.5 text-xs bg-slate-50/50 focus:bg-white focus:outline-none focus:ring-2 focus:ring-indigo-600 transition shadow-xs">
+                </div>
+                <div id="sku-lookup-results" class="space-y-2.5 max-h-64 overflow-y-auto"></div>
+            </div>
+        </div>
+
+        <!-- DETAIL POPUP -->
+        <div id="detail-popup-modal" class="hidden fixed inset-0 bg-slate-900/60 backdrop-blur-xs z-50 flex items-center justify-center p-4">
+            <div class="bg-white rounded-3xl max-w-sm w-full p-6 shadow-2xl space-y-4 text-sm border border-slate-100 text-center">
+                <div id="detail-popup-icon" class="w-12 h-12 bg-indigo-50 text-indigo-600 rounded-2xl flex items-center justify-center mx-auto text-xl font-bold shadow-xs">ℹ</div>
+                <h3 id="detail-popup-title" class="font-bold text-base text-slate-900">Details</h3>
+                <div id="detail-popup-body" class="text-xs text-slate-600 text-left space-y-2 bg-slate-50 p-4 rounded-2xl border border-slate-100"></div>
+                <button onclick="closeDetailPopup()" class="w-full bg-slate-900 hover:bg-slate-800 text-white py-3 rounded-2xl text-xs font-semibold transition">Close</button>
+            </div>
+        </div>
+
+        <!-- ORDER DETAIL MODAL -->
+        <div id="order-detail-modal" class="hidden fixed inset-0 bg-slate-900/60 backdrop-blur-xs z-50 flex items-center justify-center p-4">
+            <div class="bg-white rounded-3xl max-w-md w-full p-6 shadow-2xl space-y-4 max-h-[90vh] overflow-y-auto text-sm border border-slate-100 flex flex-col">
+                <div class="flex justify-between items-center border-b border-slate-100 pb-3">
+                    <h3 id="modal-order-title" class="font-bold text-slate-900">Order Details</h3>
+                    <button onclick="closeOrderModal()" class="text-slate-400 hover:text-slate-700 font-bold text-lg w-8 h-8 flex items-center justify-center rounded-full hover:bg-slate-100 transition">✕</button>
+                </div>
+                <div id="modal-order-body" class="space-y-3.5 flex-1 overflow-y-auto"></div>
+                <div id="order-detail-actions" class="pt-3 border-t border-slate-100 flex flex-col space-y-2"></div>
+            </div>
+        </div>
+
+        <!-- FULL-SCREEN IMAGE LIGHTMODAL -->
+        <div id="image-modal" class="hidden fixed inset-0 bg-slate-950/90 backdrop-blur-sm z-50 flex flex-col items-center justify-center p-4">
+            <button onclick="closeImageModal()" class="absolute top-4 right-4 bg-white/10 hover:bg-white/20 text-white w-10 h-10 rounded-full font-bold text-lg flex items-center justify-center transition">✕</button>
+            <img id="modal-img-element" src="" alt="Product Full View" class="max-w-full max-h-[80vh] object-contain rounded-2xl shadow-2xl">
+            <p id="modal-img-caption" class="text-white/90 text-sm mt-4 font-medium text-center"></p>
+        </div>
+
+        <!-- NOTIFICATION MODAL -->
+        <div id="modal-container" class="hidden fixed inset-0 bg-slate-900/60 backdrop-blur-xs z-50 flex items-center justify-center p-4 z-[60]">
+            <div class="bg-white rounded-3xl max-w-sm w-full p-6 shadow-2xl space-y-4 border border-slate-100 text-center">
+                <div id="modal-icon" class="w-12 h-12 bg-indigo-50 text-indigo-600 rounded-2xl flex items-center justify-center mx-auto text-xl font-bold shadow-xs">ℹ</div>
+                <h3 id="modal-title" class="font-bold text-base text-slate-900">Notification</h3>
+                <p id="modal-message" class="text-sm text-slate-600 leading-relaxed"></p>
+                <div id="modal-actions" class="flex justify-center pt-2">
+                    <button onclick="closeModal()" class="w-full bg-slate-900 hover:bg-slate-800 text-white py-3 rounded-2xl text-xs font-semibold transition shadow-sm active:scale-95">OK</button>
+                </div>
+            </div>
+        </div>
+
+    </div>
+
+    <!-- CORE JAVASCRIPT LOGIC -->
+    <script>
+        let state = {
+            view: 'login',
+            user: null, 
+            apiUrl: 'https://script.google.com/macros/s/AKfycbzQuJ9Ruw1SX1bT5DNrxEOtD3IJ6hSoVPNDEj4dWr5UnmF8AiW0cxS423Adp8OQrZpF/exec',
+            lastRefreshTime: localStorage.getItem('gi_last_refresh') || 'Never',
+            products: JSON.parse(localStorage.getItem('gi_products') || '[]'),
+            customers: JSON.parse(localStorage.getItem('gi_customers') || '[]'),
+            vendorsList: JSON.parse(localStorage.getItem('gi_vendors') || '[]'),
+            usersList: JSON.parse(localStorage.getItem('gi_users') || '[]'),
+            ordersList: JSON.parse(localStorage.getItem('gi_orders') || '[]'),
+            metalPrices: JSON.parse(localStorage.getItem('gi_metal_prices') || '[]'),
+            cart: {},
+            storeSubView: 'catalog', 
+            deliverySubTab: 'pending', 
+            adminTab: 'products', 
+            adminSettingsView: 'main', 
+            checkoutData: { selectedCustId: '', shopName: '', fullName: '', contact: '', address: '', discount: 0 },
+            orderFilters: { startDate: '', endDate: '', customerShop: '', userId: '', itemName: '' },
+            adminProductSearch: '',
+            adminCustomerSearch: '',
+            adminVendorSearch: '',
+            adminOrderSearch: '',
+            deliveredSearchQuery: '',
+            editingCustomer: null,
+            editingVendor: null
+        };
+
+        // IDLE TIMEOUT
+        let idleTimer, warningTimer;
+        function resetIdleTimer() {
+            if (!state.user) return;
+            clearTimeout(idleTimer); clearTimeout(warningTimer);
+            warningTimer = setTimeout(() => { if (state.user) showModal("Inactivity Warning", "You will be logged out in 30 seconds due to inactivity."); }, 90000);
+            idleTimer = setTimeout(() => { if (state.user) { closeModal(); logout(); showModal("Session Expired", "You have been logged out due to inactivity."); } }, 120000);
+        }
+        ['mousemove', 'keydown', 'click', 'touchstart'].forEach(evt => window.addEventListener(evt, resetIdleTimer, true));
+
+        // TOGGLE DROPDOWN HANDLERS
+        function toggleCreateWeightDropdown(isChecked) {
+            const container = document.getElementById('create-metal-type-container');
+            if (isChecked) {
+                container.classList.remove('hidden');
+            } else {
+                container.classList.add('hidden');
+                document.getElementById('new-prod-metal-type').value = '';
+            }
+        }
+
+        function toggleEditWeightDropdown(isChecked) {
+            const container = document.getElementById('edit-metal-type-container');
+            if (isChecked) {
+                container.classList.remove('hidden');
+            } else {
+                container.classList.add('hidden');
+                document.getElementById('edit-prod-metal-type').value = '';
+            }
+        }
+
+        // FETCH METAL PRICES
+        async function fetchMetalPrices() {
+            try {
+                const res = await fetch(state.apiUrl + '?action=getMetalPrices');
+                const data = await res.json();
+                state.metalPrices = data.metalPrices || [];
+                localStorage.setItem('gi_metal_prices', JSON.stringify(state.metalPrices));
+            } catch(e) {}
+        }
+
+       // WEIGHT PRICE CALCULATOR & ROUNDER (Nearest 10g)
+	function calculateWeightPrice(metalName, grams) {
+            const cleanTarget = String(metalName || '').toLowerCase().trim();
+            const metal = state.metalPrices.find(m => String(m.metalName || '').toLowerCase().trim() === cleanTarget);
+            const ratePerKg = metal ? metal.pricePerKg : 0;
+            const roundedGrams = Math.round(grams / 10) * 10;
+            const kg = roundedGrams / 1000;
+            const total = kg * ratePerKg;
+            return { roundedGrams, ratePerKg, total: Number(total.toFixed(2)) };
+        }
+
+function addWeightItemToCart(id) {
+            const inputEl = document.getElementById(`weight-input-${id}`);
+            const kg = parseFloat(inputEl?.value) || 0;
+            const grams = kg * 1000; // Convert kg to gm
+            
+            if (grams <= 0) {
+                if (state.cart[id]) {
+                    delete state.cart[id];
+                    render();
+                    showModal('Removed', 'Item removed from cart.');
+                } else {
+                    showModal('Invalid Weight', 'Please enter a valid weight in kg before adding to cart.');
+                }
+                return;
+            }
+
+            const p = state.products.find(x => String(x.id) === String(id));
+            if (!p) return;
+
+            // Check available stock (stored in kg in state.products)
+            const availableKg = Number(p.stock) || 0;
+            if (kg > availableKg) {
+                return showModal('Stock Limit Reached', `Only ${availableKg} kg available in stock for "${p.name}". Please adjust the weight.`);
+            }
+
+            let calc = calculateWeightPrice(p.metalType, grams);
+            
+            state.cart[id] = { 
+                product: p, 
+                qty: 1, 
+                grams: grams, 
+                roundedGrams: calc.roundedGrams, 
+                customPrice: calc.total 
+            };
+
+            render();
+            showModal('Added to Cart', `Added ${kg} kg of ${p.name} for ₹${calc.total}.`);
+        }
+
+        // UI HELPERS
+        function showLoading(msg) {
+            document.getElementById('modal-title').innerText = "Please Wait";
+            document.getElementById('modal-message').innerText = msg || "Processing request...";
+            document.getElementById('modal-icon').innerHTML = '<div class="w-6 h-6 border-2 border-indigo-600 border-t-transparent rounded-full animate-spin mx-auto"></div>';
+            document.getElementById('modal-actions').classList.add('hidden');
+            document.getElementById('modal-container').classList.remove('hidden');
+        }
+        function hideLoading() {
+            document.getElementById('modal-actions').classList.remove('hidden');
+            document.getElementById('modal-icon').innerHTML = 'ℹ';
+            closeModal();
+        }
+        function showModal(title, msg) {
+            document.getElementById('modal-actions').classList.remove('hidden');
+            document.getElementById('modal-icon').innerHTML = 'ℹ';
+            document.getElementById('modal-title').innerText = title;
+            document.getElementById('modal-message').innerText = msg;
+            document.getElementById('modal-container').classList.remove('hidden');
+        }
+        function closeModal() { document.getElementById('modal-container').classList.add('hidden'); }
+        function closeDetailPopup() { document.getElementById('detail-popup-modal').classList.add('hidden'); }
+        function openImageModal(url, name) {
+            document.getElementById('modal-img-element').src = url;
+            document.getElementById('modal-img-caption').innerText = name;
+            document.getElementById('image-modal').classList.remove('hidden');
+        }
+        function closeImageModal() { document.getElementById('image-modal').classList.add('hidden'); }
+        function renderImgThumbnail(url, name, cls="w-12 h-12") {
+            if (!url) return `<div class="${cls} bg-slate-100 rounded-2xl flex items-center justify-center text-slate-400 text-xs font-bold border border-slate-200/60 shadow-xs">No Img</div>`;
+            return `<img src="${url}" alt="${name.replace(/'/g, "\\'")}" onclick="openImageModal('${url}', '${name.replace(/'/g,"\\'")}')" class="${cls} object-cover rounded-2xl border border-slate-200/80 cursor-pointer hover:opacity-85 transition shadow-sm">`;
+        }
+
+        // SMART DATE PARSER & STRICT DD-MM-YYYY FORMATTER
+        function parseSheetDate(dateStr) {
+            if (!dateStr) return null;
+            if (dateStr instanceof Date) return dateStr;
+            const str = String(dateStr).trim();
+            const parts = str.split(/[\/\-]/);
+            if (parts.length === 3) {
+                let p0 = parseInt(parts[0], 10);
+                let p1 = parseInt(parts[1], 10);
+                let p2 = parseInt(parts[2], 10);
+                if (parts[0].length === 4) return new Date(p0, p1 - 1, p2);
+                if (parts[2].length === 4) {
+                    if (p0 > 12) return new Date(p2, p1 - 1, p0);
+                    if (p1 > 12) return new Date(p2, p0 - 1, p1);
+                    return new Date(p2, p1 - 1, p0);
+                }
+            }
+            let d = new Date(str);
+            return isNaN(d.getTime()) ? null : d;
+        }
+
+        function formatDisplayDate(dateStr) {
+            if (!dateStr) return '';
+            let d = parseSheetDate(dateStr);
+            if (!d || isNaN(d.getTime())) return dateStr;
+            const day = String(d.getDate()).padStart(2, '0');
+            const month = String(d.getMonth() + 1).padStart(2, '0');
+            const year = d.getFullYear();
+            return `${day}-${month}-${year}`;
+        }
+
+        function getFilteredOrders() {
+            const query = (state.adminOrderSearch || '').toLowerCase();
+            let filtered = state.ordersList.filter(o => {
+                const matchesShop = !state.orderFilters.customerShop || o.shopName === state.orderFilters.customerShop;
+                const matchesUser = !state.orderFilters.userId || (o.userId || 'Admin') === state.orderFilters.userId;
+                let matchesItem = true;
+                if (state.orderFilters.itemName) {
+                    matchesItem = o.rawItems && Array.isArray(o.rawItems) && o.rawItems.some(i => i.name === state.orderFilters.itemName);
+                }
+                let matchesSearch = !query || o.orderNo.toLowerCase().includes(query) || o.shopName.toLowerCase().includes(query) || (o.userId || '').toLowerCase().includes(query) || o.details.toLowerCase().includes(query);
+                let matchesDate = true;
+                const dObj = parseSheetDate(o.date);
+                if (dObj && (state.orderFilters.startDate || state.orderFilters.endDate)) {
+                    const oTime = new Date(dObj).setHours(0,0,0,0);
+                    if (state.orderFilters.startDate && oTime < new Date(state.orderFilters.startDate).setHours(0,0,0,0)) matchesDate = false;
+                    if (state.orderFilters.endDate && oTime > new Date(state.orderFilters.endDate).setHours(0,0,0,0)) matchesDate = false;
+                }
+                return matchesShop && matchesUser && matchesItem && matchesSearch && matchesDate;
+            });
+            filtered.sort((a, b) => {
+                let da = parseSheetDate(a.date) || new Date(a.date);
+                let db = parseSheetDate(b.date) || new Date(b.date);
+                if (da.getTime() !== db.getTime()) return db - da;
+                return String(b.orderNo).localeCompare(String(a.orderNo));
+            });
+            return filtered;
+        }
+
+        // STORE & CART LOGIC
+        function filterProducts(query) {
+            const q = query.toLowerCase().trim();
+            const container = document.getElementById('product-list');
+            if (!container) return;
+            const filtered = state.products.filter(p => p.name.toLowerCase().includes(q) || (p.category && p.category.toLowerCase().includes(q)));
+            container.innerHTML = renderProductItems(filtered);
+        }
+
+        function updateQty(id, change) {
+            const prod = state.products.find(p => String(p.id) === String(id));
+            if (!prod) return;
+
+            const maxStock = Number(prod.stock) || 0;
+
+            if (!state.cart[id]) {
+                if (change <= 0) return;
+                if (maxStock <= 0) {
+                    showModal("Out of Stock", "This item is currently out of stock.");
+                    return;
+                }
+                state.cart[id] = { product: prod, qty: 0 };
+            }
+
+            const currentQty = state.cart[id].qty;
+            const newQty = currentQty + change;
+
+            if (change > 0 && newQty > maxStock) {
+                showModal("Stock Limit Reached", `Only ${maxStock} unit(s) available in stock for "${prod.name}".`);
+                return;
+            }
+
+            state.cart[id].qty = newQty;
+
+            if (state.cart[id].qty <= 0) {
+                delete state.cart[id];
+            }
+
+            render();
+        }
+
+        function selectCustomer(custId) {
+            const c = state.customers.find(item => String(item.id) === String(custId));
+            if (c) {
+                state.checkoutData = { selectedCustId: c.id, shopName: c.shop || '', fullName: c.name || '', contact: c.contact || '', address: c.address || '', discount: 0 };
+                render();
+            }
+        }
+
+        function goToCheckout() {
+            const cartItems = Object.values(state.cart).filter(i => i.qty > 0 || (i.grams && i.grams > 0));
+            if (cartItems.length === 0) return showModal("Cart Empty", "Please select at least one item before checkout.");
+            state.view = 'checkout';
+            render();
+        }
+
+        async function submitOrder() {
+            const sd = state.checkoutData;
+            sd.shopName = document.getElementById('chk-shop')?.value.trim() || sd.shopName;
+            sd.fullName = document.getElementById('chk-name')?.value.trim() || sd.fullName;
+            sd.contact = document.getElementById('chk-contact')?.value.trim() || sd.contact;
+            sd.address = document.getElementById('chk-address')?.value.trim() || sd.address;
+
+            if (!sd.shopName || !sd.fullName || !sd.contact) {
+                return showModal('Error', 'Shop Name, Full Name, and Contact Number are required.');
+            }
+
+            const items = Object.values(state.cart).filter(i => i.qty > 0 || (i.grams && i.grams > 0)).map(i => ({
+                id: i.product.id,
+                name: i.product.name,
+                price: Number(i.customPrice ? (i.customPrice / (i.roundedGrams / 1000)) : i.product.price),
+                costPrice: Number(i.product.costPrice || 0),
+                qty: i.qty || 1,
+                grams: i.grams || 0,
+                roundedGrams: i.roundedGrams || 0,
+                customPrice: i.customPrice || 0,
+                img: i.product.img || ''
+            }));
+
+            if (items.length === 0) {
+                return showModal('Error', 'Your cart is empty.');
+            }
+
+            for (let i = 0; i < items.length; i++) {
+                const liveProd = state.products.find(p => String(p.id) === String(items[i].id));
+                const available = liveProd ? (Number(liveProd.stock) || 0) : 0;
+                if (!items[i].grams && items[i].qty > available) {
+                    return showModal("Stock Changed", `"${items[i].name}" only has ${available} left. Please adjust your cart.`);
+                }
+            }
+
+            const amount = Object.values(state.cart).reduce((a, i) => a + (i.customPrice || (i.product.price * i.qty)), 0);
+            const totalCost = items.reduce((a, i) => a + (i.costPrice * i.qty), 0);
+const details = Object.values(state.cart).map(i => i.grams ? `${i.product.name} (${(i.roundedGrams / 1000).toFixed(3)} kg - ₹${i.customPrice})` : `${i.product.name} (x${i.qty})`).join(', ');
+
+            try {
+                showLoading('Placing order & updating stock...');
+                const res = await fetch(state.apiUrl, {
+                    method: 'POST',
+                    body: JSON.stringify({
+                        action: 'submitOrder',
+                        date: new Date().toLocaleDateString(),
+                        shopName: sd.shopName,
+                        fullName: sd.fullName,
+                        contact: sd.contact,
+                        address: sd.address,
+                        orderListDetails: details,
+                        discount: 0,
+                        amount,
+                        totalCost,
+                        cartItems: items,
+                        userId: state.user?.userId || 'Admin'
+                    })
+                });
+                const data = await res.json();
+                hideLoading();
+
+                if (data.status === 'success') {
+                    items.forEach(orderedItem => {
+                        const localProd = state.products.find(p => String(p.id) === String(orderedItem.id));
+                        if (localProd && !orderedItem.grams) {
+                            localProd.stock = Math.max(0, (Number(localProd.stock) || 0) - orderedItem.qty);
+                        }
+                    });
+                    localStorage.setItem('gi_products', JSON.stringify(state.products));
+
+                    state.cart = {};
+                    state.view = 'success';
+                    render();
+                    fetchData(true);
+                } else {
+                    showModal('Error', 'Failed to record order.');
+                }
+            } catch(e) {
+                hideLoading();
+                showModal('Error', 'Network error during checkout.');
+            }
+        }
+
+        // FOOTER AND MODAL LOGIC
+        function renderFooterCredit() {
+            return `<div class="mt-12 pb-8 pt-6 border-t border-slate-200/60 text-center text-[11px] text-slate-400 font-bold tracking-widest uppercase">Designed & Developed by AlthaKar</div>`;
+        }
+
+        function updateCartBar() {
+            const items = Object.values(state.cart);
+            const totalCount = items.reduce((a, i) => a + (i.grams ? 1 : i.qty), 0);
+            const totalAmt = items.reduce((a, i) => a + (i.customPrice || (i.product.price * i.qty)), 0);
+            
+            document.getElementById('cart-item-count').innerText = `${totalCount} items`;
+            document.getElementById('cart-total-amount').innerText = `₹${totalAmt.toFixed(2)}`;
+        }
+
+        function logout() {
+            state.user = null; state.cart = {}; localStorage.removeItem('gi_logged_user'); state.view = 'login'; render();
+        }
+
+        function openAdminLogin() {
+            state.view = 'admin-login'; render();
+        }
+
+        function render() {
+            const ha = document.getElementById('header-actions');
+            const mc = document.getElementById('main-content');
+            const bb = document.getElementById('bottom-bar');
+
+            if (state.view === 'store') {
+                ha.innerHTML = state.user?.role === 'Admin' ? `
+                    <button onclick="state.adminTab='products'; state.adminSettingsView='main'; state.view='admin-dashboard'; render();" class="text-xs bg-slate-800/80 hover:bg-slate-700 px-3.5 py-2 rounded-xl text-slate-200 font-semibold transition shadow-xs border border-slate-700">Admin Portal</button>
+                    <button onclick="logout()" class="text-xs bg-rose-500/20 text-rose-300 hover:bg-rose-500/30 px-3.5 py-2 rounded-xl font-semibold transition border border-rose-500/30">Logout</button>
+                ` : `
+                    <button onclick="logout()" class="text-xs bg-rose-500/20 text-rose-300 hover:bg-rose-500/30 px-3.5 py-2 rounded-xl font-semibold transition border border-rose-500/30">Logout</button>
+                `;
+                state.storeSubView === 'catalog' && state.user?.role !== 'Delivery' ? bb.classList.remove('hidden') : bb.classList.add('hidden');
+            } else if (state.view === 'admin-dashboard') {
+                ha.innerHTML = `
+                    <button onclick="state.view='store'; render();" class="text-xs bg-slate-800/80 hover:bg-slate-700 px-3 py-2 rounded-xl text-slate-200 font-semibold transition shadow-xs border border-slate-700">Store</button>
+                    <button onclick="state.adminTab='settings'; state.adminSettingsView='main'; render();" class="text-xs bg-slate-800/80 hover:bg-slate-700 px-3 py-2 rounded-xl text-slate-200 font-semibold transition shadow-xs border border-slate-700">Settings</button>
+                    <button onclick="logout()" class="text-xs bg-rose-500/20 text-rose-300 hover:bg-rose-500/30 px-3.5 py-2 rounded-xl font-semibold transition border border-rose-500/30">Logout</button>
+                `;
+                bb.classList.add('hidden');
+            } else {
+                ha.innerHTML = `<button onclick="openAdminLogin()" class="text-xs bg-slate-800/80 hover:bg-slate-700 px-3.5 py-2 rounded-xl text-slate-200 font-semibold transition shadow-xs border border-slate-700">Admin Portal</button>`;
+                bb.classList.add('hidden');
+            }
+
+            if (state.view === 'login') mc.innerHTML = renderLoginView() + renderFooterCredit();
+            else if (state.view === 'store') { mc.innerHTML = renderStoreView(); if ((state.storeSubView === 'catalog' || state.storeSubView === 'weight-metals') && state.user?.role !== 'Delivery') updateCartBar(); }
+            else if (state.view === 'checkout') mc.innerHTML = renderCheckoutView();
+            else if (state.view === 'success') mc.innerHTML = renderSuccessView();
+            else if (state.view === 'admin-login') mc.innerHTML = renderAdminLoginView() + renderFooterCredit();
+            else if (state.view === 'admin-dashboard') {
+                let content = renderAdminDashboardView();
+                if (state.adminTab === 'settings') content += renderFooterCredit();
+                mc.innerHTML = content;
+            }
+        }
+
+        function renderLoginView() {
+            return `
+                <div class="max-w-sm mx-auto mt-12 space-y-6">
+                    <div class="text-center space-y-3">
+                        <div class="inline-block bg-gradient-to-tr from-slate-900 to-indigo-900 text-white p-4 rounded-3xl font-bold text-3xl mb-1 shadow-lg">GI</div>
+                        <h2 class="text-xl font-bold text-slate-900">Global Industries, Mysore</h2>
+                        <p class="text-xs text-slate-500 font-medium">Wholesale & Dispatch Secure Login</p>
+                    </div>
+
+                    <div class="bg-white border border-slate-200/80 rounded-3xl p-7 shadow-sm">
+                        <div class="mb-4">
+                            <label class="block text-xs font-bold text-slate-700 mb-1.5">User ID</label>
+                            <input type="text" id="login-userid" placeholder="username" class="w-full border border-slate-200 rounded-2xl p-3.5 text-sm bg-slate-50 focus:bg-white focus:outline-none focus:ring-2 focus:ring-indigo-600 transition shadow-xs">
+                        </div>
+                        <div class="mb-5">
+                            <label class="block text-xs font-bold text-slate-700 mb-1.5">Password</label>
+                            <input type="password" id="login-password" placeholder="••••••••" class="w-full border border-slate-200 rounded-2xl p-3.5 text-sm bg-slate-50 focus:bg-white focus:outline-none focus:ring-2 focus:ring-indigo-600 transition shadow-xs">
+                        </div>
+                        <button onclick="handleUserLogin()" class="w-full bg-slate-900 hover:bg-slate-800 text-white font-semibold py-3.5 rounded-2xl text-sm transition shadow-md active:scale-95">
+                            Login to Portal
+                        </button>
+                    </div>
+                </div>
+            `;
+        }
+
+        function renderStoreView() {
+            const isDeliveryRole = state.user?.role === 'Delivery';
+            if (isDeliveryRole) return renderDeliveryPendingPortal();
+
+            const subView = state.storeSubView || 'catalog';
+            const portalName = state.user?.role === 'Admin' ? 'Admin' : (state.user?.userId || 'User');
+            const userOrders = getFilteredOrders().filter(o => String(o.userId) === String(state.user?.userId));
+
+            const weightProducts = state.products.filter(p => Boolean(p.metalType));
+            const catalogProducts = state.products.filter(p => !Boolean(p.metalType));
+
+            return `
+                <div class="space-y-5">
+                    <div class="flex items-center justify-between text-xs px-1">
+                        <span class="text-slate-500 font-medium">Sales Portal: <strong class="text-slate-900 font-bold">${portalName}</strong></span>
+                        <div class="flex items-center space-x-3">
+                            <span class="text-slate-400 font-medium">Updated: ${state.lastRefreshTime}</span>
+                            <button onclick="fetchData(true); fetchMetalPrices();" class="text-indigo-600 font-bold hover:text-indigo-700 transition">🔄 Refresh</button>
+                        </div>
+                    </div>
+
+                    <!-- 3 STORE TABS -->
+                    <div class="flex bg-slate-100 p-1.5 rounded-2xl text-xs font-semibold border border-slate-200/60 shadow-inner">
+                        <button onclick="state.storeSubView='catalog'; render();" class="flex-1 py-3 text-center rounded-xl transition ${subView==='catalog'?'bg-white font-bold text-slate-900 shadow-sm':'text-slate-500 hover:text-slate-900'}">Catalog</button>
+                        <button onclick="state.storeSubView='weight-metals'; render();" class="flex-1 py-3 text-center rounded-xl transition ${subView==='weight-metals'?'bg-white font-bold text-slate-900 shadow-sm':'text-slate-500 hover:text-slate-900'}">Weight Metals</button>
+                        <button onclick="state.storeSubView='my-orders'; render();" class="flex-1 py-3 text-center rounded-xl transition ${subView==='my-orders'?'bg-white font-bold text-slate-900 shadow-sm':'text-slate-500 hover:text-slate-900'}">Orders (${userOrders.length})</button>
+                    </div>
+
+                    ${subView === 'catalog' ? `
+                        <div>
+                            <input type="text" id="product-search" placeholder="Search catalog items..." oninput="filterProducts(this.value)" class="w-full border border-slate-200 rounded-2xl p-3.5 text-xs bg-slate-50/50 focus:bg-white focus:outline-none focus:ring-2 focus:ring-indigo-600 transition shadow-xs">
+                        </div>
+                        <div id="product-list" class="space-y-3.5">
+                            ${renderProductItems(catalogProducts)}
+                        </div>
+                    ` : (subView === 'weight-metals' ? `
+                        <div class="space-y-3.5">
+                            <div class="bg-amber-50 border border-amber-200 rounded-2xl p-3 text-xs text-amber-900 font-medium">
+                                ⚖️ Enter exact weight in grams. Prices update automatically based on live per-kg rates.
+                            </div>
+                            ${renderProductItems(weightProducts)}
+                        </div>
+                    ` : renderMyOrdersView())}
+                </div>
+            `;
+        }
+
+        function renderDeliveryPendingPortal() {
+            const pendingOrders = state.ordersList.filter(o => o.status !== 'Cancelled' && o.status !== 'Delivered');
+            pendingOrders.sort((a, b) => {
+                let da = parseSheetDate(a.date) || new Date(a.date);
+                let db = parseSheetDate(b.date) || new Date(b.date);
+                if (da.getTime() !== db.getTime()) return db - da;
+                return String(b.orderNo).localeCompare(String(a.orderNo));
+            });
+
+            const orderCards = pendingOrders.map(o => `
+                <div onclick="openOrderDetailsModal('${o.orderNo}')" class="bg-slate-50 border border-slate-200/80 rounded-xl p-3.5 text-xs space-y-1 cursor-pointer hover:bg-slate-100 transition shadow-xs">
+                    <div class="flex justify-between items-center text-sm font-bold">
+                        <span class="text-rose-600 tracking-tight">ORDER # <span class="text-slate-900">${o.orderNo}</span></span>
+                        <span class="text-xs text-slate-500 font-normal">Date: ${formatDisplayDate(o.date)}</span>
+                        <span class="text-emerald-700 font-bold">₹${Number(o.amount || 0).toFixed(2)}</span>
+                    </div>
+                    <div class="flex justify-between items-center pt-1">
+                        <span class="font-bold text-slate-900 text-xs">${o.shopName}</span>
+                        <span class="px-3 py-1 rounded-full text-xs font-bold bg-amber-50 text-amber-700 border border-amber-100">Pending</span>
+                    </div>
+                </div>
+            `).join('') || '<div class="text-center py-20 text-slate-400 text-sm">No pending deliveries right now!</div>';
+
+            return `
+                <div class="space-y-4">
+                    <div class="flex items-center justify-between text-xs px-1">
+                        <span class="text-slate-500 font-medium">Dispatch Portal: <strong class="text-slate-900 font-bold">${state.user?.userId}</strong></span>
+                        <button onclick="fetchData(true)" class="text-indigo-600 font-bold hover:underline">🔄 Refresh</button>
+                    </div>
+                    <h3 class="font-bold text-base text-slate-900 px-1">Delivery Pending Screen</h3>
+                    <div class="space-y-2.5">${orderCards}</div>
+                </div>
+            `;
+        }
+
+        function renderMyOrdersView() {
+            const userOrders = getFilteredOrders().filter(o => String(o.userId) === String(state.user?.userId));
+            if (userOrders.length === 0) {
+                return `<div class="text-center py-20 text-slate-400 text-sm space-y-4"><p class="font-medium">You have not placed any orders yet.</p><button onclick="state.storeSubView='catalog'; render();" class="bg-slate-900 hover:bg-slate-800 text-white px-6 py-3 rounded-2xl text-xs font-semibold transition shadow-sm">Browse Catalog</button></div>`;
+            }
+
+            return userOrders.map(o => {
+                const isCancelled = o.status === 'Cancelled';
+                return `
+                    <div onclick="openOrderDetailsModal('${o.orderNo}')" class="bg-slate-50 border border-slate-200/80 rounded-xl p-3.5 text-xs space-y-1 cursor-pointer hover:bg-slate-100 transition shadow-xs">
+                        <div class="flex justify-between items-center text-sm font-bold">
+                            <span class="text-rose-600 tracking-tight">ORDER # <span class="text-slate-900">${o.orderNo}</span></span>
+                            <span class="text-xs text-slate-500 font-normal">Date: ${formatDisplayDate(o.date)}</span>
+                            <span class="${isCancelled ? 'text-rose-600 line-through' : 'text-emerald-700'} font-bold">₹${Number(o.amount || 0).toFixed(2)}</span>
+                        </div>
+                        <div class="flex justify-between items-center pt-1">
+                            <span class="font-bold text-slate-900 text-xs">${o.shopName}</span>
+                            <span class="px-2.5 py-0.5 rounded-full text-[11px] font-bold ${isCancelled ? 'bg-rose-50 text-rose-600' : (o.status==='Delivered' ? 'bg-emerald-50 text-emerald-700' : 'bg-amber-50 text-amber-700')}">${o.status || 'Confirmed'}</span>
+                        </div>
+                    </div>
+                `;
+            }).join('');
+        }
+
+        function renderProductItems(products) {
+            if (!products || products.length === 0) return `<div class="text-center py-16 text-slate-400 text-sm font-medium">No products found in this section.</div>`;
+            return products.map(p => {
+                const stringId = String(p.id);
+                const qty = state.cart[stringId]?.qty || 0;
+                const stockNum = Number(p.stock) || 0;
+                const isOutOfStock = stockNum <= 0;
+                const imgHtml = renderImgThumbnail(p.img, p.name, "w-16 h-16");
+                
+                // Define weight check FIRST
+                const isWeightBased = Boolean(p.metalType);
+                
+                // Now stockDisplay and stockBadge can use isWeightBased safely
+const stockDisplay = isWeightBased ? `${stockNum} kg` : `${stockNum} units`;
+                const stockBadge = isOutOfStock ? '<span class="text-xs font-bold text-rose-600 bg-rose-50 px-2.5 py-1 rounded-full border border-rose-100">Out of Stock</span>' : `<span class="text-xs text-slate-500 font-semibold">Stock: ${stockDisplay} left</span>`;
+                
+                let currentGrams = state.cart[stringId]?.grams !== undefined ? state.cart[stringId].grams : '';
+                let calc = calculateWeightPrice(p.metalType, currentGrams || 0); // <-- Changed 450 to 0
+
+                const actionBtn = isWeightBased ? `
+                    <div class="flex flex-col items-end space-y-1.5">
+                        <div class="flex items-center space-x-1">
+                            <input type="number" step="any" id="weight-input-${stringId}" value="${currentGrams ? (currentGrams / 1000) : ''}" oninput="updateWeightInputPreview('${stringId}', this.value)" class="w-20 border border-slate-200 rounded-xl p-1.5 text-xs text-center font-bold bg-slate-50 focus:bg-white" placeholder="0.00">
+                            <span class="text-xs text-slate-500 font-medium">kg</span>
+                        </div>
+                        <div id="weight-preview-${stringId}" class="text-[11px] text-emerald-600 font-bold">
+                            ${currentGrams ? `₹${calculateWeightPrice(p.metalType, currentGrams).total} (${(currentGrams/1000).toFixed(3)} kg)` : '₹0 (0 kg)'}
+                        </div>
+                        <button onclick="addWeightItemToCart('${stringId}')" class="bg-slate-900 hover:bg-slate-800 text-white px-4 py-2 rounded-xl text-xs font-semibold transition shadow-xs">Add to Cart</button>
+                    </div>
+                ` : (!isOutOfStock ? (qty > 0 ? `<button onclick="updateQty('${stringId}', -1)" class="w-9 h-9 bg-slate-100 hover:bg-slate-200 text-slate-800 rounded-xl font-bold flex items-center justify-center transition shadow-xs">-</button><span class="w-7 text-center text-sm font-bold text-slate-900">${qty}</span><button onclick="updateQty('${stringId}', 1)" class="w-9 h-9 bg-indigo-600 hover:bg-indigo-700 text-white rounded-xl font-bold flex items-center justify-center transition shadow-sm">+</button>` : `<button onclick="updateQty('${stringId}', 1)" class="bg-slate-900 hover:bg-slate-800 text-white px-5 py-2.5 rounded-2xl text-xs font-semibold transition shadow-xs">Add</button>`) : '<span class="text-xs text-slate-400 italic font-medium">Unavailable</span>');
+
+                return `
+                    <div class="bg-white border border-slate-200/80 rounded-3xl p-4 flex justify-between items-center shadow-xs hover:shadow-md transition ${isOutOfStock ? 'opacity-60 bg-slate-50/50' : ''}">
+                        <div class="flex items-center space-x-4">
+                            ${imgHtml}
+                            <div class="space-y-1">
+                                <span class="text-[11px] uppercase tracking-wider bg-slate-100 text-slate-700 px-2.5 py-0.5 rounded-full font-bold">${p.category || 'General'}</span>
+                                <h4 class="font-bold text-sm text-slate-900">${p.name}</h4>
+                                <div class="text-sm font-bold text-slate-900">${isWeightBased ? `₹${calc.ratePerKg} <span class="text-xs font-normal text-slate-500">/ kg (${p.metalType})</span>` : `₹${p.price} <span class="text-xs font-normal text-slate-500">/ unit</span>`}</div>
+                                ${stockBadge}
+                            </div>
+                        </div>
+                        <div class="flex items-center space-x-2">${actionBtn}</div>
+                    </div>
+                `;
+            }).join('');
+        }
+
+function updateWeightInputPreview(id, kgVal) {
+            const kg = parseFloat(kgVal) || 0;
+            const grams = kg * 1000;
+            const p = state.products.find(x => String(x.id) === String(id));
+            if (!p) return;
+            
+            let calc = calculateWeightPrice(p.metalType, grams);
+            const previewEl = document.getElementById(`weight-preview-${id}`);
+            if (previewEl) {
+                previewEl.innerText = grams > 0 ? `₹${calc.total} (${kg} kg)` : '₹0 (0 kg)';
+            }
+        }
+
+        function renderCheckoutView() {
+            const customerOptions = state.customers.map(c => `<option value="${c.id}" ${String(state.checkoutData.selectedCustId) === String(c.id) ? 'selected' : ''}>${c.shop} (${c.name})</option>`).join('');
+
+            return `
+                <div class="space-y-6">
+                    <div class="flex items-center justify-between">
+                        <button onclick="state.view='store'; render();" class="text-xs font-semibold text-slate-600 hover:text-slate-900 transition">&larr; Back to Catalog</button>
+                        <h3 class="font-bold text-base text-slate-900">Order Checkout</h3>
+                    </div>
+
+                    <div class="bg-slate-50/80 border border-slate-200/80 rounded-3xl p-5 space-y-4 shadow-xs">
+                        <h4 class="text-xs font-bold text-slate-700 uppercase tracking-wider">Customer Details (Auto-Fill)</h4>
+                        <div>
+                            <label class="block text-xs font-semibold text-slate-700 mb-1.5">Select Customer from Directory</label>
+                            <select onchange="selectCustomer(this.value)" class="w-full border border-slate-200 rounded-2xl p-3.5 text-sm bg-white focus:outline-none focus:ring-2 focus:ring-indigo-600 transition shadow-xs">
+                                <option value="">-- Choose Existing Customer --</option>
+                                ${customerOptions}
+                            </select>
+                        </div>
+                        <div>
+                            <label class="block text-xs font-semibold text-slate-700 mb-1.5">Shop Name</label>
+                            <input type="text" id="chk-shop" value="${state.checkoutData.shopName}" oninput="state.checkoutData.shopName=this.value" class="w-full border border-slate-200 rounded-2xl p-3.5 text-sm bg-white focus:outline-none focus:ring-2 focus:ring-indigo-600 transition shadow-xs">
+                        </div>
+                        <div>
+                            <label class="block text-xs font-semibold text-slate-700 mb-1.5">Full Name</label>
+                            <input type="text" id="chk-name" value="${state.checkoutData.fullName}" oninput="state.checkoutData.fullName=this.value" class="w-full border border-slate-200 rounded-2xl p-3.5 text-sm bg-white focus:outline-none focus:ring-2 focus:ring-indigo-600 transition shadow-xs">
+                        </div>
+                        <div>
+                            <label class="block text-xs font-semibold text-slate-700 mb-1.5">Contact Number</label>
+                            <input type="text" id="chk-contact" value="${state.checkoutData.contact}" oninput="state.checkoutData.contact=this.value" class="w-full border border-slate-200 rounded-2xl p-3.5 text-sm bg-white focus:outline-none focus:ring-2 focus:ring-indigo-600 transition shadow-xs">
+                        </div>
+                        <div>
+                            <label class="block text-xs font-semibold text-slate-700 mb-1.5">Address</label>
+                            <textarea id="chk-address" oninput="state.checkoutData.address=this.value" rows="3" class="w-full border border-slate-200 rounded-2xl p-3.5 text-sm bg-white focus:outline-none focus:ring-2 focus:ring-indigo-600 transition shadow-xs">${state.checkoutData.address}</textarea>
+                        </div>
+                    </div>
+
+                    <button onclick="submitOrder()" class="w-full bg-indigo-600 hover:bg-indigo-700 text-white font-semibold py-4 rounded-2xl text-sm transition shadow-md active:scale-95">
+                        Place Confirmed Order
+                    </button>
+                </div>
+            `;
+        }
+
+        function renderSuccessView() {
+            return `
+                <div class="text-center py-20 space-y-5">
+                    <div class="w-20 h-20 bg-emerald-100 text-emerald-700 rounded-full flex items-center justify-center mx-auto text-3xl font-bold shadow-sm">✓</div>
+                    <h3 class="text-xl font-bold text-slate-900">Order Placed Successfully!</h3>
+                    <p class="text-sm text-slate-500 max-w-xs mx-auto leading-relaxed">Your order has been recorded in the Google Sheet and professional confirmation emails have been dispatched.</p>
+                    <button onclick="state.cart={}; state.view='store'; render();" class="bg-slate-900 hover:bg-slate-800 text-white px-8 py-3.5 rounded-2xl text-xs font-semibold transition shadow-sm">
+                        Back to Catalog
+                    </button>
+                </div>
+            `;
+        }
+
+        function renderAdminLoginView() {
+            return `
+                <div class="max-w-sm mx-auto mt-12 space-y-6">
+                    <div class="text-center space-y-2">
+                        <h2 class="text-xl font-bold text-slate-900">Admin Dashboard Login</h2>
+                        <p class="text-xs text-slate-500 font-medium">Manage products, customers, vendors, users & reports</p>
+                    </div>
+
+                    <div class="bg-white border border-slate-200/80 rounded-3xl p-7 shadow-sm">
+                        <div class="mb-4">
+                            <label class="block text-xs font-bold text-slate-700 mb-1.5">Admin Password</label>
+                            <input type="password" id="admin-password-input" placeholder="••••••••" class="w-full border border-slate-200 rounded-2xl p-3.5 text-sm bg-slate-50 focus:bg-white focus:outline-none focus:ring-2 focus:ring-indigo-600 transition shadow-xs">
+                        </div>
+                        <button onclick="verifyAdminLogin()" class="w-full mt-2 bg-slate-900 hover:bg-slate-800 text-white font-semibold py-3.5 rounded-2xl text-sm transition shadow-md active:scale-95">
+                            Login as Admin
+                        </button>
+                        <button onclick="state.view='login'; render();" class="w-full text-center text-xs text-slate-500 hover:text-slate-800 transition font-semibold pt-4 block">
+                            &larr; Return to User Login
+                        </button>
+                    </div>
+                </div>
+            `;
+        }
+
+        function renderAdminDashboardView() {
+            const tabs = `
+                <div class="flex bg-slate-100 p-1.5 rounded-2xl text-xs font-semibold border border-slate-200/60 overflow-x-auto shadow-inner">
+                    <button onclick="state.adminTab='products'; render();" class="flex-1 min-w-[70px] py-3 text-center rounded-xl transition ${state.adminTab==='products'?'bg-white font-bold text-slate-900 shadow-sm':'text-slate-500 hover:text-slate-900'}">Products</button>
+                    <button onclick="state.adminTab='customers'; render();" class="flex-1 min-w-[80px] py-3 text-center rounded-xl transition ${state.adminTab==='customers'?'bg-white font-bold text-slate-900 shadow-sm':'text-slate-500 hover:text-slate-900'}">Customers</button>
+                    <button onclick="state.adminTab='vendors'; render();" class="flex-1 min-w-[70px] py-3 text-center rounded-xl transition ${state.adminTab==='vendors'?'bg-white font-bold text-slate-900 shadow-sm':'text-slate-500 hover:text-slate-900'}">Vendors</button>
+                    <button onclick="state.adminTab='orders'; render();" class="flex-1 min-w-[65px] py-3 text-center rounded-xl transition ${state.adminTab==='orders'?'bg-white font-bold text-slate-900 shadow-sm':'text-slate-500 hover:text-slate-900'}">Orders</button>
+                    <button onclick="state.adminTab='delivery'; render();" class="flex-1 min-w-[70px] py-3 text-center rounded-xl transition ${state.adminTab==='delivery'?'bg-white font-bold text-slate-900 shadow-sm':'text-slate-500 hover:text-slate-900'}">Delivery</button>
+                </div>
+            `;
+            let content = '';
+            if (state.adminTab === 'products') content = renderAdminProductsTab();
+            if (state.adminTab === 'batch-prices') content = renderAdminBatchPricesTab();
+            if (state.adminTab === 'customers') content = renderAdminCustomersTab();
+            if (state.adminTab === 'vendors') content = renderAdminVendorsTab();
+            if (state.adminTab === 'orders') content = renderAdminOrdersTab();
+            if (state.adminTab === 'delivery') content = renderAdminDeliveryTab();
+            if (state.adminTab === 'reports') content = renderAdminReportsTab();
+            if (state.adminTab === 'settings') content = renderAdminSettingsTab();
+            return `<div class="space-y-5">${tabs}${content}</div>`;
+        }
+
+        // TAB RENDERERS (Admin)
+       function renderAdminProductsTab() {
+            const query = (state.adminProductSearch || '').toLowerCase();
+            const filteredProducts = state.products.filter(p => p.name.toLowerCase().includes(query) || String(p.id).toLowerCase().includes(query));
+
+            const productCards = filteredProducts.length ? filteredProducts.map(p => {
+                const thumb = renderImgThumbnail(p.img, p.name, "w-12 h-12");
+                const stockNum = Number(p.stock) || 0;
+                const stockLabel = stockNum > 0 ? 'In Stock' : 'Out';
+                const isWeightBased = Boolean(p.metalType);
+                const stockDisplay = isWeightBased ? `${stockNum} kg` : `${stockNum} units`;
+                
+                const matchedVendor = state.vendorsList.find(v => v.id === p.vendor);
+                const vendorDisplay = matchedVendor ? matchedVendor.vendorName : (p.vendor || 'Unassigned');
+
+                return `
+                    <div class="bg-white border border-slate-200/80 rounded-2xl p-3 flex justify-between items-center text-xs shadow-xs hover:shadow-md transition">
+                        <div class="flex items-center space-x-3 overflow-hidden">
+                            ${thumb}
+                            <div class="truncate space-y-0.5">
+                                <div class="font-bold text-slate-900 text-xs truncate">${p.name} <span class="text-slate-400 font-normal">(${p.category || 'General'})</span></div>
+                                <div class="text-slate-500 text-[11px]">Sell: ₹${p.price} | Cost: ₹${p.costPrice || 0} | Stock: ${stockDisplay}</div>
+                                <div class="text-indigo-600 font-semibold text-[11px] truncate">Vendor: ${vendorDisplay} ${p.metalType ? `| Metal: ${p.metalType}` : ''}</div>
+                            </div>
+                        </div>
+                        <div class="flex items-center space-x-1.5 shrink-0">
+                            <button onclick="openEditProductModal('${p.id}')" class="bg-slate-100 hover:bg-slate-200 text-slate-700 px-3 py-1.5 rounded-xl font-semibold transition">Edit</button>
+                            <button onclick="toggleStock('${p.id}')" class="bg-amber-50 hover:bg-amber-100 text-amber-800 px-3 py-1.5 rounded-xl font-semibold transition border border-amber-200/60">${stockLabel}</button>
+                        </div>
+                    </div>
+                `;
+            }).join('') : '<div class="text-center py-12 text-slate-400 text-xs">No matching products found.</div>';
+
+            return `
+                <div class="space-y-4">
+                    <div class="flex space-x-2.5 items-center">
+                        <div class="w-[70%]">
+                            <input type="text" id="admin-prod-search" value="${state.adminProductSearch}" placeholder="🔍 Search product..." oninput="filterAdminProductsDOM(this.value)" class="w-full border border-slate-200 rounded-2xl p-3 text-xs bg-slate-50 focus:bg-white focus:outline-none focus:ring-2 focus:ring-indigo-600 transition shadow-xs">
+                        </div>
+                        <button onclick="openProductCreateModal()" class="w-[30%] bg-slate-900 hover:bg-slate-800 text-white py-3 px-2 rounded-2xl text-xs font-semibold transition shadow-sm flex items-center justify-center space-x-1 whitespace-nowrap">
+                            <span>➕</span><span>Create Product</span>
+                        </button>
+                    </div>
+
+                    <div class="flex justify-between items-center px-1 pt-1">
+                        <h4 class="font-bold text-xs uppercase text-slate-700 tracking-wider">Live Products (${filteredProducts.length})</h4>
+                        <div class="flex items-center space-x-4 text-xs">
+                            <button onclick="state.adminTab='batch-prices'; render();" class="text-indigo-600 font-bold hover:text-indigo-700 transition">⚡ Batch Prices</button>
+                            <button onclick="fetchData(true)" class="text-indigo-600 font-bold hover:text-indigo-700 transition">🔄 Sync</button>
+                        </div>
+                    </div>
+                    <div id="admin-product-cards-container" class="space-y-2.5">${productCards}</div>
+                </div>
+            `;
+        }
+
+        function renderAdminBatchPricesTab() {
+            const batchRows = state.products.map(p => `
+                <tr class="border-b border-slate-100 text-sm hover:bg-slate-50/50">
+                    <td class="p-3.5">
+                        <div class="font-bold text-slate-900">${p.name}</div>
+                        <div class="text-xs text-slate-400 font-medium">ID: ${p.id}</div>
+                    </td>
+                    <td class="p-3.5 text-slate-600 font-medium">₹${p.price}</td>
+                    <td class="p-3.5"><input type="number" id="batch-price-${p.id}" value="${p.price}" class="w-24 border border-slate-200 rounded-xl p-2 text-sm bg-white focus:outline-none focus:ring-2 focus:ring-indigo-600 transition"></td>
+                    <td class="p-3.5 text-slate-600 font-medium">₹${p.costPrice || 0}</td>
+                    <td class="p-3.5"><input type="number" id="batch-cost-${p.id}" value="${p.costPrice || 0}" class="w-24 border border-slate-200 rounded-xl p-2 text-sm bg-white focus:outline-none focus:ring-2 focus:ring-indigo-600 transition"></td>
+                </tr>
+            `).join('');
+
+            return `
+                <div class="space-y-5">
+                    <div class="flex justify-between items-center px-1">
+                        <button onclick="state.adminTab='products'; render();" class="text-xs font-semibold text-slate-600 hover:text-slate-900 transition">&larr; Back to Products</button>
+                        <h4 class="font-bold text-sm text-slate-900">Batch Price Update Manager</h4>
+                    </div>
+
+                    <div class="bg-white border border-slate-200/80 rounded-3xl p-5 space-y-4 shadow-sm mx-[-8px]">
+                        <div class="flex justify-between items-center px-1">
+                            <p class="text-xs text-slate-500 font-medium">Modify prices below and click save.</p>
+                            <button onclick="submitBatchPrices()" class="bg-indigo-600 hover:bg-indigo-700 text-white px-5 py-2.5 rounded-2xl text-xs font-semibold transition shadow-xs">Save All Prices</button>
+                        </div>
+                        <div class="max-h-[65vh] overflow-y-auto border border-slate-200/80 rounded-2xl bg-slate-50/50">
+                            <table class="w-full text-left border-collapse">
+                                <thead class="sticky top-0 bg-slate-100 shadow-xs">
+                                    <tr class="text-xs font-bold text-slate-700 border-b border-slate-200">
+                                        <th class="p-3.5">Product</th>
+                                        <th class="p-3.5">Old Sell</th>
+                                        <th class="p-3.5">New Sell (₹)</th>
+                                        <th class="p-3.5">Old Cost</th>
+                                        <th class="p-3.5">New Cost (₹)</th>
+                                    </tr>
+                                </thead>
+                                <tbody>${batchRows}</tbody>
+                            </table>
+                        </div>
+                        <button onclick="submitBatchPrices()" class="w-full bg-indigo-600 hover:bg-indigo-700 text-white py-4 rounded-2xl text-sm font-semibold transition shadow-sm">Save All Price Changes</button>
+                    </div>
+                </div>
+            `;
+        }
+
+        function renderAdminCustomersTab() {
+            const query = (state.adminCustomerSearch || '').toLowerCase();
+            const filteredCustomers = state.customers.filter(c => c.shop.toLowerCase().includes(query) || c.name.toLowerCase().includes(query));
+
+            const customerRows = filteredCustomers.length ? filteredCustomers.map(c => `
+                <div onclick="showCustomerDetails('${c.id}')" class="bg-white border border-slate-200/80 rounded-2xl p-3.5 text-sm flex justify-between items-center shadow-xs cursor-pointer hover:shadow-md transition">
+                    <div class="font-bold text-slate-900 text-sm">${c.shop}</div>
+                    <span class="text-indigo-600 font-semibold text-xs">&rarr; View</span>
+                </div>
+            `).join('') : '<div class="text-center py-12 text-slate-400 text-xs">No matching customers found.</div>';
+
+            return `
+                <div class="space-y-4">
+                    <div class="flex space-x-2.5 items-center">
+                        <div class="w-[70%]">
+                            <input type="text" id="admin-cust-search" value="${state.adminCustomerSearch}" placeholder="🔍 Search customer..." oninput="filterAdminCustomersDOM(this.value)" class="w-full border border-slate-200 rounded-2xl p-3 text-xs bg-slate-50 focus:bg-white focus:outline-none focus:ring-2 focus:ring-indigo-600 transition shadow-xs">
+                        </div>
+                        <button onclick="openCustomerCreateModal()" class="w-[30%] bg-slate-900 hover:bg-slate-800 text-white py-3 px-2 rounded-2xl text-xs font-semibold transition shadow-sm flex items-center justify-center space-x-1 whitespace-nowrap">
+                            <span>➕</span><span>Create Customer</span>
+                        </button>
+                    </div>
+
+                    <h4 class="font-bold text-xs uppercase text-slate-700 tracking-wider px-1 pt-1">Customer Directory (${filteredCustomers.length})</h4>
+                    <div id="admin-customer-cards-container" class="space-y-2.5">${customerRows}</div>
+                </div>
+            `;
+        }
+
+        function renderAdminVendorsTab() {
+            const query = (state.adminVendorSearch || '').toLowerCase();
+            const filteredVendors = state.vendorsList.filter(v => v.vendorName.toLowerCase().includes(query) || (v.description && v.description.toLowerCase().includes(query)));
+
+            const vendorRows = filteredVendors.length ? filteredVendors.map(item => `
+                <div onclick="showVendorDetails('${item.id}')" class="bg-white border border-slate-200/80 rounded-2xl p-3.5 text-sm flex justify-between items-center shadow-xs cursor-pointer hover:shadow-md transition">
+                    <div class="font-bold text-slate-900 text-base">${item.vendorName} <span class="text-xs text-slate-400 font-medium">[ID: ${item.id}]</span></div>
+                    <span class="text-indigo-600 font-semibold text-xs">&rarr; View</span>
+                </div>
+            `).join('') : '<div class="text-center py-12 text-slate-400 text-xs">No matching vendors found.</div>';
+
+            return `
+                <div class="space-y-4">
+                    <div class="flex space-x-2.5 items-center">
+                        <div class="w-[70%]">
+                            <input type="text" id="admin-vend-search" value="${state.adminVendorSearch}" placeholder="🔍 Search vendor..." oninput="filterAdminVendorsDOM(this.value)" class="w-full border border-slate-200 rounded-2xl p-3 text-xs bg-slate-50 focus:bg-white focus:outline-none focus:ring-2 focus:ring-indigo-600 transition shadow-xs">
+                        </div>
+                        <button onclick="openVendorCreateModal()" class="w-[30%] bg-slate-900 hover:bg-slate-800 text-white py-3 px-2 rounded-2xl text-xs font-semibold transition shadow-sm flex items-center justify-center space-x-1 whitespace-nowrap">
+                            <span>➕</span><span>Create Vendor</span>
+                        </button>
+                    </div>
+                    <div class="bg-indigo-50 border border-indigo-200 rounded-2xl py-2.5 px-4 flex justify-between items-center shadow-xs">
+                        <div>
+                            <h4 class="font-bold text-xs uppercase text-indigo-950 tracking-wider">Item SKU & Description Lookup</h4>
+                            <p class="text-[11px] text-indigo-700 font-medium leading-tight">Filter items to find supplying vendor.</p>
+                        </div>
+                        <button onclick="openSkuLookupModal()" class="bg-indigo-600 hover:bg-indigo-700 text-white px-3.5 py-2 rounded-xl text-xs font-semibold whitespace-nowrap transition shadow-sm active:scale-95 ml-3">
+                            🔍 Lookup
+                        </button>
+                    </div>
+
+                    <h4 class="font-bold text-xs uppercase text-slate-700 tracking-wider px-1 pt-1">Vendor Directory (${filteredVendors.length})</h4>
+                    <div id="admin-vendor-cards-container" class="space-y-2.5">${vendorRows}</div>
+                </div>
+            `;
+        }
+
+        function renderAdminOrdersTab() {
+            const filteredOrders = getFilteredOrders();
+            const totalFilteredAmount = filteredOrders.reduce((sum, o) => sum + (parseFloat(o.amount) || 0), 0);
+            const shopOptions = state.customers.map(c => `<option value="${c.shop}" ${state.orderFilters.customerShop===c.shop?'selected':''}>${c.shop}</option>`).join('');
+
+            const orderCards = filteredOrders.length ? filteredOrders.map(o => {
+                const isCancelled = o.status === 'Cancelled';
+                return `
+                    <div onclick="openOrderDetailsModal('${o.orderNo}')" class="bg-slate-50 border border-slate-200/80 rounded-xl p-3.5 text-xs space-y-1 cursor-pointer hover:bg-slate-100 transition shadow-xs">
+                        <div class="flex justify-between items-center text-sm font-bold">
+                            <span class="text-rose-600 tracking-tight">ORDER # <span class="text-slate-900">${o.orderNo}</span></span>
+                            <span class="text-xs text-slate-500 font-normal">Date: ${formatDisplayDate(o.date)}</span>
+                            <span class="${isCancelled ? 'text-rose-600 line-through' : 'text-emerald-700'} font-bold">₹${Number(o.amount || 0).toFixed(2)}</span>
+                        </div>
+                        <div class="flex justify-between items-center pt-1">
+                            <span class="font-bold text-slate-900 text-xs">${o.shopName}</span>
+                            <span class="px-2.5 py-0.5 rounded-full text-[11px] font-bold ${isCancelled ? 'bg-rose-50 text-rose-600' : (o.status==='Delivered' ? 'bg-emerald-50 text-emerald-700' : 'bg-amber-50 text-amber-700')}">${o.status || 'Confirmed'}</span>
+                        </div>
+                    </div>
+                `;
+            }).join('') : '<div class="text-center py-12 text-slate-400 text-xs">No matching orders found.</div>';
+
+            return `
+                <div class="space-y-5">
+                    <!-- SLIM FINANCIAL REPORTS BANNER -->
+                    <div class="bg-gradient-to-r from-indigo-50 to-slate-50 border border-indigo-100 rounded-2xl py-2.5 px-4 flex justify-between items-center shadow-xs">
+                        <div>
+                            <h4 class="font-bold text-xs uppercase text-indigo-950 tracking-wider">Financial Reports & P&L</h4>
+                            <p class="text-[11px] text-indigo-700 font-medium leading-tight">View analytics, monthly sales, best-sellers & reports.</p>
+                        </div>
+                        <button onclick="state.adminTab='reports'; render();" class="bg-indigo-600 hover:bg-indigo-700 text-white px-3.5 py-2 rounded-xl text-xs font-semibold whitespace-nowrap transition shadow-sm active:scale-95 ml-3">
+                            📊 View Reports
+                        </button>
+                    </div>
+
+                    <div>
+                        <input type="text" id="admin-order-search" value="${state.adminOrderSearch}" placeholder="🔍 Live search orders by order no, shop, items..." oninput="filterAdminOrdersDOM(this.value)" class="w-full border border-slate-200 rounded-2xl p-3.5 text-xs bg-slate-50 focus:bg-white focus:outline-none focus:ring-2 focus:ring-indigo-600 transition shadow-xs">
+                    </div>
+
+                    <div class="bg-slate-50/80 border border-slate-200/80 rounded-3xl p-5 space-y-4 shadow-xs">
+                        <h4 class="font-bold text-xs uppercase text-slate-700 tracking-wider">Order Filters</h4>
+                        <div class="grid grid-cols-2 gap-3">
+                            <div>
+                                <label class="block text-xs font-semibold text-slate-700 mb-1.5">Start Date</label>
+                                <input type="date" id="filter-start" value="${state.orderFilters.startDate}" onchange="state.orderFilters.startDate=this.value; render();" class="w-full border border-slate-200 rounded-2xl p-3 text-xs bg-white shadow-xs">
+                            </div>
+                            <div>
+                                <label class="block text-xs font-semibold text-slate-700 mb-1.5">End Date</label>
+                                <input type="date" id="filter-end" value="${state.orderFilters.endDate}" onchange="state.orderFilters.endDate=this.value; render();" class="w-full border border-slate-200 rounded-2xl p-3 text-xs bg-white shadow-xs">
+                            </div>
+                        </div>
+                        <div>
+                            <label class="block text-xs font-semibold text-slate-700 mb-1.5">Filter by Customer Shop</label>
+                            <select onchange="state.orderFilters.customerShop=this.value; render();" class="w-full border border-slate-200 rounded-2xl p-3 text-xs bg-white shadow-xs">
+                                <option value="">-- All Customers --</option>
+                                ${shopOptions}
+                            </select>
+                        </div>
+                        <div class="flex justify-between items-center pt-3 border-t border-slate-200/60 text-sm font-bold text-slate-900">
+                            <span>Total Filtered Orders: ${filteredOrders.length}</span>
+                            <span class="text-emerald-700 font-bold text-base">Total Value: ₹${totalFilteredAmount.toFixed(2)}</span>
+                        </div>
+                    </div>
+
+                    <div class="flex justify-between items-center px-1">
+                        <h4 class="font-bold text-xs uppercase text-slate-700 tracking-wider">Confirmed Orders</h4>
+                        <button onclick="fetchData(true)" class="text-xs text-indigo-600 font-bold hover:text-indigo-700 transition">Refresh</button>
+                    </div>
+                    <div id="admin-order-cards-container" class="space-y-3">${orderCards}</div>
+                </div>
+            `;
+        }
+
+        function renderAdminDeliveryTab() {
+            const isPending = state.deliverySubTab === 'pending';
+            const query = (state.deliveredSearchQuery || '').toLowerCase();
+
+            const relevantOrders = state.ordersList.filter(o => {
+                if (o.status === 'Cancelled') return false;
+                if (isPending) {
+                    return o.status !== 'Delivered';
+                } else {
+                    const matchesTab = o.status === 'Delivered';
+                    const matchesSearch = !query || o.orderNo.toLowerCase().includes(query) || o.shopName.toLowerCase().includes(query) || o.details.toLowerCase().includes(query);
+                    return matchesTab && matchesSearch;
+                }
+            });
+
+            relevantOrders.sort((a, b) => {
+                if (!isPending) {
+                    let da = parseSheetDate(a.deliveredDate) || parseSheetDate(a.date) || new Date(0);
+                    let db = parseSheetDate(b.deliveredDate) || parseSheetDate(b.date) || new Date(0);
+                    if (da.getTime() !== db.getTime()) return db - da;
+                } else {
+                    let da = parseSheetDate(a.date) || new Date(a.date);
+                    let db = parseSheetDate(b.date) || new Date(b.date);
+                    if (da.getTime() !== db.getTime()) return db - da;
+                }
+                return String(b.orderNo).localeCompare(String(a.orderNo));
+            });
+
+            const cards = relevantOrders.length ? relevantOrders.map(o => `
+                <div onclick="openOrderDetailsModal('${o.orderNo}')" class="bg-slate-50 border border-slate-200/80 rounded-xl p-3.5 text-xs space-y-1 cursor-pointer hover:bg-slate-100 transition shadow-xs">
+                    <div class="flex justify-between items-center text-sm font-bold">
+                        <span class="text-rose-600 tracking-tight">ORDER # <span class="text-slate-900">${o.orderNo}</span></span>
+                        <span class="text-xs text-slate-500 font-normal">Date: ${formatDisplayDate(o.date)}</span>
+                        <span class="text-emerald-700 font-bold">₹${Number(o.amount || 0).toFixed(2)}</span>
+                    </div>
+                    <div class="flex justify-between items-center pt-1">
+                        <span class="font-bold text-slate-900 text-xs">${o.shopName}</span>
+                        <span class="px-3 py-1 rounded-full text-xs font-bold ${isPending ? 'bg-amber-50 text-amber-700 border border-amber-100' : 'bg-emerald-50 text-emerald-700 border border-emerald-100'}">${isPending ? 'Pending' : 'Delivered'}</span>
+                    </div>
+                </div>
+            `).join('') : `<div class="text-center py-12 text-slate-400 text-xs">No ${isPending ? 'pending' : 'delivered'} orders found.</div>`;
+
+            return `
+                <div class="space-y-4">
+                    <div class="flex bg-slate-100 p-1.5 rounded-2xl text-xs font-semibold border border-slate-200/60 shadow-inner">
+                        <button onclick="state.deliverySubTab='pending'; render();" class="flex-1 py-2.5 text-center rounded-xl transition ${isPending ? 'bg-white font-bold text-slate-900 shadow-sm' : 'text-slate-500'}">Pending Deliveries</button>
+                        <button onclick="state.deliverySubTab='delivered'; render();" class="flex-1 py-2.5 text-center rounded-xl transition ${!isPending ? 'bg-white font-bold text-slate-900 shadow-sm' : 'text-slate-500'}">Delivered Status</button>
+                    </div>
+                    ${!isPending ? `
+                        <div>
+                            <input type="text" id="delivered-search" value="${state.deliveredSearchQuery}" placeholder="🔍 Search delivered items by order no, shop, or items..." oninput="state.deliveredSearchQuery=this.value; render();" class="w-full border border-slate-200 rounded-2xl p-3 text-xs bg-slate-50 focus:bg-white focus:outline-none focus:ring-2 focus:ring-indigo-600 transition shadow-xs">
+                        </div>
+                    ` : ''}
+                    <div class="space-y-2.5">${cards}</div>
+                </div>
+            `;
+        }
+
+        function renderAdminReportsTab() {
+            const filteredOrders = getFilteredOrders().filter(o => o.status !== 'Cancelled');
+            const totalSales = filteredOrders.reduce((sum, o) => sum + (parseFloat(o.amount) || 0), 0);
+            const totalCost = filteredOrders.reduce((sum, o) => sum + (parseFloat(o.costAmount) || 0), 0);
+            const totalProfit = totalSales - totalCost;
+
+            const shopOptions = state.customers.map(c => `<option value="${c.shop}" ${state.orderFilters.customerShop===c.shop?'selected':''}>${c.shop}</option>`).join('');
+            const userOptions = state.usersList.map(u => `<option value="${u.userId}" ${state.orderFilters.userId===u.userId?'selected':''}>${u.userId}</option>`).join('');
+            const productOptions = state.products.map(p => `<option value="${p.name}" ${state.orderFilters.itemName===p.name?'selected':''}>${p.name}</option>`).join('');
+
+            let itemCounts = {};
+            filteredOrders.forEach(o => {
+                if (o.rawItems && Array.isArray(o.rawItems)) {
+                    o.rawItems.forEach(item => {
+                        if (!itemCounts[item.name]) itemCounts[item.name] = { qty: 0, revenue: 0 };
+                        itemCounts[item.name].qty += Number(item.qty) || 0;
+                        itemCounts[item.name].revenue += (Number(item.qty) || 0) * (Number(item.price) || 0);
+                    });
+                }
+            });
+            const sortedBestSellers = Object.entries(itemCounts).sort((a,b) => b[1].qty - a[1].qty);
+
+            const bestSellerRows = sortedBestSellers.map(([name, data]) => `
+                <div class="flex justify-between items-center py-2.5 border-b border-slate-100 text-sm">
+                    <span class="font-medium text-slate-800">🔥 ${name}</span>
+                    <span class="font-semibold text-slate-700">Sold: ${data.qty} units (₹${data.revenue})</span>
+                </div>
+            `).join('') || '<div class="text-xs text-slate-400 font-medium">No item data available for filtered period.</div>';
+
+            const tableRows = filteredOrders.map(o => `
+                <tr class="border-b border-slate-100 text-sm">
+                    <td class="p-3">${formatDisplayDate(o.date)}</td>
+                    <td class="p-3 font-mono">${o.orderNo}</td>
+                    <td class="p-3">${o.shopName} (${o.userId || 'Admin'})</td>
+                    <td class="p-3 font-semibold">₹${o.amount}</td>
+                </tr>
+            `).join('');
+
+            return `
+                <div class="space-y-5">
+                    <div class="flex justify-between items-center px-1">
+                        <button onclick="state.adminTab='orders'; render();" class="text-xs font-semibold text-slate-600 hover:text-slate-900 transition">&larr; Back to Orders</button>
+                        <h4 class="font-bold text-sm text-slate-900">Financial Reports & P&L Analytics</h4>
+                    </div>
+
+                    <div class="bg-slate-50/80 border border-slate-200/80 rounded-3xl p-5 space-y-4 shadow-xs">
+                        <h4 class="font-bold text-xs uppercase text-slate-700 tracking-wider">Report Filters</h4>
+                        <div class="grid grid-cols-2 gap-3">
+                            <div>
+                                <label class="block text-xs font-semibold text-slate-700 mb-1.5">Start Date</label>
+                                <input type="date" id="rep-start" value="${state.orderFilters.startDate}" onchange="state.orderFilters.startDate=this.value; render();" class="w-full border border-slate-200 rounded-2xl p-3 text-xs bg-white shadow-xs">
+                            </div>
+                            <div>
+                                <label class="block text-xs font-semibold text-slate-700 mb-1.5">End Date</label>
+                                <input type="date" id="rep-end" value="${state.orderFilters.endDate}" onchange="state.orderFilters.endDate=this.value; render();" class="w-full border border-slate-200 rounded-2xl p-3 text-xs bg-white shadow-xs">
+                            </div>
+                        </div>
+                        <div class="grid grid-cols-2 gap-3">
+                            <div>
+                                <label class="block text-xs font-semibold text-slate-700 mb-1.5">Filter by Customer</label>
+                                <select onchange="state.orderFilters.customerShop=this.value; render();" class="w-full border border-slate-200 rounded-2xl p-3 text-xs bg-white shadow-xs">
+                                    <option value="">-- All Customers --</option>
+                                    ${shopOptions}
+                                </select>
+                            </div>
+                            <div>
+                                <label class="block text-xs font-semibold text-slate-700 mb-1.5">Filter by User / Salesperson</label>
+                                <select onchange="state.orderFilters.userId=this.value; render();" class="w-full border border-slate-200 rounded-2xl p-3 text-xs bg-white shadow-xs">
+                                    <option value="">-- All Users --</option>
+                                    ${userOptions}
+                                </select>
+                            </div>
+                        </div>
+                        <div>
+                            <label class="block text-xs font-semibold text-slate-700 mb-1.5">Filter by Specific Item</label>
+                            <select onchange="state.orderFilters.itemName=this.value; render();" class="w-full border border-slate-200 rounded-2xl p-3 text-xs bg-white shadow-xs">
+                                <option value="">-- All Items --</option>
+                                ${productOptions}
+                            </select>
+                        </div>
+                    </div>
+
+                    <div class="bg-white border border-slate-200/80 rounded-3xl p-6 space-y-5 shadow-sm">
+                        <div class="text-center space-y-1.5">
+                            <div class="w-12 h-12 bg-indigo-50 text-indigo-600 rounded-2xl flex items-center justify-center mx-auto text-xl font-bold shadow-xs">📊</div>
+                            <h4 class="font-bold text-base text-slate-900">Summary & P&L Analytics</h4>
+                            <p class="text-xs text-slate-500 font-medium">Summary for filtered orders (${filteredOrders.length} orders found)</p>
+                        </div>
+
+                        <div class="bg-slate-50/80 border border-slate-200/60 rounded-2xl p-4 space-y-3 text-sm">
+                            <div class="flex justify-between font-medium"><span>Total Sales:</span><span class="font-bold text-slate-900">₹${totalSales.toFixed(2)}</span></div>
+                            <div class="flex justify-between font-medium"><span>Total Cost:</span><span class="font-bold text-slate-700">₹${totalCost.toFixed(2)}</span></div>
+                            <div class="flex justify-between pt-3 border-t border-slate-200/80 font-bold text-base">
+                                <span>Net Profit / (Loss):</span>
+                                <span class="${totalProfit >= 0 ? 'text-emerald-700' : 'text-rose-600'}">₹${totalProfit.toFixed(2)}</span>
+                            </div>
+                        </div>
+
+                        <div class="space-y-2.5">
+                            <h5 class="font-bold text-xs uppercase text-slate-700 tracking-wider">Most Sold Items (Best Sellers)</h5>
+                            <div class="max-h-48 overflow-y-auto border border-slate-200/80 rounded-2xl p-3.5 bg-slate-50/50">
+                                ${bestSellerRows}
+                            </div>
+                        </div>
+
+                        <div class="grid grid-cols-2 gap-3 pt-2">
+                            <button onclick="downloadCSVReport()" class="bg-slate-900 hover:bg-slate-800 text-white py-3.5 rounded-2xl text-xs font-semibold transition shadow-sm">
+                                📥 CSV Report
+                            </button>
+                            <button onclick="printPDFReport()" class="bg-indigo-600 hover:bg-indigo-700 text-white py-3.5 rounded-2xl text-xs font-semibold transition shadow-sm">
+                                🖨️ Print Report PDF
+                            </button>
+                        </div>
+                    </div>
+
+                    <!-- PRINTABLE P&L REPORT CONTAINER -->
+                    <div id="printable-report" class="hidden print:block bg-white p-6 space-y-4">
+                        <div class="text-center border-b pb-4">
+                            <h2 class="text-lg font-bold">GLOBAL INDUSTRIES, MYSORE</h2>
+                            <p class="text-xs text-slate-500">Financial Profit & Loss Summary Report</p>
+                            <p class="text-[10px] text-slate-400">Generated on: ${new Date().toLocaleDateString()}</p>
+                        </div>
+                        <table class="w-full text-left text-sm border-collapse mb-4">
+                            <thead>
+                                <tr class="border-b bg-slate-100">
+                                    <th class="p-3">Date</th>
+                                    <th class="p-3">Order No</th>
+                                    <th class="p-3">Shop (By)</th>
+                                    <th class="p-3">Amount</th>
+                                </tr>
+                            </thead>
+                            <tbody>${tableRows}</tbody>
+                        </table>
+                        <div class="border-t pt-3 space-y-1 text-right text-sm font-bold bg-slate-50 p-4 rounded-2xl">
+                            <div>Total Sales: ₹${totalSales.toFixed(2)}</div>
+                            <div>Total Cost: ₹${totalCost.toFixed(2)}</div>
+                            <div class="text-base ${totalProfit >= 0 ? 'text-emerald-700' : 'text-rose-700'}">Net Profit / (Loss): ₹${totalProfit.toFixed(2)}</div>
+                        </div>
+                    </div>
+                </div>
+            `;
+        }
+
+        function renderAdminSettingsTab() {
+            if (state.adminSettingsView === 'password') {
+                return `
+                    <div class="space-y-5">
+                        <div class="flex justify-between items-center px-1">
+                            <button onclick="state.adminSettingsView='main'; render();" class="text-xs font-semibold text-slate-600 hover:text-slate-900 transition">&larr; Back to Settings</button>
+                            <h4 class="font-bold text-sm text-slate-900">Change Admin Password</h4>
+                        </div>
+                        <div class="bg-white border border-slate-200/80 rounded-3xl p-6 space-y-4 shadow-sm">
+                            <label class="block text-xs font-bold text-slate-700">New Admin Password</label>
+                            <input type="password" id="new-admin-pass" placeholder="Enter new password" class="w-full border border-slate-200 rounded-2xl p-3.5 text-sm bg-slate-50/50 focus:bg-white focus:outline-none focus:ring-2 focus:ring-indigo-600 transition">
+                            <button onclick="changeAdminPassword()" class="w-full bg-slate-900 hover:bg-slate-800 text-white py-3.5 rounded-2xl text-xs font-semibold transition shadow-sm">Update Admin Password</button>
+                        </div>
+                    </div>
+                `;
+            }
+            if (state.adminSettingsView === 'users') {
+                const userRows = state.usersList.map(u => {
+                    const isSuspended = u.status === 'Suspended';
+                    return `
+                        <div class="bg-white border border-slate-200/80 rounded-2xl p-3.5 shadow-xs hover:shadow-md transition space-y-3">
+                            <div class="flex items-center justify-between border-b border-slate-100 pb-2">
+                                <div class="flex items-center space-x-2 min-w-0 pr-2">
+                                    <span class="text-sm shrink-0">👤</span>
+                                    <span class="font-bold text-slate-900 text-sm truncate" title="${u.userId}">${u.userId}</span>
+                                </div>
+                                <span class="text-[11px] font-bold px-2.5 py-0.5 rounded-full shrink-0 ${u.role === 'Delivery' ? 'bg-amber-50 text-amber-700 border border-amber-200' : 'bg-indigo-50 text-indigo-700 border border-indigo-200'}">
+                                    ${u.role || 'Sales'}
+                                </span>
+                            </div>
+
+                            <div class="flex items-center justify-between">
+                                <span class="text-[10px] px-2 py-0.5 rounded-full font-bold uppercase tracking-wider ${isSuspended ? 'bg-rose-50 text-rose-600 border border-rose-200' : 'bg-emerald-50 text-emerald-700 border border-emerald-200'}">
+                                    ${u.status || 'Active'}
+                                </span>
+                                <div class="flex items-center space-x-1.5">
+                                    <button onclick="openUpdateUserPasswordModal('${u.userId}')" class="bg-slate-100 hover:bg-slate-200 text-slate-700 px-3 py-1.5 rounded-xl text-xs font-semibold transition border border-slate-200">
+                                        Update
+                                    </button>
+                                    <button onclick="toggleUserStatus('${u.userId}')" class="bg-amber-50 hover:bg-amber-100 text-amber-800 px-3 py-1.5 rounded-xl text-xs font-semibold transition border border-amber-200/60">
+                                        ${isSuspended ? 'Activate' : 'Suspend'}
+                                    </button>
+                                    <button onclick="deleteUser('${u.userId}')" class="bg-rose-50 hover:bg-rose-100 text-rose-700 px-3 py-1.5 rounded-xl text-xs font-semibold transition border border-rose-200/60">
+                                        Delete
+                                    </button>
+                                </div>
+                            </div>
+                        </div>
+                    `;
+                }).join('');
+
+                return `
+                    <div class="space-y-5">
+                        <div class="flex justify-between items-center px-1">
+                            <button onclick="state.adminSettingsView='main'; render();" class="text-xs font-semibold text-slate-600 hover:text-slate-900 transition">&larr; Back to Settings</button>
+                            <h4 class="font-bold text-sm text-slate-900">User Management</h4>
+                        </div>
+                        <div class="bg-white border border-slate-200/80 rounded-3xl p-6 space-y-4 shadow-sm">
+                            <h5 class="font-bold text-xs uppercase text-slate-700 tracking-wider">Add New User & Role</h5>
+                            <div>
+                                <label class="block text-xs font-semibold text-slate-700 mb-1.5">User ID</label>
+                                <input type="text" id="new-uid" placeholder="e.g. user1 (Sales) or user2 (Delivery)" class="w-full border border-slate-200 rounded-2xl p-3.5 text-sm bg-slate-50/50 focus:bg-white focus:outline-none focus:ring-2 focus:ring-indigo-600 transition">
+                            </div>
+                            <div>
+                                <label class="block text-xs font-semibold text-slate-700 mb-1.5">Password</label>
+                                <input type="password" id="new-upass" placeholder="••••••••" class="w-full border border-slate-200 rounded-2xl p-3.5 text-sm bg-slate-50/50 focus:bg-white focus:outline-none focus:ring-2 focus:ring-indigo-600 transition">
+                            </div>
+                            <div>
+                                <label class="block text-xs font-semibold text-slate-700 mb-1.5">User Role</label>
+                                <select id="new-uroll" class="w-full border border-slate-200 rounded-2xl p-3.5 text-sm bg-slate-50/50 focus:bg-white focus:outline-none focus:ring-2 focus:ring-indigo-600 transition">
+                                    <option value="Sales">Sales (Order Taking)</option>
+                                    <option value="Delivery">Delivery (Dispatch Team)</option>
+                                </select>
+                            </div>
+                            <button onclick="addNewUserWithRole()" class="w-full bg-slate-900 hover:bg-slate-800 text-white py-3.5 rounded-2xl text-xs font-semibold transition shadow-sm">Add User to Sheet</button>
+                        </div>
+                        <div class="bg-white border border-slate-200/80 rounded-3xl p-6 space-y-4 shadow-sm">
+                            <h5 class="font-bold text-xs uppercase text-slate-700 tracking-wider">Active Users List</h5>
+                            <div class="space-y-3 max-h-56 overflow-y-auto">${userRows}</div>
+                        </div>
+                    </div>
+                `;
+            }
+
+            if (state.adminSettingsView === 'metal-prices') {
+                const metalRows = state.metalPrices.map(m => `
+                    <div class="bg-slate-50 border border-slate-200 rounded-2xl p-3.5 flex justify-between items-center text-sm">
+                        <span class="font-bold text-slate-900">${m.metalName}</span>
+                        <div class="flex items-center space-x-2">
+                            <span class="text-xs text-slate-500 font-medium">₹</span>
+                            <input type="number" id="setting-metal-${m.metalName}" value="${m.pricePerKg}" class="w-28 border border-slate-200 rounded-xl p-2 text-xs font-bold text-emerald-700 bg-white text-center">
+                            <span class="text-xs text-slate-500 font-medium">/ kg</span>
+                        </div>
+                    </div>
+                `).join('') || '<div class="text-xs text-slate-400">No metal prices found.</div>';
+
+                return `
+                    <div class="space-y-5">
+                        <div class="flex justify-between items-center px-1">
+                            <button onclick="state.adminSettingsView='main'; render();" class="text-xs font-semibold text-slate-600 hover:text-slate-900 transition">&larr; Back to Settings</button>
+                            <h4 class="font-bold text-sm text-slate-900">Manage Metal Rates</h4>
+                        </div>
+                        <div class="bg-white border border-slate-200/80 rounded-3xl p-6 space-y-4 shadow-sm">
+                            <h5 class="font-bold text-xs uppercase text-slate-700 tracking-wider">Live Metal Rates (Per KG)</h5>
+                            <div class="space-y-3">${metalRows}</div>
+                            <button onclick="saveAllMetalPrices()" class="w-full bg-slate-900 hover:bg-slate-800 text-white py-3.5 rounded-2xl text-xs font-semibold transition shadow-sm">Save All Metal Rates</button>
+                        </div>
+                    </div>
+                `;
+            }
+
+            return `
+                <div class="space-y-5">
+                    <h4 class="font-bold text-sm text-slate-900 px-1">Admin Settings & Configuration</h4>
+                    <div class="grid grid-cols-1 gap-3.5">
+                        <button onclick="state.adminSettingsView='password'; render();" class="bg-white border border-slate-200/80 hover:border-slate-300 p-5 rounded-3xl flex items-center justify-between shadow-xs hover:shadow-md transition text-left group">
+                            <div class="flex items-center space-x-4">
+                                <span class="text-2xl bg-slate-100 p-3.5 rounded-2xl group-hover:bg-indigo-50 group-hover:text-indigo-600 transition">🔑</span>
+                                <div>
+                                    <div class="font-bold text-sm text-slate-900">Change Admin Password</div>
+                                    <div class="text-xs text-slate-500 font-medium">Update your secure admin dashboard password</div>
+                                </div>
+                            </div>
+                            <span class="text-slate-400 font-bold group-hover:translate-x-1 transition text-lg">&rarr;</span>
+                        </button>
+
+                        <button onclick="state.adminSettingsView='users'; render();" class="bg-white border border-slate-200/80 hover:border-slate-300 p-5 rounded-3xl flex items-center justify-between shadow-xs hover:shadow-md transition text-left group">
+                            <div class="flex items-center space-x-4">
+                                <span class="text-2xl bg-slate-100 p-3.5 rounded-2xl group-hover:bg-indigo-50 group-hover:text-indigo-600 transition">👥</span>
+                                <div>
+                                    <div class="font-bold text-sm text-slate-900">User Management & Roles</div>
+                                    <div class="text-xs text-slate-500 font-medium">Add sales or delivery accounts, suspend, or remove</div>
+                                </div>
+                            </div>
+                            <span class="text-slate-400 font-bold group-hover:translate-x-1 transition text-lg">&rarr;</span>
+                        </button>
+
+                        <button onclick="state.adminSettingsView='metal-prices'; render();" class="bg-white border border-slate-200/80 hover:border-slate-300 p-5 rounded-3xl flex items-center justify-between shadow-xs hover:shadow-md transition text-left group">
+                            <div class="flex items-center space-x-4">
+                                <span class="text-2xl bg-slate-100 p-3.5 rounded-2xl group-hover:bg-indigo-50 group-hover:text-indigo-600 transition">⚖️</span>
+                                <div>
+                                    <div class="font-bold text-sm text-slate-900">Update Metal Prices</div>
+                                    <div class="text-xs text-slate-500 font-medium">Manage per-kg rates for Aluminium, Steel, Iron, etc.</div>
+                                </div>
+                            </div>
+                            <span class="text-slate-400 font-bold group-hover:translate-x-1 transition text-lg">&rarr;</span>
+                        </button>
+                    </div>
+                </div>
+            `;
+        }
+
+        async function saveAllMetalPrices() {
+            try {
+                showLoading('Saving metal rates...');
+                for (let m of state.metalPrices) {
+                    const val = document.getElementById(`setting-metal-${m.metalName}`)?.value;
+                    if (val !== undefined) {
+                        await fetch(state.apiUrl, {
+                            method: 'POST',
+                            body: JSON.stringify({ action: 'updateMetalPrice', metalName: m.metalName, pricePerKg: parseFloat(val) || 0 })
+                        });
+                    }
+                }
+                hideLoading();
+                showModal('Success', 'Metal rates updated successfully.');
+                fetchMetalPrices();
+            } catch(e) {
+                hideLoading();
+                showModal('Error', 'Failed to save metal rates.');
+            }
+        }
+
+        // CRUD & ACTION FUNCTIONS
+        function openOrderDetailsModal(orderNo) {
+            const order = state.ordersList.find(o => String(o.orderNo) === String(orderNo));
+            if (!order) return;
+
+            document.getElementById('modal-order-title').innerText = `Order Invoice: ${order.orderNo}`;
+
+            let itemsListHtml = '';
+if (order.rawItems && Array.isArray(order.rawItems)) {
+                itemsListHtml = order.rawItems.map(item => {
+                    const thumb = item.img ? renderImgThumbnail(item.img, item.name, "w-10 h-10") : '';
+                    // Display weight in kg if it's weight-based
+                    const itemDesc = item.grams ? `${item.name} (${(item.roundedGrams / 1000).toFixed(3)} kg)` : `${item.name} (x${item.qty})`;
+                    const itemTotal = item.grams ? Number(item.customPrice || 0).toFixed(2) : (Number(item.price || 0) * Number(item.qty || 1)).toFixed(2);
+                    return `
+                        <div class="flex items-center justify-between py-2 border-b border-slate-100 text-sm">
+                            <div class="flex items-center space-x-3">
+                                ${thumb}
+                                <span class="font-medium text-slate-800">${itemDesc}</span>
+                            </div>
+                            <span class="font-bold text-slate-900">₹${itemTotal}</span>
+                        </div>
+                    `;
+                }).join('');
+            } else {
+                itemsListHtml = `<p>${order.details}</p>`;
+            }
+
+            const isCancelled = order.status === 'Cancelled';
+            const isDelivered = order.status === 'Delivered';
+            const isDeliveryRole = state.user?.role === 'Delivery';
+            const isAdmin = state.view === 'admin-dashboard';
+
+            let modalBody = `
+                <div class="space-y-3 text-sm">
+                    <div class="flex justify-between font-medium"><strong>Ordered Date:</strong> <span>${formatDisplayDate(order.date)}</span></div>
+                    ${order.deliveredDate ? `<div class="flex justify-between font-medium text-emerald-700"><strong>Delivered Date:</strong> <span>${formatDisplayDate(order.deliveredDate)}</span></div>` : ''}
+                    <div class="flex justify-between font-medium"><strong>Status:</strong> <span class="px-3 py-1 rounded-full text-xs font-bold ${isCancelled ? 'bg-rose-50 text-rose-600' : (isDelivered ? 'bg-emerald-50 text-emerald-700' : 'bg-amber-50 text-amber-700')}">${order.status || 'Confirmed'}</span></div>
+                    <div class="border-t border-slate-100 pt-3 text-slate-700 space-y-1">
+                        <strong>Shop:</strong> ${order.shopName}<br>
+                        <strong>Contact Person:</strong> ${order.fullName || '-'}<br>
+                        <strong>Phone:</strong> ${order.contact || '-'}<br>
+                        <strong>Address:</strong> ${order.address || '-'}
+                    </div>
+                    <div class="border-t border-slate-100 pt-3">
+                        <strong class="text-slate-900">Items Breakdown:</strong>
+                        <div class="mt-1.5 max-h-48 overflow-y-auto border border-slate-200/80 rounded-2xl p-3 bg-slate-50/50">${itemsListHtml}</div>
+                    </div>
+            `;
+
+            if (!isDeliveryRole) {
+                modalBody += `
+                    <div class="border-t border-slate-100 pt-3 text-right font-bold text-base text-slate-900">
+                        Total Amount: ₹${Number(order.amount || 0).toFixed(2)}
+                    </div>
+                `;
+            }
+            modalBody += `</div>`;
+            document.getElementById('modal-order-body').innerHTML = modalBody;
+
+            let modalActions = '';
+            if ((isDeliveryRole || isAdmin) && !isDelivered && !isCancelled) {
+                modalActions = `
+                    <button onclick="markOrderDelivered('${order.orderNo}')" class="w-full bg-emerald-600 hover:bg-emerald-700 text-white py-3 rounded-xl text-xs font-semibold transition mb-2 shadow-sm">✓ Mark as Delivered</button>
+                    <div class="flex space-x-2 w-full">
+                        <button onclick="printSingleOrderPDF('${order.orderNo}')" class="flex-1 bg-indigo-600 hover:bg-indigo-700 text-white py-2.5 rounded-xl text-xs font-semibold transition shadow-sm">🖨️ Print PDF</button>
+                        <button onclick="cancelOrder('${order.orderNo}')" class="flex-1 bg-rose-50 hover:bg-rose-100 text-rose-700 py-2.5 rounded-xl text-xs font-semibold transition border border-rose-200/60">🚫 Cancel</button>
+                    </div>
+                `;
+            } else {
+                modalActions = `
+                    <div class="flex space-x-2 w-full">
+                        <button onclick="printSingleOrderPDF('${order.orderNo}')" class="flex-1 bg-indigo-600 hover:bg-indigo-700 text-white py-2.5 rounded-xl text-xs font-semibold transition shadow-sm">🖨️ Print PDF</button>
+                        ${!isCancelled && !isDelivered ? `<button onclick="cancelOrder('${order.orderNo}')" class="flex-1 bg-rose-50 hover:bg-rose-100 text-rose-700 py-2.5 rounded-xl text-xs font-semibold transition border border-rose-200/60">🚫 Cancel</button>` : ''}
+                    </div>
+                `;
+            }
+            document.getElementById('order-detail-actions').innerHTML = modalActions;
+            document.getElementById('order-detail-modal').classList.remove('hidden');
+        }
+
+        function closeOrderModal() { document.getElementById('order-detail-modal').classList.add('hidden'); }
+
+        async function markOrderDelivered(orderNo) {
+            if (!confirm(`Mark order ${orderNo} as delivered and email notifications?`)) return;
+            try {
+                showLoading('Updating status & sending email...');
+                await fetch(state.apiUrl, {
+                    method: 'POST',
+                    body: JSON.stringify({ action: 'markDelivered', orderNo })
+                });
+                hideLoading();
+                closeOrderModal();
+                showModal('Success', `Order ${orderNo} marked as Delivered and emails dispatched.`);
+                fetchData(true);
+            } catch(e) {
+                hideLoading();
+                showModal('Error', 'Failed to update order status.');
+            }
+        }
+
+        async function cancelOrder(orderNo) {
+            if (!confirm(`Are you sure you want to cancel order ${orderNo}? Stock will be restored.`)) return;
+            try {
+                showLoading('Cancelling order & restoring stock...');
+                await fetch(state.apiUrl, {
+                    method: 'POST',
+                    body: JSON.stringify({ action: 'cancelOrder', orderNo })
+                });
+                hideLoading();
+                closeOrderModal();
+                showModal('Success', `Order ${orderNo} has been cancelled.`);
+                fetchData(true);
+            } catch(e) {
+                hideLoading();
+                showModal('Error', 'Failed to cancel order.');
+            }
+        }
+
+        async function toggleStock(id) {
+            try {
+                showLoading('Updating stock...');
+                await fetch(state.apiUrl, { method: 'POST', body: JSON.stringify({ action: 'toggleStock', id }) });
+                hideLoading();
+                fetchAdminDashboardData();
+            } catch(e) {
+                hideLoading(); showModal('Error', 'Failed to update stock.');
+            }
+        }
+
+        async function submitBatchPrices() {
+            const updates = [];
+            state.products.forEach(p => {
+                const newPrice = document.getElementById(`batch-price-${p.id}`)?.value;
+                const newCost = document.getElementById(`batch-cost-${p.id}`)?.value;
+                if (newPrice !== undefined && newCost !== undefined && (newPrice != p.price || newCost != p.costPrice)) {
+                    updates.push({ id: p.id, price: newPrice, costPrice: newCost });
+                }
+            });
+            if (updates.length === 0) return showModal('Info', 'No prices were changed.');
+
+            try {
+                showLoading('Updating prices...');
+                await fetch(state.apiUrl, { method: 'POST', body: JSON.stringify({ action: 'batchUpdatePrices', updates }) });
+                hideLoading();
+                showModal('Success', 'Batch prices updated.');
+                fetchAdminDashboardData();
+            } catch(e) {
+                hideLoading(); showModal('Error', 'Failed to update prices.');
+            }
+        }
+
+        async function toggleUserStatus(userId) {
+            try {
+                showLoading('Updating user...');
+                await fetch(state.apiUrl, { method: 'POST', body: JSON.stringify({ action: 'toggleUserStatus', userId }) });
+                hideLoading(); fetchAdminDashboardData();
+            } catch(e) {
+                hideLoading(); showModal('Error', 'Failed to toggle user status.');
+            }
+        }
+
+        async function deleteUser(userId) {
+            if (!confirm("Delete user?")) return;
+            try {
+                showLoading('Deleting user...');
+                await fetch(state.apiUrl, { method: 'POST', body: JSON.stringify({ action: 'deleteUser', userId }) });
+                hideLoading(); fetchAdminDashboardData();
+            } catch(e) {
+                hideLoading(); showModal('Error', 'Failed to delete user.');
+            }
+        }
+
+        // USER PASSWORD UPDATE MODAL & CONTROLLER
+        function openUpdateUserPasswordModal(userId) {
+            document.getElementById('update-user-id').value = userId;
+            document.getElementById('update-user-name').innerText = userId;
+            document.getElementById('update-user-pass').value = '';
+            document.getElementById('user-password-modal').classList.remove('hidden');
+        }
+
+        function closeUserPasswordModal() {
+            document.getElementById('user-password-modal').classList.add('hidden');
+        }
+
+        async function saveUserPassword() {
+            const userId = document.getElementById('update-user-id').value;
+            const newPassword = document.getElementById('update-user-pass').value.trim();
+            if (!newPassword) return showModal('Error', 'Please enter a new password.');
+
+            try {
+                showLoading('Updating password...');
+                await fetch(state.apiUrl, {
+                    method: 'POST',
+                    body: JSON.stringify({ action: 'updateUserPassword', userId, newPassword })
+                });
+                hideLoading();
+                closeUserPasswordModal();
+                showModal('Success', `Password updated successfully for ${userId}.`);
+                fetchData(true);
+            } catch(e) {
+                hideLoading();
+                showModal('Error', 'Failed to update user password.');
+            }
+        }
+
+        async function changeAdminPassword() {
+            const newPassword = document.getElementById('new-admin-pass').value.trim();
+            if (!newPassword) return showModal('Error', 'Enter a new password.');
+            try {
+                showLoading('Updating password...');
+                await fetch(state.apiUrl, { method: 'POST', body: JSON.stringify({ action: 'changeAdminPassword', newPassword }) });
+                hideLoading(); showModal('Success', 'Admin password updated.');
+                document.getElementById('new-admin-pass').value = '';
+            } catch(e) {
+                hideLoading(); showModal('Error', 'Failed to update password.');
+            }
+        }
+
+        function printSingleOrderPDF(orderNo) {
+            const orderHtml = document.getElementById('modal-order-body').innerHTML;
+            const printWin = window.open('', '', 'height=600,width=800');
+            printWin.document.write('<html><head><title>Order Invoice ' + orderNo + '</title>');
+            printWin.document.write('<style>body{font-family:sans-serif; padding:20px;} .font-bold{font-weight:bold;} .flex{display:flex;} .justify-between{justify-content:space-between;} .text-right{text-align:right;} .mt-1\\.5{margin-top:0.375rem;} .pt-3{padding-top:0.75rem;} .border-t{border-top:1px solid #ccc;}</style>');
+            printWin.document.write('</head><body>');
+            printWin.document.write('<h2>Global Industries - Order ' + orderNo + '</h2>');
+            printWin.document.write(orderHtml);
+            printWin.document.write('</body></html>');
+            printWin.document.close();
+            printWin.focus();
+            setTimeout(() => { printWin.print(); printWin.close(); }, 500);
+        }
+
+        function downloadCSVReport() {
+            const orders = getFilteredOrders();
+            let csv = "Date,Order No,Shop,User,Amount\\n";
+            orders.forEach(o => {
+                csv += `"${o.date}","${o.orderNo}","${o.shopName}","${o.userId || 'Admin'}","${o.amount}"\n`;
+            });
+            const blob = new Blob([csv], { type: 'text/csv' });
+            const url = window.URL.createObjectURL(blob);
+            const a = document.createElement('a');
+            a.href = url;
+            a.download = "P&L_Report.csv";
+            a.click();
+            window.URL.revokeObjectURL(url);
+        }
+
+        function printPDFReport() { window.print(); }
+
+        function updateEditImgPreview(url) {
+            const previewEl = document.getElementById('edit-prod-img-preview');
+            if (!url) { previewEl.innerHTML = ''; return; }
+            previewEl.innerHTML = `<img src="${url}" alt="Preview" class="w-20 h-20 object-cover rounded-2xl border mx-auto shadow-sm">`;
+        }
+
+function openEditProductModal(id) {
+            const p = state.products.find(item => String(item.id) === String(id));
+            if (!p) return;
+            document.getElementById('edit-prod-id').value = p.id;
+            document.getElementById('edit-prod-name').value = p.name || '';
+            document.getElementById('edit-prod-cat').value = p.category || '';
+            document.getElementById('edit-prod-stock').value = p.stock || 0;
+            document.getElementById('edit-prod-price').value = p.price || 0;
+            document.getElementById('edit-prod-cost').value = p.costPrice || 0;
+            document.getElementById('edit-prod-img').value = p.img || '';
+            updateEditImgPreview(p.img || '');
+
+            const isWeight = Boolean(p.metalType);
+            document.getElementById('edit-prod-is-weight').checked = isWeight;
+            
+            // Populate Metal Type dropdown dynamically from state.metalPrices
+            const metalDropdownOptions = state.metalPrices.map(m => `<option value="${m.metalName}" ${m.metalName.toLowerCase() === (p.metalType || '').toLowerCase() ? 'selected' : ''}>${m.metalName}</option>`).join('');
+            document.getElementById('edit-prod-metal-type').innerHTML = metalDropdownOptions;
+
+            if (isWeight) {
+                document.getElementById('edit-metal-type-container').classList.remove('hidden');
+            } else {
+                document.getElementById('edit-metal-type-container').classList.add('hidden');
+            }
+
+            const vendorSelect = document.getElementById('edit-prod-vendor');
+            vendorSelect.innerHTML = `<option value="">-- Choose Vendor ID --</option>` + state.vendorsList.map(v => `<option value="${v.id}" ${v.id === p.vendor ? 'selected' : ''}>${v.id} - ${v.vendorName}</option>`).join('');
+
+            document.getElementById('product-edit-modal').classList.remove('hidden');
+        }
+
+        function closeEditProductModal() { document.getElementById('product-edit-modal').classList.add('hidden'); }
+
+        async function saveProductEdit() {
+            const id = document.getElementById('edit-prod-id').value;
+            const name = document.getElementById('edit-prod-name').value.trim();
+            const category = document.getElementById('edit-prod-cat').value.trim();
+            const stock = document.getElementById('edit-prod-stock').value.trim();
+            const price = document.getElementById('edit-prod-price').value.trim();
+            const costPrice = document.getElementById('edit-prod-cost').value.trim();
+            const img = document.getElementById('edit-prod-img').value.trim();
+            const vendor = document.getElementById('edit-prod-vendor').value.trim();
+            const isWeightChecked = document.getElementById('edit-prod-is-weight').checked;
+            const metalType = isWeightChecked ? document.getElementById('edit-prod-metal-type').value : '';
+
+            if (!name || !price) return showModal('Error', 'Product Name and Selling Price are required.');
+
+            try {
+                showLoading('Updating product details...');
+                await fetch(state.apiUrl, {
+                    method: 'POST',
+                    body: JSON.stringify({ action: 'updateProduct', id, name, category, stock, price, costPrice, img, vendor, metalType })
+                });
+                hideLoading();
+                closeEditProductModal();
+                fetchAdminDashboardData();
+            } catch(e) {
+                hideLoading();
+                showModal('Error', 'Failed to update product.');
+            }
+        }
+
+        async function deleteProduct(id) {
+            if (!confirm("Are you sure you want to delete this product?")) return;
+            try {
+                showLoading('Removing product...');
+                await fetch(state.apiUrl, {
+                    method: 'POST',
+                    body: JSON.stringify({ action: 'deleteProduct', id })
+                });
+                hideLoading();
+                fetchAdminDashboardData();
+            } catch(e) {
+                hideLoading();
+                showModal('Error', 'Failed to delete product.');
+            }
+        }
+
+        async function deleteProductFromModal() {
+            const id = document.getElementById('edit-prod-id').value;
+            closeEditProductModal();
+            deleteProduct(id);
+        }
+
+function openProductCreateModal() {
+            const vendorDropdownOptions = state.vendorsList.map(v => `<option value="${v.id}">${v.id} - ${v.vendorName}</option>`).join('');
+            document.getElementById('new-prod-vendor').innerHTML = `<option value="">-- Choose Vendor ID --</option>` + vendorDropdownOptions;
+            
+            // Populate Metal Type dropdown dynamically from state.metalPrices
+            const metalDropdownOptions = state.metalPrices.map(m => `<option value="${m.metalName}">${m.metalName}</option>`).join('');
+            document.getElementById('new-prod-metal-type').innerHTML = metalDropdownOptions;
+
+            document.getElementById('new-prod-id').value = '';
+            document.getElementById('new-prod-name').value = '';
+            document.getElementById('new-prod-cat').value = '';
+            document.getElementById('new-prod-price').value = '';
+            document.getElementById('new-prod-cost').value = '';
+            document.getElementById('new-prod-stock').value = '';
+            document.getElementById('new-prod-img').value = '';
+            document.getElementById('new-prod-is-weight').checked = false;
+            document.getElementById('create-metal-type-container').classList.add('hidden');
+            document.getElementById('product-create-modal').classList.remove('hidden');
+        }
+
+        function closeProductCreateModal() { document.getElementById('product-create-modal').classList.add('hidden'); }
+
+async function addNewProduct() {
+            const id = document.getElementById('new-prod-id').value.trim();
+            const name = document.getElementById('new-prod-name').value.trim();
+            const category = document.getElementById('new-prod-cat').value.trim();
+            const vendor = document.getElementById('new-prod-vendor').value.trim();
+            const isWeightChecked = document.getElementById('new-prod-is-weight').checked;
+            const metalType = isWeightChecked ? document.getElementById('new-prod-metal-type').value : '';
+            
+            // If it's weight-based, price can default to 0 because it dynamically calculates from live metal rates
+            let price = document.getElementById('new-prod-price').value.trim();
+            if (isWeightChecked && !price) {
+                price = '0'; 
+            }
+
+            const costPrice = document.getElementById('new-prod-cost').value.trim();
+            const stock = document.getElementById('new-prod-stock').value.trim();
+            const img = document.getElementById('new-prod-img').value.trim();
+
+            if (!name || (!price && !isWeightChecked)) {
+                return showModal('Error', 'Product Name and Selling Price are required.');
+            }
+
+            if (id) {
+                const existingProduct = state.products.find(p => String(p.id).trim().toLowerCase() === id.toLowerCase());
+                if (existingProduct) return showModal('Duplicate SKU Error', `A product with SKU "${id}" already exists ("${existingProduct.name}"). Please use a unique SKU.`);
+            }
+
+            try {
+                showLoading('Adding product...');
+                await fetch(state.apiUrl, {
+                    method: 'POST',
+                    body: JSON.stringify({ 
+                        action: 'addProduct', 
+                        id: id || ('P' + Date.now().toString().slice(-4)), 
+                        name, 
+                        category, 
+                        price, 
+                        stock: stock || 10, 
+                        img, 
+                        costPrice, 
+                        vendor, 
+                        metalType 
+                    })
+                });
+                hideLoading();
+                closeProductCreateModal();
+                fetchAdminDashboardData();
+            } catch(e) {
+                hideLoading();
+                showModal('Error', 'Failed to add product.');
+            }
+        }
+
+function toggleCreateWeightDropdown(isChecked) {
+            const container = document.getElementById('create-metal-type-container');
+            const priceInput = document.getElementById('new-prod-price');
+            if (isChecked) {
+                container.classList.remove('hidden');
+                if (priceInput) {
+                    priceInput.value = '0';
+                    priceInput.disabled = true;
+                    priceInput.classList.add('bg-slate-100', 'text-slate-400');
+                }
+            } else {
+                container.classList.add('hidden');
+                document.getElementById('new-prod-metal-type').value = '';
+                if (priceInput) {
+                    priceInput.value = '';
+                    priceInput.disabled = false;
+                    priceInput.classList.remove('bg-slate-100', 'text-slate-400');
+                }
+            }
+        }
+
+        function openCustomerCreateModal() {
+            state.editingCustomer = null;
+            document.getElementById('cust-modal-heading').innerText = "Create New Customer";
+            document.getElementById('new-cust-shop').value = '';
+            document.getElementById('new-cust-name').value = '';
+            document.getElementById('new-cust-contact').value = '';
+            document.getElementById('new-cust-email').value = '';
+            document.getElementById('new-cust-address').value = '';
+            document.getElementById('cust-edit-id').value = '';
+            document.getElementById('customer-create-modal').classList.remove('hidden');
+        }
+
+        function startEditCustomer(id) {
+            const c = state.customers.find(item => String(item.id) === String(id));
+            if (!c) return;
+            state.editingCustomer = c;
+            document.getElementById('cust-modal-heading').innerText = "Update Customer Details";
+            document.getElementById('new-cust-shop').value = c.shop || '';
+            document.getElementById('new-cust-name').value = c.name || '';
+            document.getElementById('new-cust-contact').value = c.contact || '';
+            document.getElementById('new-cust-email').value = c.email || '';
+            document.getElementById('new-cust-address').value = c.address || '';
+            document.getElementById('cust-edit-id').value = c.id;
+            document.getElementById('customer-create-modal').classList.remove('hidden');
+        }
+
+        function closeCustomerCreateModal() { document.getElementById('customer-create-modal').classList.add('hidden'); }
+
+        async function saveCustomerData() {
+            const shop = document.getElementById('new-cust-shop').value.trim();
+            const name = document.getElementById('new-cust-name').value.trim();
+            const contact = document.getElementById('new-cust-contact').value.trim();
+            const email = document.getElementById('new-cust-email').value.trim();
+            const address = document.getElementById('new-cust-address').value.trim();
+            const editId = document.getElementById('cust-edit-id').value;
+
+            if (!shop || !name) return showModal('Error', 'Shop Name and Full Name are required.');
+
+            let action = editId ? 'updateCustomer' : 'addCustomer';
+            let payload = { shop, name, contact, email, address };
+            if (editId) payload.id = editId;
+
+            try {
+                showLoading('Saving customer...');
+                await fetch(state.apiUrl, {
+                    method: 'POST',
+                    body: JSON.stringify({ action, ...payload })
+                });
+                hideLoading();
+                closeCustomerCreateModal();
+                fetchAdminDashboardData();
+            } catch(e) {
+                hideLoading();
+                showModal('Error', 'Failed to save customer.');
+            }
+        }
+
+        function showCustomerDetails(id) {
+            const c = state.customers.find(item => String(item.id) === String(id));
+            if (!c) return;
+            document.getElementById('detail-popup-title').innerText = "Customer Details";
+            document.getElementById('detail-popup-body').innerHTML = `
+                <div><strong>Shop:</strong> ${c.shop}</div>
+                <div><strong>Name:</strong> ${c.name}</div>
+                <div><strong>Contact:</strong> ${c.contact}</div>
+                <div><strong>Email:</strong> ${c.email || 'None'}</div>
+                <div><strong>Address:</strong> ${c.address || 'None'}</div>
+                <div class="pt-3 flex space-x-2">
+                    <button onclick="closeDetailPopup(); startEditCustomer('${c.id}')" class="flex-1 bg-indigo-600 text-white py-2 rounded-xl font-semibold text-xs">Update</button>
+                    <button onclick="closeDetailPopup(); deleteCustomer('${c.id}')" class="flex-1 bg-rose-600 text-white py-2 rounded-xl font-semibold text-xs">Delete</button>
+                </div>
+            `;
+            document.getElementById('detail-popup-modal').classList.remove('hidden');
+        }
+
+        async function deleteCustomer(id) {
+            if (!confirm("Delete?")) return;
+            try {
+                showLoading();
+                await fetch(state.apiUrl, { method: 'POST', body: JSON.stringify({ action: 'deleteCustomer', id }) });
+                fetchData(true);
+            } catch(e) { hideLoading(); }
+        }
+
+        function openVendorCreateModal() {
+            state.editingVendor = null;
+            document.getElementById('vend-modal-heading').innerText = "Create New Vendor";
+            document.getElementById('new-vend-name').value = '';
+            document.getElementById('new-vend-person').value = '';
+            document.getElementById('new-vend-contact').value = '';
+            document.getElementById('new-vend-desc').value = '';
+            document.getElementById('new-vend-email').value = '';
+            document.getElementById('new-vend-address').value = '';
+            document.getElementById('vend-edit-id').value = '';
+            document.getElementById('vendor-create-modal').classList.remove('hidden');
+        }
+
+        function closeVendorCreateModal() { document.getElementById('vendor-create-modal').classList.add('hidden'); }
+
+        async function saveVendorData() {
+            const vendorName = document.getElementById('new-vend-name').value.trim();
+            const contactPerson = document.getElementById('new-vend-person').value.trim();
+            const contactNumber = document.getElementById('new-vend-contact').value.trim();
+            const description = document.getElementById('new-vend-desc').value.trim();
+            const email = document.getElementById('new-vend-email').value.trim();
+            const address = document.getElementById('new-vend-address').value.trim();
+            const editId = document.getElementById('vend-edit-id').value;
+
+            if (!vendorName) return showModal('Error', 'Vendor Name is required.');
+
+            let action = editId ? 'updateVendor' : 'addVendor';
+            let payload = { vendorName, contactPerson, contactNumber, description, email, address };
+            if (editId) payload.id = editId;
+
+            try {
+                showLoading('Saving vendor...');
+                await fetch(state.apiUrl, {
+                    method: 'POST',
+                    body: JSON.stringify({ action, ...payload })
+                });
+                hideLoading();
+                closeVendorCreateModal();
+                fetchAdminDashboardData();
+            } catch(e) {
+                hideLoading();
+                showModal('Error', 'Failed to save vendor.');
+            }
+        }
+
+        function startEditVendor(id) {
+            const v = state.vendorsList.find(item => String(item.id) === String(id));
+            if (!v) return;
+            state.editingVendor = v;
+            document.getElementById('vend-modal-heading').innerText = "Update Vendor Details";
+            document.getElementById('new-vend-name').value = v.vendorName || '';
+            document.getElementById('new-vend-person').value = v.contactPerson || '';
+            document.getElementById('new-vend-contact').value = v.contactNumber || '';
+            document.getElementById('new-vend-desc').value = v.description || '';
+            document.getElementById('new-vend-email').value = v.email || '';
+            document.getElementById('new-vend-address').value = v.address || '';
+            document.getElementById('vend-edit-id').value = v.id;
+            document.getElementById('vendor-create-modal').classList.remove('hidden');
+        }
+
+        function showVendorDetails(id) {
+            const v = state.vendorsList.find(item => String(item.id) === String(id));
+            if (!v) return;
+            document.getElementById('detail-popup-title').innerText = "Vendor Details";
+            document.getElementById('detail-popup-body').innerHTML = `
+                <div><strong>Vendor:</strong> ${v.vendorName}</div>
+                <div><strong>Contact:</strong> ${v.contactPerson || '-'} (${v.contactNumber || '-'})</div>
+                <div><strong>Description:</strong> ${v.description || '-'}</div>
+                <div><strong>Email:</strong> ${v.email || 'None'}</div>
+                <div><strong>Address:</strong> ${v.address || 'None'}</div>
+                <div class="pt-3 flex space-x-2">
+                    <button onclick="closeDetailPopup(); startEditVendor('${v.id}')" class="flex-1 bg-indigo-600 text-white py-2 rounded-xl font-semibold text-xs">Update</button>
+                    <button onclick="closeDetailPopup(); deleteVendor('${v.id}')" class="flex-1 bg-rose-600 text-white py-2 rounded-xl font-semibold text-xs">Delete</button>
+                </div>
+            `;
+            document.getElementById('detail-popup-modal').classList.remove('hidden');
+        }
+
+        async function deleteVendor(id) {
+            if (!confirm("Delete?")) return;
+            try {
+                showLoading();
+                await fetch(state.apiUrl, { method: 'POST', body: JSON.stringify({ action: 'deleteVendor', id }) });
+                fetchData(true);
+            } catch(e) { hideLoading(); }
+        }
+
+        function openSkuLookupModal() {
+            document.getElementById('sku-search-input').value = '';
+            document.getElementById('sku-lookup-modal').classList.remove('hidden');
+        }
+
+        function closeSkuLookupModal() { document.getElementById('sku-lookup-modal').classList.add('hidden'); }
+
+        function filterSkuLookup(query) {
+            const v = query.toLowerCase();
+            const c = document.getElementById('sku-lookup-results');
+            const res = state.products.filter(p => p.name.toLowerCase().includes(v) || String(p.id).toLowerCase().includes(v));
+            c.innerHTML = res.map(p => `
+                <div onclick="showVendorForProduct('${p.name}', '${p.id}', '${p.vendor}')" class="bg-slate-50 border p-3 rounded-2xl flex justify-between cursor-pointer">
+                    <div><b>${p.name}</b></div>
+                    <span class="text-indigo-600">&rarr;</span>
+                </div>
+            `).join('');
+        }
+
+        function showVendorForProduct(n, sku, vId) {
+            closeSkuLookupModal();
+            const v = state.vendorsList.find(x => x.id === vId);
+            document.getElementById('detail-popup-title').innerText = "Vendor Details";
+            document.getElementById('detail-popup-body').innerHTML = `
+                <b>Item:</b> ${n}<hr class="border-slate-200 my-1.5">
+                ${v ? `<b>Vendor:</b> ${v.vendorName}<br><b>Phone:</b>${v.contactNumber}` : `<i class="text-rose-600">No vendor assigned</i>`}
+            `;
+            document.getElementById('detail-popup-modal').classList.remove('hidden');
+        }
+
+        async function addNewUserWithRole() {
+            const d = {
+                action: 'addUser',
+                newUserId: document.getElementById('new-uid').value,
+                newUserPassword: document.getElementById('new-upass').value,
+                role: document.getElementById('new-uroll').value
+            };
+            showLoading();
+            try {
+                await fetch(state.apiUrl, { method: 'POST', body: JSON.stringify(d) });
+                fetchData(true);
+            } catch(e) { hideLoading(); }
+        }
+
+        // API CALLS
+        async function fetchData(forceRefresh = false) {
+            if (!state.apiUrl) return;
+            try {
+                const [p, c, v, u, o] = await Promise.all([
+                    fetch(state.apiUrl + '?action=getProducts'),
+                    fetch(state.apiUrl + '?action=getCustomers'),
+                    fetch(state.apiUrl + '?action=getVendors'),
+                    fetch(state.apiUrl + '?action=getUsers'),
+                    fetch(state.apiUrl + '?action=getOrders')
+                ]);
+                state.products = (await p.json()).products || [];
+                state.customers = (await c.json()).customers || [];
+                state.vendorsList = (await v.json()).vendors || [];
+                state.usersList = (await u.json()).users || [];
+                state.ordersList = (await o.json()).orders || [];
+
+                localStorage.setItem('gi_products', JSON.stringify(state.products));
+                localStorage.setItem('gi_customers', JSON.stringify(state.customers));
+                localStorage.setItem('gi_vendors', JSON.stringify(state.vendorsList));
+                localStorage.setItem('gi_users', JSON.stringify(state.usersList));
+                localStorage.setItem('gi_orders', JSON.stringify(state.ordersList));
+
+                state.lastRefreshTime = new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
+                localStorage.setItem('gi_last_refresh', state.lastRefreshTime);
+
+                hideLoading();
+                render();
+            } catch(e) { hideLoading(); }
+        }
+
+        async function fetchAdminDashboardData() {
+            await fetchData(true);
+        }
+
+        async function handleUserLogin() {
+            const uid = document.getElementById('login-userid').value.trim().toLowerCase();
+            const pwd = document.getElementById('login-password').value.trim();
+            if (!uid || !pwd) return showModal('Error', 'Please enter both User ID and Password.');
+
+            showLoading('Verifying credentials...');
+            try {
+                const res = await fetch(state.apiUrl, {
+                    method: 'POST',
+                    body: JSON.stringify({ action: 'login', userId: uid, password: pwd })
+                });
+                const data = await res.json();
+                if (data.success) {
+                    state.user = { userId: uid, role: data.role || 'Sales' };
+                    localStorage.setItem('gi_logged_user', JSON.stringify(state.user));
+                    state.view = 'store';
+                    fetchData(true);
+                } else {
+                    hideLoading();
+                    showModal('Access Denied', 'Invalid credentials or suspended account.');
+                }
+            } catch(e) {
+                hideLoading();
+                showModal('Error', 'Connection failed.');
+            }
+        }
+
+        async function verifyAdminLogin() {
+            const pwd = document.getElementById('admin-password-input').value.trim();
+            if (!pwd) return;
+
+            showLoading('Verifying password...');
+            try {
+                const res = await fetch(state.apiUrl, {
+                    method: 'POST',
+                    body: JSON.stringify({ action: 'adminLogin', password: pwd })
+                });
+                const data = await res.json();
+                if (data.success) {
+                    state.user = { userId: 'Admin', role: 'Admin' };
+                    localStorage.setItem('gi_logged_user', JSON.stringify(state.user));
+                    state.adminTab = 'products';
+                    state.view = 'admin-dashboard';
+                    fetchData(true);
+                } else {
+                    hideLoading();
+                    showModal('Access Denied', 'Incorrect admin password.');
+                }
+            } catch(e) {
+                hideLoading();
+                showModal('Error', 'Connection failed.');
+            }
+        }
+
+function filterAdminProductsDOM(query) {
+            state.adminProductSearch = query;
+            const container = document.getElementById('admin-product-cards-container');
+            if (!container) return;
+            const q = query.toLowerCase();
+            const filteredProducts = state.products.filter(p => p.name.toLowerCase().includes(q) || String(p.id).toLowerCase().includes(q));
+            
+            container.innerHTML = filteredProducts.length ? filteredProducts.map(p => {
+                const thumb = renderImgThumbnail(p.img, p.name, "w-12 h-12");
+                const stockNum = Number(p.stock) || 0;
+                const stockLabel = stockNum > 0 ? 'In Stock' : 'Out';
+                const isWeightBased = Boolean(p.metalType);
+                const stockDisplay = isWeightBased ? `${stockNum} kg` : `${stockNum} units`;
+                const matchedVendor = state.vendorsList.find(v => v.id === p.vendor);
+                const vendorDisplay = matchedVendor ? matchedVendor.vendorName : (p.vendor || 'Unassigned');
+
+                return `
+                    <div class="bg-white border border-slate-200/80 rounded-2xl p-3 flex justify-between items-center text-xs shadow-xs hover:shadow-md transition">
+                        <div class="flex items-center space-x-3 overflow-hidden">
+                            ${thumb}
+                            <div class="truncate space-y-0.5">
+                                <div class="font-bold text-slate-900 text-xs truncate">${p.name} <span class="text-slate-400 font-normal">(${p.category || 'General'})</span></div>
+                                <div class="text-slate-500 text-[11px]">Sell: ₹${p.price} | Cost: ₹${p.costPrice || 0} | Stock: ${stockDisplay}</div>
+                                <div class="text-indigo-600 font-semibold text-[11px] truncate">Vendor: ${vendorDisplay} ${p.metalType ? `| Metal: ${p.metalType}` : ''}</div>
+                            </div>
+                        </div>
+                        <div class="flex items-center space-x-1.5 shrink-0">
+                            <button onclick="openEditProductModal('${p.id}')" class="bg-slate-100 hover:bg-slate-200 text-slate-700 px-3 py-1.5 rounded-xl font-semibold transition">Edit</button>
+                            <button onclick="toggleStock('${p.id}')" class="bg-amber-50 hover:bg-amber-100 text-amber-800 px-3 py-1.5 rounded-xl font-semibold transition border border-amber-200/60">${stockLabel}</button>
+                        </div>
+                    </div>
+                `;
+            }).join('') : '<div class="text-center py-12 text-slate-400 text-xs">No matching products found.</div>';
+        }
+
+        function filterAdminCustomersDOM(query) {
+            state.adminCustomerSearch = query;
+            const container = document.getElementById('admin-customer-cards-container');
+            if (!container) return;
+            const q = query.toLowerCase();
+            const filteredCustomers = state.customers.filter(c => c.shop.toLowerCase().includes(q) || c.name.toLowerCase().includes(q));
+            
+            container.innerHTML = filteredCustomers.length ? filteredCustomers.map(c => `
+                <div onclick="showCustomerDetails('${c.id}')" class="bg-white border border-slate-200/80 rounded-2xl p-3.5 text-sm flex justify-between items-center shadow-xs cursor-pointer hover:shadow-md transition">
+                    <div class="font-bold text-slate-900 text-sm">${c.shop}</div>
+                    <span class="text-indigo-600 font-semibold text-xs">&rarr; View</span>
+                </div>
+            `).join('') : '<div class="text-center py-12 text-slate-400 text-xs">No matching customers found.</div>';
+        }
+
+        function filterAdminVendorsDOM(query) {
+            state.adminVendorSearch = query;
+            const container = document.getElementById('admin-vendor-cards-container');
+            if (!container) return;
+            const q = query.toLowerCase();
+            const filteredVendors = state.vendorsList.filter(v => v.vendorName.toLowerCase().includes(q) || (v.description && v.description.toLowerCase().includes(q)));
+            
+            container.innerHTML = filteredVendors.length ? filteredVendors.map(item => `
+                <div onclick="showVendorDetails('${item.id}')" class="bg-white border border-slate-200/80 rounded-2xl p-3.5 text-sm flex justify-between items-center shadow-xs cursor-pointer hover:shadow-md transition">
+                    <div class="font-bold text-slate-900 text-base">${item.vendorName} <span class="text-xs text-slate-400 font-medium">[ID: ${item.id}]</span></div>
+                    <span class="text-indigo-600 font-semibold text-xs">&rarr; View</span>
+                </div>
+            `).join('') : '<div class="text-center py-12 text-slate-400 text-xs">No matching vendors found.</div>';
+        }
+
+        function filterAdminOrdersDOM(query) {
+            state.adminOrderSearch = query;
+            const container = document.getElementById('admin-order-cards-container');
+            if (!container) return;
+            const filteredOrders = getFilteredOrders();
+            
+            container.innerHTML = filteredOrders.length ? filteredOrders.map(o => {
+                const isCancelled = o.status === 'Cancelled';
+                return `
+                    <div onclick="openOrderDetailsModal('${o.orderNo}')" class="bg-slate-50 border border-slate-200/80 rounded-xl p-3.5 text-xs space-y-1 cursor-pointer hover:bg-slate-100 transition shadow-xs">
+                        <div class="flex justify-between items-center text-sm font-bold">
+                            <span class="text-rose-600 tracking-tight">ORDER # <span class="text-slate-900">${o.orderNo}</span></span>
+                            <span class="text-xs text-slate-500 font-normal">Date: ${formatDisplayDate(o.date)}</span>
+                            <span class="${isCancelled ? 'text-rose-600 line-through' : 'text-emerald-700'} font-bold">₹${Number(o.amount || 0).toFixed(2)}</span>
+                        </div>
+                        <div class="flex justify-between items-center pt-1">
+                            <span class="font-bold text-slate-900 text-xs">${o.shopName}</span>
+                            <span class="px-2.5 py-0.5 rounded-full text-[11px] font-bold ${isCancelled ? 'bg-rose-50 text-rose-600' : (o.status==='Delivered' ? 'bg-emerald-50 text-emerald-700' : 'bg-amber-50 text-amber-700')}">${o.status || 'Confirmed'}</span>
+                        </div>
+                    </div>
+                `;
+            }).join('') : '<div class="text-center py-12 text-slate-400 text-xs">No matching orders found.</div>';
+        }
+
+        // INITIALIZATION
+        window.onload = function() {
+            const savedUser = localStorage.getItem('gi_logged_user');
+            if (savedUser) {
+                try {
+                    state.user = JSON.parse(savedUser);
+                    if (state.user.role === 'Admin') {
+                        state.view = 'admin-dashboard';
+                        state.adminTab = 'products';
+                    } else {
+                        state.view = 'store';
+                    }
+                } catch(e) {}
+            }
+            render();
+            if (state.apiUrl) {
+                fetchData();
+                fetchMetalPrices();
+            }
+        };
+    </script>
+</body>
+</html>
