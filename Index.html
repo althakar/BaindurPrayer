@@ -1,0 +1,3344 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <script src="prayer_data.js"></script>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>Daily Prayer Times — Byndoor, India</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin="anonymous">
+    <link href="https://fonts.googleapis.com/css2?family=Fraunces:ital,wght@0,400..700;1,400..600&family=IBM+Plex+Mono:wght@400;500&display=swap" rel="stylesheet">
+    <style>
+        :root{
+          --paper:#f7f3ea;
+          --ink:#26231d;
+          --muted:#8b8172;
+          --line:#d8d0bf;
+          --line-soft:#e6dfd0;
+          --accent:#2f5d4e;
+          --terra:#b4552a;
+          --tint:#d6e2d9;
+          --tint-terra:#f3e8d7;
+          --serif:"Fraunces", Georgia, "Times New Roman", serif;
+          --mono:"IBM Plex Mono", ui-monospace, SFMono-Regular, Menlo, monospace;
+        }
+       * {
+            box-sizing: border-box;
+            -webkit-user-select: none;
+            -moz-user-select: none;
+            -ms-user-select: none;
+            user-select: none;
+            -webkit-tap-highlight-color: transparent;
+            -webkit-touch-callout: none;
+        }
+
+/* Multi-image notice gallery styling */
+#noticeGalleryViewport::-webkit-scrollbar {
+    display: none;
+}
+.notice-gallery-slide {
+    flex: 0 0 100%;
+    width: 100%;
+    scroll-snap-align: start;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+/* Image fills the full width of the dialog card */
+.notice-gallery-slide img {
+    width: 100%;
+    max-height: 260px;
+    object-fit: cover;
+    border-radius: 6px;
+    box-shadow: 0 2px 8px rgba(0,0,0,0.12);
+    cursor: pointer;
+    transition: opacity 0.2s;
+}
+.notice-gallery-slide img:active {
+    opacity: 0.85;
+}
+
+.notice-dot {
+    width: 7px;
+    height: 7px;
+    border-radius: 50%;
+    background: var(--line);
+    transition: background 0.3s, transform 0.3s;
+}
+.notice-dot.active {
+    background: var(--accent);
+    transform: scale(1.3);
+}
+
+/* Fullscreen Lightbox Overlay */
+#noticeLightboxOverlay {
+    display: none;
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: rgba(0, 0, 0, 0.92);
+    z-index: 1000000;
+    justify-content: center;
+    align-items: center;
+    padding: 12px;
+    backdrop-filter: blur(6px);
+    -webkit-backdrop-filter: blur(6px);
+}
+#noticeLightboxImg {
+    max-width: 96vw;
+    max-height: 88vh;
+    object-fit: contain;
+    border-radius: 8px;
+    box-shadow: 0 10px 30px rgba(0,0,0,0.5);
+}
+.lightbox-close-btn {
+    position: absolute;
+    top: 16px;
+    right: 18px;
+    background: rgba(255, 255, 255, 0.2);
+    border: none;
+    color: #fff;
+    font-size: 24px;
+    width: 40px;
+    height: 40px;
+    border-radius: 50%;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    line-height: 1;
+}
+
+
+ /* Crisp, thin accent line pinned to the absolute top edge */
+        body::before {
+            content: "";
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 3px;
+            background: var(--accent);
+            z-index: 99999;
+            display: block;
+        }
+
+        input, textarea {
+            -webkit-user-select: text !important;
+            -moz-user-select: text !important;
+            -ms-user-select: text !important;
+            user-select: text !important;
+        }
+
+        .switch.small { width: 36px; height: 20px; }
+        .switch.small .slider:before { height: 14px; width: 14px; left: 3px; bottom: 3px; }
+        .switch.small input:checked + .slider:before { transform: translateX(16px); }
+
+        .switch { position: relative; display: inline-block; width: 44px; height: 24px; vertical-align: middle; }
+        .switch input { opacity: 0; width: 0; height: 0; }
+        .slider {
+            position: absolute; cursor: pointer; top: 0; left: 0; right: 0; bottom: 0;
+            background-color: var(--line); transition: .3s; border-radius: 24px;
+            pointer-events: none;
+        }
+        .slider:before {
+            position: absolute; content: ""; height: 18px; width: 18px; left: 3px; bottom: 3px;
+            background-color: white; transition: .3s; border-radius: 50%; box-shadow: 0 2px 4px rgba(0,0,0,0.2);
+            pointer-events: none;
+        }
+        input:checked + .slider { background-color: var(--accent); }
+        input:checked + .slider:before { transform: translateX(20px); }
+        input:disabled + .slider { opacity: 0.5; cursor: not-allowed; }
+
+html {
+            -webkit-text-size-adjust: 100%;
+            scroll-behavior: smooth;
+            height: auto;
+            min-height: 100%;
+            overflow-x: hidden;
+        }
+        body {
+            margin: 0;
+            background: var(--paper);
+            color: var(--ink);
+            font-family: var(--serif);
+            font-size: 16px;
+            line-height: 1.55;
+            -webkit-font-smoothing: antialiased;
+            height: auto;
+            min-height: 100%;
+            overflow-x: hidden;
+            padding-top: 0px;
+        }
+
+/* Continuous spinning gear animation */
+.rotating-gear {
+    display: inline-block;
+    line-height: 1;
+    transform-origin: center center;
+    animation: continuousSpin 8s linear infinite;
+    will-change: transform;
+}
+
+/* Pause the rotation on press/hover so it feels responsive */
+.info-icon-btn:active .rotating-gear {
+    animation-play-state: paused;
+}
+
+@keyframes continuousSpin {
+    from { transform: rotate(0deg); }
+    to { transform: rotate(360deg); }
+}
+
+/* Smooth breathing and ambient glow animation for the info icon */
+.breathing-info {
+    display: inline-block;
+    line-height: 1;
+    font-style: italic;
+    font-family: var(--serif);
+    font-weight: 700;
+    transform-origin: center center;
+    animation: infoPulseBreathe 3.2s ease-in-out infinite;
+    will-change: transform, opacity, filter;
+}
+
+/* Pause on active tap for tactile feedback */
+.info-icon-btn:active .breathing-info {
+    animation-play-state: paused;
+}
+
+@keyframes infoPulseBreathe {
+    0% { transform: scale(0.92); opacity: 0.8; filter: drop-shadow(0 0 0px rgba(47, 93, 78, 0)); }
+    50% {
+        transform: scale(1.18);
+        opacity: 1; /* Subtle emerald glow radiating outward at the peak of the breath */
+        filter: drop-shadow(0 0 3px rgba(47, 93, 78, 0.45)); }
+    100% { transform: scale(0.92); opacity: 0.8; filter: drop-shadow(0 0 0px rgba(47, 93, 78, 0)); }
+}
+
+@keyframes micPulseBreathe {
+    0% { transform: scale(1); filter: drop-shadow(0 0 0px rgba(180, 85, 42, 0)); }
+    50% { transform: scale(1.08); filter: drop-shadow(0 0 5px rgba(180, 85, 42, 0.45)); }
+    100% { transform: scale(1); filter: drop-shadow(0 0 0px rgba(180, 85, 42, 0)); }
+}
+
+        .wrap {
+            max-width: 880px;
+            margin: 0 auto;
+            padding: 12px 10px 10px;
+        }
+
+        .masthead{
+            margin-top: 0px;
+            margin-bottom: 24px;
+            position: relative;
+            padding-top: 0px;
+        }
+        .masthead-top {display:flex; justify-content:space-between; align-items:flex-start; flex-wrap:wrap; gap: 12px;}
+h1{
+          font-weight:560;
+          font-size:clamp(1.6rem, 7vw, 3.1rem); /* Scales down gracefully on smaller phones */
+          line-height:1.05;
+          letter-spacing:-.015em;
+          margin:0 0 6px;
+          white-space:nowrap; /* Prevents breaking into multiple lines */
+        }
+        .info-icon-btn {
+          background:none; border:3px solid var(--line); border-radius:80%;
+          width:30px; height:30px; display:flex; align-items:center; justify-content:center;
+          cursor:pointer; color:var(--accent); font-size:25px; font-weight:bold;
+          transition:background 2s ease, border-color 1.7s ease, transform 1.7s;
+        }
+        .info-icon-btn:hover {background:var(--tint); border-color:var(--accent)}
+
+        .sub {
+            margin: 0;
+            color: var(--accent);
+            font-size: clamp(0.95rem, 4vw, 1.15rem);
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
+        }
+        .sub .hijri { font-style: italic; }
+
+        .nav {
+            display: flex;
+            flex-wrap: wrap;
+            gap: clamp(10px, 3.5vw, 22px);
+            margin-top: 18px;
+            padding-top: 12px;
+            border-top: 1px solid var(--line);
+        }
+        .nav a{
+          font-family:var(--mono); font-size:12.5px; letter-spacing:.14em;
+          text-transform:uppercase; text-decoration:none; color:var(--muted); cursor:pointer;
+        }
+        .nav a:hover{color:var(--ink)}
+        .nav a[aria-current="page"]{color:var(--accent); border-bottom:2px solid var(--accent); padding-bottom:3px; font-weight:500}
+
+        .pager {
+            display: grid;
+            grid-template-columns: 1fr auto 1fr;
+            align-items: center;
+            margin: 0 0 16px;
+            font-family: var(--mono);
+            font-size: 12.5px;
+            letter-spacing: .1em;
+            text-transform: uppercase;
+            width: 100%;
+        }
+        .pager button:first-child { justify-self: start; }
+        .pager span { justify-self: center; text-align: center; }
+        .pager button:last-child { justify-self: end; }
+
+        .linkbtn{
+          background:none; border:0; padding:0; font:inherit;
+          letter-spacing:inherit; text-transform:inherit;
+          color:var(--accent); cursor:pointer; font-weight:500;
+        }
+
+
+.floating-side-btn {
+            position: fixed;
+            top: 72%;
+            transform: translateY(-50%);
+            width: 70px;
+            height: 70px;
+            pointer-events: auto;
+            z-index: 99999;
+
+            /* Organic Fluid Wobble */
+            animation: wildFluidWobble 4s ease-in-out infinite alternate;
+            will-change: border-radius;
+
+            /* True Transparent Glass */
+            background-color: transparent;
+            background-repeat: no-repeat;
+
+            /* 3D Glass Reflections */
+            box-shadow:
+                inset 4px 6px 12px rgba(255, 255, 255, 0.95),
+                inset -4px -6px 12px rgba(0, 0, 0, 0.08),
+                0 12px 28px rgba(0, 0, 0, 0.18),
+                0 4px 10px rgba(0, 0, 0, 0.1);
+
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: var(--accent);
+            font-size: 20px;
+            font-weight: bold;
+            cursor: pointer;
+            user-select: none;
+            -webkit-user-select: none;
+            overflow: hidden;
+        }
+
+        /* 9-Stage Extreme Liquid Shape Morphing */
+        @keyframes wildFluidWobble {
+            0%   { border-radius: 40% 60% 70% 30% / 40% 50% 60% 50%; }
+            12%  { border-radius: 70% 30% 50% 50% / 30% 30% 70% 70%; }
+            25%  { border-radius: 30% 70% 70% 30% / 50% 60% 30% 60%; }
+            37%  { border-radius: 60% 40% 30% 70% / 60% 30% 70% 40%; }
+            50%  { border-radius: 50% 50% 70% 30% / 52% 50% 50% 48%; }
+            62%  { border-radius: 30% 70% 50% 50% / 70% 40% 60% 30%; }
+            75%  { border-radius: 50% 50% 20% 80% / 40% 60% 40% 60%; }
+            87%  { border-radius: 60% 40% 60% 40% / 70% 70% 30% 30%; }
+            100% { border-radius: 40% 60% 70% 30% / 40% 50% 60% 50%; }
+        }
+
+        /* Glossy Top Glass Reflection */
+        .floating-side-btn::before {
+            content: '';
+            position: absolute;
+            top: 10px;
+            left: 16px;
+            width: 16px;
+            height: 12px;
+            background: rgba(255, 255, 255, 0.9);
+            border-radius: 50%;
+            transform: rotate(-15deg);
+            pointer-events: none;
+            z-index: 3;
+        }
+
+        /* Secondary Glass Glint */
+        .floating-side-btn::after {
+            content: '';
+            position: absolute;
+            top: 26px;
+            left: 24px;
+            width: 6px;
+            height: 6px;
+            background: rgba(255, 255, 255, 0.7);
+            border-radius: 50%;
+            pointer-events: none;
+            z-index: 3;
+        }
+
+        .water-lens-content {
+            position: relative;
+            z-index: 2;
+            text-shadow: 0 1px 2px rgba(255, 255, 255, 0.9);
+        }
+
+        .floating-side-btn.left { left: 16px; }
+        .floating-side-btn.right { right: 16px; }
+
+
+        .nextbox {
+          display: flex;
+          justify-content: space-between;
+          align-items: flex-start; /* <-- Updated to lock top alignment */
+          border: 1px solid var(--line);
+          border-left: 6px solid var(--accent);
+          padding: 15px 12px;
+          margin: 0 0 14px;
+          background: rgba(255, 255, 255, 0.65);
+          border-radius: 4px;
+          animation: cleanBoxGlow 3s ease-in-out infinite;
+          transition: all 0.8s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+
+        .nb-half:not(.right) {
+          display: flex;
+          flex-direction: column;
+          align-items: center;
+          text-align: center;
+          padding-left: 12px;
+        }
+
+        .nb-half:not(.right) .nb-label {
+          display: block;
+          font-family: var(--mono);
+          font-size: 10.5px;
+          letter-spacing: 0.18em;
+          text-transform: uppercase;
+          color: var(--muted);
+          margin-bottom: 4px;
+        }
+
+        .nb-name {
+          font-size: clamp(1.4rem, 6.2vw, 2.6rem);
+          font-weight: 700;
+          letter-spacing: 0.02em;
+          line-height: 1.1;
+          margin: 0;
+        }
+
+        .nb-at {
+          font-family: var(--serif);
+          font-size: clamp(1.1rem, 5vw, 1.45rem);
+          color: var(--accent);
+          font-weight: 500;
+          margin-top: 3px;
+        }
+
+            /* Right Column: Expands cleanly in landscape while remaining self-contained */
+            .nb-half.right {
+            display: flex;
+            flex-direction: column;
+            align-items: flex-end;
+            text-align: right;
+            min-width: 110px; /* Reduced from 140px to prevent squeezing the left side */
+            max-width: 50%;
+            flex-shrink: 0;
+            padding-right: 8px;
+        }
+
+        .nb-half.right .nb-label {
+          display: block;
+          width: 100%;
+          text-align: center;
+          font-family: var(--mono);
+          font-size: 10.5px;
+          letter-spacing: 0.18em;
+          text-transform: uppercase;
+          color: var(--muted);
+        }
+
+/* Countdown Timer: Uses viewport-minimum (vmin) to prevent landscape blowout */
+            .nb-count {
+            display: block;
+            width: auto;
+            text-align: right;
+            font-family: var(--serif);
+            font-weight: 600;
+            letter-spacing: -0.02em;
+            /* Allows the timer to shrink gracefully on narrow phones */
+            font-size: clamp(2.1rem, 7vw, 3.7rem);
+            line-height: 1.05;
+            white-space: nowrap;
+            margin-top: 4px;
+            font-variant-numeric: tabular-nums;
+            -webkit-font-feature-settings: "tnum" 1;
+            font-feature-settings: "tnum" 1;
+        }
+
+        .nb-when {
+          display: none;
+        }
+
+
+/* Current Prayer Active Stopwatch Styling */
+.nextbox.current-prayer-active {
+    align-items: flex-start !important;
+}
+
+.nextbox.current-prayer-active .nb-half:not(.right) {
+    align-items: flex-start;
+    text-align: left;
+}
+
+/* Make the elapsed stopwatch counter noticeably larger */
+.nextbox.current-prayer-active .nb-count {
+    font-size: clamp(2.4rem, 8.2vw, 3.9rem) !important;
+}
+
+
+
+        @keyframes cleanBoxGlow {
+          0% {
+            background-color: rgba(255, 255, 255, 0.65);
+            box-shadow: 0 2px 8px rgba(47, 93, 78, 0.08);
+            border-color: var(--line);
+            border-left-color: var(--accent);
+          }
+          50% {
+            background-color: rgba(214, 226, 217, 0.55);
+            box-shadow: 0 4px 18px 2px rgba(47, 93, 78, 0.28);
+            border-color: rgba(47, 93, 78, 0.45);
+            border-left-color: var(--accent);
+          }
+          100% {
+            background-color: rgba(255, 255, 255, 0.65);
+            box-shadow: 0 2px 8px rgba(47, 93, 78, 0.08);
+            border-color: var(--line);
+            border-left-color: var(--accent);
+          }
+        }
+
+        /* 3D breathing and tilting without horizontal displacement or scale-overflow */
+@keyframes continuous3DOrbit {
+  0% { background-color: var(--tint); box-shadow: 0 1px 4px rgba(47, 93, 78, 0.12); transform: translate3d(0px, 0px, 0px) rotateX(0deg) rotateY(0deg) rotateZ(0deg); }
+  15% { background-color: #d1e5d8; box-shadow: 0 3px 8px rgba(47, 93, 78, 0.18); transform: translate3d(0px, -1.5px, 2px) rotateX(1.5deg) rotateY(-1.2deg) rotateZ(-0.8deg); }
+  30% { background-color: #d7ebdE; box-shadow: 0 2px 6px rgba(47, 93, 78, 0.15); transform: translate3d(0px, -0.8px, 1px) rotateX(1deg) rotateY(1deg) rotateZ(0.5deg); }
+  48% { background-color: var(--tint); box-shadow: 0 1px 4px rgba(47, 93, 78, 0.10); transform: translate3d(0px, 1.5px, -2px) rotateX(-1.2deg) rotateY(1deg) rotateZ(0.6deg); }
+  65% { background-color: #cbe0d3; box-shadow: 0 2px 5px rgba(47, 93, 78, 0.12); transform: translate3d(0px, 1px, -1px) rotateX(-0.8deg) rotateY(-1deg) rotateZ(-0.5deg); }
+  82% { background-color: #d4e8db; box-shadow: 0 2px 7px rgba(47, 93, 78, 0.14); transform: translate3d(0px, -1px, 1px) rotateX(0.8deg) rotateY(0.6deg) rotateZ(0.4deg); }
+  100% { background-color: var(--tint); box-shadow: 0 1px 4px rgba(47, 93, 78, 0.12); transform: translate3d(0px, 0px, 0px) rotateX(0deg) rotateY(0deg) rotateZ(0deg); }
+}
+
+ /* Active Timetable Row: Padded cleanly inside boundaries */
+.plist li.next {
+  background: var(--tint) !important;
+  border-radius: 4px;
+  position: relative;
+  z-index: 3;
+  box-sizing: border-box !important;
+
+  /* CRITICAL: Generous right padding keeps the time firmly inside the green highlight */
+  padding: 13px 14px 13px 8px !important;
+  transform-origin: center center;
+  transform-style: preserve-3d;
+  -webkit-transform-style: preserve-3d;
+  will-change: transform, box-shadow, background-color;
+  animation: continuous3DOrbit 14s linear infinite !important;
+}
+.flip-face.active-face {
+          background: var(--tint) !important;
+          border-radius: 4px;
+          position: relative;
+          z-index: 3;
+          box-sizing: border-box !important;
+          padding: 0 14px 0 8px !important;
+          transform-origin: center center;
+          transform-style: preserve-3d;
+          -webkit-transform-style: preserve-3d;
+          will-change: transform, box-shadow, background-color;
+          animation: continuous3DOrbit 14s linear infinite !important;
+        }
+
+        li.friday-flip-row .flip-face.active-face {
+            animation: none !important;
+        }
+
+        @keyframes pulseFlash {
+            0% { opacity: 1; }
+            50% { opacity: 0.3; }
+            100% { opacity: 1; }
+        }
+        .timer-flashing {
+            color: #d9534f !important; /* Soft, readable red */
+            animation: gentleAlertBlink 1.2s infinite ease-in-out !important;
+        }
+
+        @keyframes gentleAlertBlink {
+            0% { opacity: 1; }
+            50% { opacity: 0.4; }
+            100% { opacity: 1; }
+        }
+
+        .day-carousel-viewport{overflow-x:auto; overflow-y:hidden; scroll-snap-type:x mandatory; -webkit-overflow-scrolling:touch; scrollbar-width:none; width:100%}
+        .day-carousel-viewport::-webkit-scrollbar{display:none}
+        .day-carousel-track{display:flex; width:700%; transition:transform 1.3s ease}
+        .day-slide{width: 14.2857%;flex: 0 0 14.2857%;scroll-snap-align: start;padding: 0 2px;}
+        .tomorrow-banner{
+          display:flex; justify-content:space-between; align-items:baseline;
+          padding:12px 14px; margin:0 0 14px; background:var(--tint); border-left:4px solid var(--accent);
+          font-family:var(--mono); font-size:12px; letter-spacing:.08em; text-transform:uppercase; color:var(--accent);
+        }
+        .tomorrow-banner span.date{color:var(--ink); font-family:var(--serif); font-size:14px; text-transform:none; letter-spacing:normal}
+
+        @keyframes dotPulse {
+            0% { transform: translateY(-1px) scale(1); opacity: 1; }
+            50% { transform: translateY(-1px) scale(1.6); opacity: 0.4; }
+            100% { transform: translateY(-1px) scale(1); opacity: 1; }
+        }
+
+        .scroll-x{overflow-x:auto; -webkit-overflow-scrolling:touch}
+        .plist{list-style:none; margin:0; padding:0; perspective: 300px;}
+        .plist li{
+            display:flex; justify-content:space-between; align-items:center; /* Changed from baseline to center */
+            gap:12px; padding:0 4px; border-bottom:1px solid var(--line-soft);
+            height: clamp(46px, 12vw, 53px); /* Perfectly matches the friday-flip-row */
+        }
+        .plist .p-name {
+            font-size: clamp(16px, 4.8vw, 19.5px);
+            line-height: 1.1;
+        }
+        .plist .p-ar {
+            color: #5a5245; /* Much darker and more legible than the default muted color */
+            font-size: clamp(17px, 5vw, 21.5px); /* Noticeably larger */
+            font-weight: 500; /* Adds a tiny bit of thickness so it stands out */
+            margin-left: 10px;
+            line-height: 1.1;
+        }
+
+        .plist li.next .p-name::before, .flip-face.active-face .p-name::before {
+            content: "";
+            display: inline-block;
+            width: 7px;
+            height: 7px;
+            border-radius: 50%;
+            background: var(--accent);
+            margin-right: 10px;
+            transform: translateY(-1px);
+            animation: dotPulse 1.5s infinite ease-in-out;
+        }
+
+        li.friday-flip-row.next .p-name::before { display: none; }
+
+        .plist li.next .p-time, .flip-face.active-face .p-time {color:var(--accent); font-weight:700}
+        .plist .p-time {
+            font-size: clamp(15px, 4.6vw, 18.5px);
+            font-family: var(--serif);
+            font-weight: 600;
+            line-height: 1.1;
+        }
+
+        /* Prevent transform conflicts on Friday flip rows */
+        li.friday-flip-row {
+            perspective: 1000px;
+            padding: 0 !important;
+            margin: 0 !important;
+            height: clamp(46px, 12vw, 53px) !important;
+            display: block !important;
+            border-bottom: 1px solid var(--line-soft) !important;
+            background: var(--paper);
+            box-sizing: border-box;
+        }
+
+        .friday-flip-inner {
+            position: relative;
+            width: 100%;
+            height: 100%;
+            transition: transform 1s cubic-bezier(0.4, 0.2, 0.2, 1);
+            transform-style: preserve-3d;
+            -webkit-transform-style: preserve-3d;
+            transform-origin: center center;
+        }
+
+        li.friday-flip-row.is-flipped .friday-flip-inner {
+            transform: rotateX(180deg);
+        }
+
+        .flip-face {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            -webkit-backface-visibility: hidden;
+            backface-visibility: hidden;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 0 8px;
+            box-sizing: border-box;
+            background: var(--paper);
+            white-space: nowrap; /* Prevents text wrapping during rotation */
+        }
+
+        li.friday-flip-row.next .flip-face {
+            background: var(--tint);
+        }
+
+        .flip-back {
+            transform: rotateX(180deg);
+        }
+
+        table.tt{border-collapse:collapse; width:100%; min-width:540px} /* Slightly reduced minimum width */
+        .tt th, .tt td{
+            padding: clamp(8px, 2vw, 12px) clamp(6px, 1.5vw, 10px); /* Fluid cell padding */
+            border-bottom:1px solid var(--line-soft); text-align:left; vertical-align:middle; cursor:pointer;
+        }
+        .tt thead th{font-family:var(--mono); font-size:clamp(10px, 2.5vw, 11px); letter-spacing:.14em; text-transform:uppercase; color:var(--muted); border-bottom:1px solid var(--line); padding-bottom:10px}
+        .day{font-size:clamp(13px, 3.5vw, 15px); font-weight:500; white-space:nowrap}
+        .wd{font-weight:400; color:var(--muted); font-size:clamp(11px, 3vw, 13px)}
+        .arabic-date{font-size:clamp(11px, 2.8vw, 12px); color:var(--accent); display:block; font-weight:normal; font-family:var(--mono)}
+        td.num, th.num{font-family:var(--serif); font-size:clamp(13px, 3.8vw, 15.5px); text-align:center; white-space:nowrap; font-weight:400}
+        tr.today>*{background:var(--tint-terra)}
+
+        .yearly-wrapper{display:flex; flex-direction:column; gap:24px; width:100%}
+        .mcard{width:100%; border-top:2px solid var(--ink); padding-top:14px; scroll-margin-top:24px; clear:both; overflow:hidden}
+        .mcard.current-month-card{border-top:3px solid var(--accent); background:rgba(237, 240, 230, 0.45); padding:10px; border-radius:4px}
+        .mtitle{font-size:clamp(15px, 4.5vw, 18px); font-weight:560; margin-bottom:8px}
+        .tt.mini{min-width:0; width:100%; border-collapse:collapse}
+        .tt.mini th, .tt.mini td{
+            padding: clamp(6px, 1.5vw, 8px) clamp(4px, 1.2vw, 8px);
+            font-size: clamp(11px, 3vw, 12.5px);
+            cursor:pointer;
+        }
+
+        #infoModal, #zoomModal, #settingsModal {
+            display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%;
+            background: rgba(15, 23, 42, 0.65); backdrop-filter: blur(6px); z-index: 9999;
+            justify-content: center; align-items: center; padding: 8px; /* Reduced outer padding to move up */
+        }
+        .info-modal-box {
+            background:#fff; width:100%;
+            max-width:clamp(300px, 92vw, 440px); /* Scales gracefully on smaller phones */
+            max-height:90vh; overflow-y:auto;
+            border:1px solid var(--line); border-left:5px solid var(--accent);
+            padding:clamp(16px, 4vw, 24px) clamp(14px, 4vw, 20px); /* Fluid padding */
+            box-shadow:0 16px 36px rgba(0,0,0,0.2);
+        }
+        .app-logo-container {text-align:center; margin-bottom:12px}
+        .info-app-title {font-size:22px; font-weight:600; text-align:center; margin:0 0 4px}
+        .info-version {font-family:var(--mono); font-size:13.5px; color:var(--accent); text-align:center; margin-bottom:5px}
+        .info-desc {color:var(--muted); font-size:14px; text-align:center; margin-bottom:20px; line-height:1.5}
+
+        .form-group {margin-bottom:12px}
+        .form-group label {display:block; font-family:var(--mono); font-size:11px; text-transform:uppercase; letter-spacing:.1em; color:var(--muted); margin-bottom:4px}
+        .form-control {
+            width:100%; padding:10px 12px; border:1px solid var(--line); background:var(--paper);
+            font-family:var(--serif); font-size:14px; color:var(--ink); border-radius:2px;
+        }
+        .form-control:focus {outline:none; border-color:var(--accent)}
+        textarea.form-control {resize:vertical; min-height:80px}
+
+        .modal-btn {
+            width:100%; background:var(--accent); color:#fff; border:none; padding:12px;
+            font-family:var(--mono); font-size:13px; text-transform:uppercase; letter-spacing:.1em;
+            cursor:pointer; margin-top:8px; border-radius:2px;
+        }
+        .modal-btn.secondary {background:none; color:var(--muted); border:1px solid var(--line); margin-top:6px}
+
+        .wheel-picker-container {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            height: 38px;
+            overflow: hidden;
+            position: relative;
+            background: #fff;
+            border: 1px solid var(--line);
+            border-radius: 6px;
+            width: 105px;
+            margin: 0 auto;
+            touch-action: pan-y;
+            box-shadow: inset 0 1px 3px rgba(0,0,0,0.04);
+            cursor: pointer;
+        }
+        .wheel-picker-scroll {
+            height: 100%;
+            width: 100%;
+            overflow-y: scroll;
+            scroll-snap-type: y mandatory;
+            scrollbar-width: none;
+            text-align: center;
+            scroll-behavior: smooth;
+        }
+        .wheel-picker-scroll::-webkit-scrollbar { display: none; }
+        .wheel-item {
+            height: 38px;
+            line-height: 38px;
+            font-family: var(--serif);
+            font-size: 14px;
+            color: var(--muted);
+            scroll-snap-align: center;
+            cursor: pointer;
+            transition: all 0.2s ease;
+            transform: scale(0.85);
+            opacity: 0.5;
+            white-space: nowrap;
+        }
+        .wheel-item.selected {
+            color: var(--accent);
+            font-size: 16px;
+            font-weight: 700;
+            transform: scale(1.1);
+            opacity: 1;
+        }
+        .wheel-picker-container::after {
+            content: "";
+            position: absolute;
+            top: 0; left: 0; right: 0; bottom: 0;
+            pointer-events: none;
+            background: linear-gradient(to bottom, rgba(255,255,255,0.85) 0%, transparent 35%, transparent 65%, rgba(255,255,255,0.85) 100%);
+        }
+        .wheel-picker-hint {
+            font-size: 8px;
+            font-family: var(--mono);
+            color: var(--ink);
+            text-align: center;
+            text-transform: uppercase;
+            letter-spacing: .08em;
+            margin-top: 1px;
+            opacity: 0.85;
+            font-weight: 600;
+        }
+
+       .settings-row-grid {
+            display: grid;
+            grid-template-columns: 30% 20% 20% 30%;
+            align-items: center;
+            width: 100%;
+        }
+
+        .weather-icon-shine {
+            width: 26px; height: 26px; display: inline-block;
+            background: linear-gradient(135deg, #434343 0%, #1a1a1a 100%);
+            -webkit-background-clip: text; -webkit-text-fill-color: transparent;
+            position: relative; filter: drop-shadow(0 1px 2px rgba(0,0,0,0.3));
+        }
+        .weather-icon-shine::after {
+            content: ""; position: absolute; top: 0; left: -100%; width: 50%; height: 100%;
+            background: linear-gradient(90deg, transparent, rgba(255,255,255,0.4), transparent);
+            animation: shine 3s infinite;
+        }
+        @keyframes shine {
+            0% { left: -100%; } 20% { left: 150%; } 100% { left: 150%; }
+        }
+    </style>
+</head>
+<body>
+<!-- Splash Screen Overlay -->
+<div id="splashScreen" style="position:fixed; top:0; left:0; width:100%; height:100%; background:var(--paper); display:flex; justify-content:center; align-items:center; z-index:999999; transition:opacity 5.0s ease;">
+    <img id="splashLogo" src="logo.png" alt="App Logo" style="width:110px; height:110px; border-radius:50%; background:var(--paper); object-fit:cover; box-shadow:0 8px 24px rgba(47,93,78,0.15); transform:scale(1); transition:transform 10.2s cubic-bezier(0.16, 1, 0.3, 1);">
+</div>
+
+<!-- Water Droplet Optical Refraction & Magnification Filter -->
+<svg style="position: absolute; width: 0; height: 0; overflow: hidden;" xmlns="http://www.w3.org/2000/svg">
+    <filter id="water-magnifier" x="-50%" y="-50%" width="200%" height="200%">
+        <!-- Zero blur to keep text crystal sharp -->
+        <feGaussianBlur in="SourceGraphic" stdDeviation="0" result="sharp"/>
+        <!-- Optical lens magnification map (adjust scale for zoom strength) -->
+        <feDisplacementMap in="SourceGraphic" in2="sharp" scale="18" xChannelSelector="R" yChannelSelector="G" result="magnified"/>
+    </filter>
+</svg>
+
+<main class="wrap">
+    <header class="masthead">
+        <div class="masthead-top">
+            <div style="width: 100%;">
+                <!-- Main Header Row: Split into Left Group (Title + Weather) and Right Group (Icons) -->
+                <div style="display:flex; align-items:center; justify-content:space-between; flex-wrap:nowrap; gap:8px; margin-bottom:6px;">
+
+                    <!-- Left Group: Byndoor title right next to the Weather display -->
+                    <div style="display:flex; align-items:center; gap:14px; flex-wrap:nowrap; min-width:0;">
+                        <h1 style="margin:0;">Byndoor</h1>
+                        <div id="weatherDisplay" style="display:flex; align-items:center; gap:4px; font-family:var(--serif); font-size:clamp(1rem, 3.5vw, 1.3rem); white-space:nowrap;">
+                            <div id="weatherIconContainer" class="weather-icon-shine"></div>
+                            <span id="tempValue" style="color:var(--ink); font-weight:800;">--°C</span>
+                        </div>
+                    </div>
+
+                    <!-- Right Group: Settings and Info Buttons pinned to the far right -->
+                    <div style="display:flex; gap:6px; align-items:center; flex-shrink:0;">
+                        <button class="info-icon-btn" onclick="openSettingsModal()" title="Adhan &amp; Iqaama Settings" aria-label="Settings">
+                            <span class="rotating-gear">&#9881;</span>
+                        </button>
+                        <button class="info-icon-btn" onclick="openInfoModal()" title="About &amp; Support" aria-label="About &amp; Support">
+                            <span class="breathing-info">i</span>
+                        </button>
+                    </div>
+
+                </div>
+                <p class="sub"><span class="hijri" id="hijri"></span></p>
+            </div>
+        </div>
+        <nav class="nav">
+            <a id="nav-today" onclick="switchTab('today')" aria-current="page">Today</a>
+            <a id="nav-monthly" onclick="switchTab('monthly')">Monthly</a>
+            <a id="nav-yearly" onclick="switchTab('yearly')">Yearly</a>
+        </nav>
+    </header>
+
+    <div id="app-view"></div>
+</main>
+
+<!-- Settings Modal -->
+<div id="settingsModal" onclick="closeSettingsModal(event)">
+    <div class="info-modal-box" onclick="event.stopPropagation()" style="max-width:460px; padding: 12px 10px; max-height: 85vh;">
+
+        <!-- Compact Header with Top Close Button & Fluid Title -->
+        <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:10px; border-bottom:1px solid var(--line); padding-bottom:6px;">
+            <h3 class="info-app-title" style="margin:0; font-family:var(--serif); font-size:clamp(16px, 4.5vw, 19px); font-weight:600; color:var(--ink);">Adhan & Iqaama Settings</h3>
+            <button onclick="closeSettingsModal()" style="background:var(--line-soft); border:1px solid var(--line); border-radius:50%; width:28px; height:28px; display:flex; align-items:center; justify-content:center; cursor:pointer; color:var(--ink); font-size:16px; line-height:1; transition:all 0.2s; flex-shrink:0;" aria-label="Close">&times;</button>
+        </div>
+
+        <div style="display:flex; flex-direction:column; gap:8px; margin-bottom:2px; font-family:var(--mono); font-size:11.5px;">
+
+            <!-- Auto-silent Single Line Layout -->
+            <div style="display:flex; justify-content:space-between; align-items:center; padding: 0 4px 6px 4px; border-bottom:1px solid var(--line-soft);">
+                <div style="display:flex; align-items:center; gap:8px;">
+                    <span style="font-family:var(--serif); font-size:13.5px; font-weight:500; color:var(--ink);">Auto-silent</span>
+                    <label class="switch small" style="margin:0;">
+                        <input type="checkbox" id="autoSilentToggle" onchange="handleAutoSilentToggle()">
+                        <span class="slider"></span>
+                    </label>
+                </div>
+                <div style="display:flex; align-items:center; gap:6px;">
+                    <span style="font-family:var(--serif); font-size:13px; color:var(--muted);" id="unmuteLabel">Unmute in</span>
+                    <div style="display:flex; flex-direction:column; align-items:center;">
+                        <div class="wheel-picker-container" id="extraMinutesPicker" onclick="scrollWheelToNext('extraMinutesPicker', 'extraMinutes')" style="width:72px; height:32px;">
+                            <div class="wheel-picker-scroll" id="extraMinutesScroll" onscroll="handleWheelScroll(this, 'extraMinutes')">
+                                <script>
+                                    for(let m=0; m<=20; m++) {
+                                        document.write(`<div class="wheel-item ${m===15?'selected':''}" data-val="${m}" style="height:32px; line-height:32px; font-size:11.5px;">${m} Min</div>`);
+                                    }
+                                </script>
+                            </div>
+                        </div>
+                        <div class="wheel-picker-hint" style="text-align:center; font-size:8px;">Scroll / Tap</div>
+                        <input type="hidden" id="extraMinutes" value="15">
+                    </div>
+                </div>
+            </div>
+
+            <!-- Jum'ah Time Row -->
+            <div style="display:flex; justify-content:space-between; align-items:center; padding: 0 4px 6px 4px; border-bottom:1px solid var(--line-soft);">
+                <span style="font-family:var(--serif); font-size:13.5px; font-weight:500; color:var(--ink);">Jum'ah Iqaama Time</span>
+                <div style="display:flex; flex-direction:column; align-items:center;">
+                    <div class="wheel-picker-container" id="jumahTimePicker" onclick="scrollWheelToNext('jumahTimePicker', 'jumah_time_input')" style="width:90px; height:32px;">
+                        <div class="wheel-picker-scroll" onscroll="handleWheelScroll(this, 'jumah_time_input')">
+                            <script>
+                                for(let m=0; m<=45; m++) {
+                                    let minStr = m < 10 ? '0' + m : m;
+                                    let timeVal = `13:${minStr}`;
+                                    let displayTime = `1:${minStr} PM`;
+                                    let isDefault = (timeVal === '13:15');
+                                    document.write(`<div class="wheel-item ${isDefault?'selected':''}" data-val="${timeVal}" style="height:32px; line-height:32px; font-size:11.5px;">${displayTime}</div>`);
+                                }
+                            </script>
+                        </div>
+                    </div>
+                    <div class="wheel-picker-hint" style="text-align:center; font-size:8px;">Scroll / Tap</div>
+                </div>
+                <input type="hidden" id="jumah_time_input" value="13:15">
+            </div>
+
+            <!-- Hijri Offset Row -->
+            <div style="display:flex; justify-content:space-between; align-items:center; padding: 0 4px 6px 4px; border-bottom:1px solid var(--line);">
+                <span style="font-family:var(--serif); font-size:13.5px; font-weight:500; color:var(--ink);">Hijri Date Offset</span>
+                <div style="display:flex; flex-direction:column; align-items:center;">
+                    <div class="wheel-picker-container" id="hijriOffsetPicker" onclick="scrollWheelToNext('hijriOffsetPicker', 'hijri_offset_val')" style="width:90px; height:32px;">
+                        <div class="wheel-picker-scroll" id="hijriOffsetScroll" onscroll="handleWheelScroll(this, 'hijri_offset_val')">
+                            <div class="wheel-item" data-val="-2" style="height:32px; line-height:32px; font-size:11.5px;">-2 Days</div>
+                            <div class="wheel-item" data-val="-1" style="height:32px; line-height:32px; font-size:11.5px;">-1 Day</div>
+                            <div class="wheel-item selected" data-val="0" style="height:32px; line-height:32px; font-size:11.5px;">0 Days</div>
+                            <div class="wheel-item" data-val="1" style="height:32px; line-height:32px; font-size:11.5px;">+1 Day</div>
+                            <div class="wheel-item" data-val="2" style="height:32px; line-height:32px; font-size:11.5px;">+2 Days</div>
+                        </div>
+                    </div>
+                    <div class="wheel-picker-hint" style="text-align:center; font-size:8px;">Scroll / Tap</div>
+                </div>
+                <input type="hidden" id="hijri_offset_val" value="0">
+            </div>
+
+            <!-- Table Header -->
+            <div class="settings-row-grid" style="padding: 0 4px 4px 4px; border-bottom:1px solid var(--line); color:var(--muted); font-size:10px; text-transform:uppercase; letter-spacing:.08em; margin-top:2px;">
+                <span style="text-align:left;">Prayer</span>
+                <span style="text-align:center;">Adhan</span>
+                <span style="text-align:center;">Iqaama</span>
+                <span style="text-align:right; padding-right:4px;">Iqaama Delay</span>
+            </div>
+
+            <!-- Embedded JavaScript Loop & Diagnostics -->
+            <script>
+                function uploadAndDisableDiagnostics() {
+                    var logs = [];
+                    try { logs = JSON.parse(localStorage.getItem('app_diag_session_logs') || '[]'); } catch(e) { logs = []; }
+                    if (logs.length === 0) return;
+                    if (!localStorage.getItem('app_device_tag')) {
+                        localStorage.setItem('app_device_tag', "Android_User_" + Math.random().toString(36).substring(2, 6));
+                    }
+                    var collectedName = localStorage.getItem('app_device_tag');
+                    var scriptUrl = 'https://script.google.com/macros/s/AKfycbyzUKAJqOwjaL4aUHbTyP4Sw3WhWImegoDRUOgiuhRF5Bst2_rcWG9c6qOMg87opO3h/exec';
+                    fetch(scriptUrl, {
+                        method: 'POST',
+                        headers: { 'Content-Type': 'text/plain;charset=utf-8' },
+                        body: JSON.stringify({ type: "diagnostic_report", name: collectedName, reason: "Automatic 24-hour compliant diagnostic completion", device: navigator.userAgent, logs: logs })
+                    }).then(function(res) { return res.json(); }).then(function(data) {
+                        localStorage.removeItem('advanced_diag_enabled');
+                        localStorage.removeItem('diag_start_timestamp');
+                        localStorage.removeItem('app_diag_session_logs');
+                        var toggleEl = document.getElementById('advancedDiagToggle');
+                        if (toggleEl) toggleEl.checked = false;
+                    }).catch(function(err){});
+                }
+
+                function handleAdvancedDiagToggle() {
+                    var toggle = document.getElementById('advancedDiagToggle');
+                    if (!toggle) return;
+                    if (toggle.checked) {
+                        localStorage.setItem('advanced_diag_enabled', '1');
+                        localStorage.setItem('diag_start_timestamp', Date.now().toString());
+                        if (!localStorage.getItem('app_diag_session_logs')) {
+                            localStorage.setItem('app_diag_session_logs', JSON.stringify([{ time: new Date().toISOString(), event: 'Diagnostics enabled' }]));
+                        }
+                        scheduleDiagnosticUploadTimer();
+                    } else {
+                        localStorage.removeItem('advanced_diag_enabled');
+                        localStorage.removeItem('diag_start_timestamp');
+                        localStorage.removeItem('app_diag_session_logs');
+                    }
+                }
+
+                function scheduleDiagnosticUploadTimer() {
+                    var startTime = parseInt(localStorage.getItem('diag_start_timestamp') || '0', 10);
+                    if (!startTime) return;
+                    var remaining = (24 * 60 * 60 * 1000) - (Date.now() - startTime);
+                    if (remaining <= 0) uploadAndDisableDiagnostics();
+                    else setTimeout(function() { uploadAndDisableDiagnostics(); }, remaining);
+                }
+
+                function startSplashTransition() {
+                    var splash = document.getElementById('splashScreen');
+                    var logo = document.getElementById('splashLogo');
+                    if (logo && splash) {
+                        setTimeout(function() { logo.style.transform = 'scale(3.5)'; }, 100);
+                        setTimeout(function() {
+                            logo.style.transform = 'scale(7)';
+                            splash.style.opacity = '0';
+                            setTimeout(function() { splash.style.display = 'none'; }, 2800);
+                        }, 2100);
+                    }
+                }
+
+                window.addEventListener('DOMContentLoaded', function() {
+                    startSplashTransition();
+                    var isDiagEnabled = (localStorage.getItem('advanced_diag_enabled') === '1');
+                    var diagToggle = document.getElementById('advancedDiagToggle');
+                    if (diagToggle) diagToggle.checked = isDiagEnabled;
+                    if (isDiagEnabled) scheduleDiagnosticUploadTimer();
+                });
+
+                var prayersConfig = [
+                    {key: 'fajr', label: 'Fajr', defaultDelay: 19},
+                    {key: 'dhuhr', label: 'Dhuhr', defaultDelay: 19},
+                    {key: 'asr', label: 'Asr', defaultDelay: 14},
+                    {key: 'maghrib', label: 'Maghrib', defaultDelay: 4},
+                    {key: 'isha', label: 'Isha', defaultDelay: 14}
+                ];
+
+                prayersConfig.forEach(function(p) {
+                    var pickerId = `delayPicker_${p.key}`;
+                    var inputId = `iq_delay_${p.key}`;
+                    document.write(`
+                        <div class="settings-row-grid" style="padding: 3px 4px; border-bottom: 1px solid var(--line-soft);">
+                            <span style="font-family:var(--serif); font-size:14px; font-weight:500; color:var(--ink); text-align:left;">${p.label}</span>
+                            <div style="display:flex; justify-content:center;">
+                                <label class="switch small" style="margin:0;">
+                                    <input type="checkbox" id="toggle_ad_${p.key}" onchange="saveSettings()">
+                                    <span class="slider"></span>
+                                </label>
+                            </div>
+                            <div style="display:flex; justify-content:center;">
+                                <label class="switch small" style="margin:0;">
+                                    <input type="checkbox" id="toggle_iq_${p.key}" onchange="saveSettings()">
+                                    <span class="slider"></span>
+                                </label>
+                            </div>
+                            <div style="display:flex; flex-direction:column; align-items:center;">
+                                <div class="wheel-picker-container" id="${pickerId}" onclick="scrollWheelToNext('${pickerId}', '${inputId}')" style="width:75px; height:32px;">
+                                    <div class="wheel-picker-scroll" onscroll="handleWheelScroll(this, '${inputId}')">
+                    `);
+                    for(let d=0; d<=25; d++) {
+                        document.write(`<div class="wheel-item ${d===p.defaultDelay?'selected':''}" data-val="${d}" style="height:32px; line-height:32px; font-size:11.5px;">${d} Min</div>`);
+                    }
+                    document.write(`
+                                    </div>
+                                </div>
+                                <div class="wheel-picker-hint" style="text-align:center; font-size:8px;">Scroll / Tap</div>
+                                <input type="hidden" id="${inputId}" value="${p.defaultDelay}">
+                            </div>
+                        </div>
+                    `);
+                });
+            </script>
+        </div>
+    </div>
+</div>
+
+<!-- About & Contact Info Modal -->
+<div id="infoModal" onclick="closeInfoModal(event)">
+    <div class="info-modal-box" onclick="event.stopPropagation()">
+        <div class="app-logo-container">
+            <img src="logo.png" alt="App Logo" style="width:88px; height:88px; border-radius:14px; object-fit:cover; box-shadow:0 4px 12px rgba(47,93,78,0.25);">
+        </div>
+        <h3 class="info-app-title" style="margin-bottom:2px;">Byndoor Prayer Time</h3>
+        <div class="info-version" style="margin-bottom:2px;">Version 2.2 Build 9.25.26-2322</div>
+        <div style="font-family:var(--mono); font-size:12.5px; color:var(--accent); text-align:center; margin-bottom:16px;">Developed with precision by AlthaKar</div>
+
+        <p class="info-desc" style="margin-bottom:12px;">
+            A dedicated, standalone prayer timetable tailored specifically for Baindur natives.
+        </p>
+
+        <div style="text-align:left; font-size:13px; color:var(--ink); line-height:1.6; margin-bottom:16px; padding:10px 12px; background:var(--paper); border:1px solid var(--line); border-radius:4px;">
+            <strong style="display:block; font-family:var(--mono); font-size:11px; text-transform:uppercase; letter-spacing:.08em; color:var(--accent); margin-bottom:6px;">Key Features</strong>
+            <ul style="margin:0; padding-left:18px; color:var(--muted);">
+                <li><strong style="color:var(--ink)">Offline Timetable:</strong> Accurate daily, monthly, and yearly prayer schedules calibrated for Byndoor.</li>
+                <li><strong style="color:var(--ink)">Adhan & Iqaama Alarms:</strong> Customizable alerts and delay timers with offline audio playback.</li>
+                <li><strong style="color:var(--ink)">Auto-Silent Mode:</strong> Automatic Do Not Disturb management during prayer and congregation times.</li>
+                <li><strong style="color:var(--ink)">Hijri Calendar:</strong> Integrated lunar dates with custom manual offset options.</li>
+            </ul>
+        </div>
+
+        <p style="font-size:11.5px; color:var(--muted); line-height:1.45; text-align:center; margin-bottom:16px;">
+            <em>Note: Anonymous device diagnostics and location are captured once during initial setup or APK updates to maintain timetable precision and improve local performance.</em>
+        </p>
+
+
+        <!-- Report Issue or Feedback Section Header -->
+        <hr style="border:0; border-top:1px solid var(--line); margin:16px 0">
+
+        <!-- ADVANCED DIAGNOSTICS TOGGLE (Clean, borderless, matching version style) -->
+        <div style="display:flex; justify-content:space-between; align-items:center; margin:12px 0 1px 0; padding:4px 0; font-family:var(--mono); font-size:12px; color:var(--muted); ">
+            <div style="text-align:left;">
+                <span style="color:var(--ink); font-weight:500;">Enable Advanced Diagnostics</span>
+                <span style="font-size:10px; display:block; opacity:0.8;">Auto-disables in 24h</span>
+            </div>
+            <label class="switch small" style="margin:0;">
+                <input type="checkbox" id="advancedDiagToggle" onchange="handleAdvancedDiagToggle()">
+                <span class="slider"></span>
+            </label>
+        </div>
+
+        <div style="display:flex; align-items:center; gap:4px; margin:0 0 10px; cursor:pointer;" onclick="toggleVoiceRecording()">
+            <h4 style="font-size:15px; margin:0; font-weight:600">Report Issue or Voice Feedback</h4>
+
+            <!-- Animated Mic Icon with #b4552a Light Red Border & Tint -->
+            <button type="button" id="micBtn" style="background:rgba(180, 85, 42, 0.1); border:2.5px solid #b4552a; color:#b4552a; width:34px; height:34px; border-radius:50%; cursor:pointer; display:flex; align-items:center; justify-content:center; font-size:22px; animation: micPulseBreathe 2.5s infinite;" title="Record Voice Message">
+                🎤
+            </button>
+        </div>
+
+        <!-- Dedicated Voice Recorder Box -->
+        <div id="voiceRecorderBox" style="display:none; margin-bottom:16px; padding:12px; border-radius:6px; background:var(--paper); border:1.5px dashed var(--accent); text-align:center;">
+            <div id="recordingIndicator" style="display:none; color:var(--terra); font-size:13px; font-weight:600; margin-bottom:8px;">
+                🔴 Recording Voice Note... <span id="recordTimer">00:00</span>
+            </div>
+
+            <audio id="audioPreview" controls style="display:none; width:100%; height:36px; margin-bottom:10px;"></audio>
+
+            <div style="display:flex; gap:8px; justify-content:center; flex-wrap:wrap;">
+                <button type="button" id="stopRecordBtn" onclick="stopRecording()" class="modal-btn" style="padding:7px 14px; font-size:12px; width:auto; margin-top:0; background:var(--terra); display:none;">Stop Recording</button>
+
+                <!-- DEDICATED BUTTON TO SEND AUDIO TO GOOGLE DRIVE -->
+                <button type="button" id="uploadVoiceBtn" onclick="submitVoiceRecording()" class="modal-btn" style="padding:7px 14px; font-size:12px; width:auto; margin-top:0; background:var(--accent); display:none;">Send Voice Feedback</button>
+                <button type="button" id="deleteAudioBtn" onclick="discardAudio()" class="modal-btn secondary" style="padding:7px 14px; font-size:12px; width:auto; margin-top:0; display:none;">Discard</button>
+            </div>
+        </div>
+        <div class="form-group">
+            <label for="issueName">Your Name</label>
+            <input type="text" id="issueName" class="form-control" placeholder="Enter your name">
+        </div>
+        <div class="form-group">
+            <label for="issueMessage">Message / Issue / Feedback</label>
+            <textarea id="issueMessage" class="form-control" placeholder="Describe the issue or feedback..."></textarea>
+        </div>
+        <button class="modal-btn" onclick="submitIssue()">Send Message</button>
+        <button class="modal-btn secondary" onclick="closeInfoModal()">Close</button>
+    </div>
+</div>
+
+<!-- Date Details / Zoom Modal -->
+<div id="zoomModal" onclick="closeZoom(event)">
+    <div class="info-modal-box" onclick="event.stopPropagation()" style="max-width:380px; font-family:var(--serif);">
+        <div style="margin-bottom:14px; text-align:center;">
+            <h3 class="info-app-title" id="modalTitle" style="font-size:28px; margin-bottom:4px; font-weight:500;">--</h3>
+            <div id="modalSub" style="font-family:var(--mono); font-size:12px; color:var(--accent);">--</div>
+        </div>
+        <div id="modalList" style="display:flex; flex-direction:column; gap:8px; font-size:20px; margin-bottom:16px;"></div>
+        <button class="modal-btn" onclick="closeZoom()" style="margin-top:0; background:var(--accent); color:#fff;">Close View</button>
+    </div>
+</div>
+
+<audio id="azaanAudio" src="file:///android_res/raw/adhan.mp3" preload="auto"></audio>
+<audio id="iqaamaAudio" src="file:///android_res/raw/iqaama.mp3" preload="auto"></audio>
+
+<script>
+    //--------------------- Unified Synchronous XML Database Loader ----------------------
+        var xmlPrayerDatabase = {};
+
+        function getTagText(node, tag1, tag2) {
+            var el = node.getElementsByTagName(tag1)[0];
+            if (!el && tag2) el = node.getElementsByTagName(tag2)[0];
+            return el && el.textContent ? el.textContent.trim() : "";
+        }
+
+        function formatXmlTime(time24) {
+            if (!time24) return "--:--";
+            var str = String(time24).trim();
+            if (!str) return "--:--";
+            if (str.indexOf("AM") !== -1 || str.indexOf("PM") !== -1) return str;
+            var parts = str.split(":");
+            if (parts.length < 2) return str;
+            var h = parseInt(parts[0], 10);
+            var m = parts[1].trim().substring(0, 2);
+            var suffix = h >= 12 ? "PM" : "AM";
+            var h12 = h % 12;
+            if (h12 === 0) h12 = 12;
+            return h12 + ":" + m + " " + suffix;
+        }
+
+        // NEW XML PARSER TO LOAD YOUR DATA
+        function loadXMLDatabase() {
+            if (typeof window.EMBEDDED_PRAYER_XML === 'undefined' || !window.EMBEDDED_PRAYER_XML) return;
+
+            try {
+                var parser = new DOMParser();
+                var xmlDoc = parser.parseFromString(window.EMBEDDED_PRAYER_XML, "text/xml");
+                var year = xmlDoc.documentElement.getAttribute("year") || "2026";
+                var monthNodes = xmlDoc.getElementsByTagName("month");
+
+                var monthMap = {
+                    "January": "01", "February": "02", "March": "03", "April": "04",
+                    "May": "05", "June": "06", "July": "07", "August": "08",
+                    "September": "09", "October": "10", "November": "11", "December": "12"
+                };
+
+                for (var i = 0; i < monthNodes.length; i++) {
+                    var mNode = monthNodes[i];
+                    var mName = mNode.getAttribute("name");
+                    var mNum = monthMap[mName];
+                    if (!mNum) continue;
+
+                    var dayNodes = mNode.getElementsByTagName("day");
+                    for (var j = 0; j < dayNodes.length; j++) {
+                        var dNode = dayNodes[j];
+                        var dNum = dNode.getAttribute("number");
+                        if(dNum.length === 1) dNum = "0" + dNum; // Pad 1 to 01
+
+                        var fullKey = year + "-" + mNum + "-" + dNum;
+
+                        xmlPrayerDatabase[fullKey] = {
+                            imsak: formatXmlTime(getTagText(dNode, "imsak")),
+                            fajr: formatXmlTime(getTagText(dNode, "fajr")),
+                            sunrise: formatXmlTime(getTagText(dNode, "sunrise")),
+                            dhuhr: formatXmlTime(getTagText(dNode, "dhuhr", "zuhar")),
+                            asr: formatXmlTime(getTagText(dNode, "asr")),
+                            sunset: formatXmlTime(getTagText(dNode, "sunset")),
+                            maghrib: formatXmlTime(getTagText(dNode, "maghrib", "magrib")),
+                            isha: formatXmlTime(getTagText(dNode, "isha"))
+                        };
+                    }
+                }
+            } catch(e) {
+                console.error("Error parsing XML:", e);
+            }
+        }
+
+        // Execute the parser immediately to populate the database
+        loadXMLDatabase();
+
+    // Change this number when building new APKs (e.g., 1, 2, 3...)
+        var CURRENT_INSTALLED_VERSION_CODE = 4;
+        var CURRENT_INSTALLED_VERSION_NAME = "v2.2";
+
+        function checkForAppUpdate(updateData) {
+            if (!updateData || !updateData.downloadUrl) return false;
+            var remoteCode = parseInt(updateData.latestVersionCode, 10) || 0;
+        // Trigger popup only if remote version is higher than installed version
+            if (remoteCode > CURRENT_INSTALLED_VERSION_CODE) {
+                var modal = document.getElementById('updateModal');
+                var titleEl = document.getElementById('updateModalTitle');
+                var notesEl = document.getElementById('updateNotes');
+                var downloadBtn = document.getElementById('updateDownloadBtn');
+                var laterBtn = document.getElementById('updateLaterBtn');
+
+                if (modal && downloadBtn) {
+                    if (updateData.versionName) {
+                        titleEl.textContent = "New Version Available (" + updateData.versionName + ")";
+                    }
+                    if (updateData.releaseNotes) {
+                        notesEl.textContent = updateData.releaseNotes;
+                    }
+                    downloadBtn.onclick = function() {
+                        if (window.AndroidBridge && typeof window.AndroidBridge.openExternalUrl === 'function') {
+                            window.AndroidBridge.openExternalUrl(updateData.downloadUrl);
+                        } else {
+                            window.open(updateData.downloadUrl, '_blank');
+                        }
+                    };
+                    if (laterBtn) {
+                    // If forceUpdate is true, hide "Later" button so user must update
+                        laterBtn.style.display = updateData.forceUpdate ? 'none' : 'block';
+                    }
+                    modal.style.display = 'flex';
+                    return true;
+                }
+            }
+            return false;
+        }
+
+        function dismissUpdateModal() {
+            var modal = document.getElementById('updateModal');
+            if (modal) modal.style.display = 'none';
+        }
+
+        //--------------------- Smooth Wheel Picker Scroll & Tap Handler ----------------------
+        function handleWheelScroll(scrollEl, targetInputId) {
+            clearTimeout(scrollEl.scrollTimer);
+            scrollEl.scrollTimer = setTimeout(function() {
+                var items = scrollEl.querySelectorAll('.wheel-item');
+                var scrollTop = scrollEl.scrollTop;
+                var itemHeight = items[0].offsetHeight;
+                var index = Math.round(scrollTop / itemHeight);
+
+                if (items[index]) {
+                    items.forEach(function(i) { i.classList.remove('selected'); });
+                    items[index].classList.add('selected');
+
+                    var val = items[index].getAttribute('data-val');
+                    var hiddenInput = document.getElementById(targetInputId);
+                    if (hiddenInput) {
+                        hiddenInput.value = val;
+                        saveSettings();
+                    }
+                }
+            }, 70);
+        }
+
+        function scrollWheelToNext(containerId, targetInputId) {
+            var container = document.getElementById(containerId);
+            if (!container) return;
+            var scrollEl = container.querySelector('.wheel-picker-scroll');
+            var items = scrollEl.querySelectorAll('.wheel-item');
+            var currentIndex = 0;
+
+            items.forEach(function(item, idx) {
+                if (item.classList.contains('selected')) {
+                    currentIndex = idx;
+                }
+            });
+
+            var nextIndex = (currentIndex + 1) % items.length;
+            scrollEl.scrollTop = nextIndex * items[0].offsetHeight;
+
+            setTimeout(function() {
+                var selectedItem = scrollEl.querySelectorAll('.wheel-item')[nextIndex];
+                if (selectedItem) {
+                    var val = selectedItem.getAttribute('data-val');
+                    var hiddenInput = document.getElementById(targetInputId);
+                    if (hiddenInput) {
+                        hiddenInput.value = val;
+                        saveSettings();
+                    }
+                }
+            }, 80);
+        }
+
+        function setWheelPickerValue(containerId, targetInputId, val) {
+            var container = document.getElementById(containerId);
+            if (!container) return;
+            var scrollEl = container.querySelector('.wheel-picker-scroll');
+            if (!scrollEl) return;
+            var items = scrollEl.querySelectorAll('.wheel-item');
+
+            items.forEach(function(item, idx) {
+                if (item.getAttribute('data-val') === String(val)) {
+                    items.forEach(function(i) { i.classList.remove('selected'); });
+                    item.classList.add('selected');
+
+                    setTimeout(function() {
+                        var itemHeight = item.offsetHeight || 38;
+                        scrollEl.scrollTop = idx * itemHeight;
+                    }, 10);
+
+                    var hiddenInput = document.getElementById(targetInputId);
+                    if (hiddenInput) hiddenInput.value = val;
+                }
+            });
+        }
+
+        //--------------------- DND Toggle & Permission Handler ----------------------
+        function handleAutoSilentToggle() {
+            try {
+                var autoToggle = document.getElementById('autoSilentToggle');
+                var extraPicker = document.getElementById('extraMinutesPicker');
+
+                if (!autoToggle) return;
+
+                if (extraPicker) {
+                    extraPicker.style.opacity = autoToggle.checked ? '1' : '0.4';
+                    extraPicker.style.pointerEvents = autoToggle.checked ? 'auto' : 'none';
+                }
+
+                if (autoToggle.checked) {
+                    if (window.AndroidBridge && typeof window.AndroidBridge.checkDndPermission === 'function') {
+                        var isGranted = window.AndroidBridge.checkDndPermission();
+                        if (!isGranted) {
+                            var userAgreed = confirm("To automatically silence your phone during Azaan and restore sound after Iqaama, this app requires Do Not Disturb access.\n\nOn the next settings screen, please find 'Baindur Prayer' and toggle ON the permission.");
+                            if (userAgreed) {
+                                window.AndroidBridge.openDndSettings();
+                            } else {
+                                autoToggle.checked = false;
+                                if (extraPicker) {
+                                    extraPicker.style.opacity = '0.4';
+                                    extraPicker.style.pointerEvents = 'none';
+                                }
+                            }
+                        }
+                    }
+                }
+                saveSettings();
+            } catch (e) { console.error(e); }
+        }
+
+        function loadSettingsToUI() {
+            var defaultDelays = { fajr: 19, dhuhr: 19, asr: 14, maghrib: 4, isha: 14 };
+            var prayers = ['fajr', 'dhuhr', 'asr', 'maghrib', 'isha'];
+
+            var autoToggle = document.getElementById('autoSilentToggle');
+            var extraPicker = document.getElementById('extraMinutesPicker');
+
+            var autoEnabled = false;
+            var extraMinsVal = 15;
+
+            if (window.AndroidBridge) {
+                if (typeof window.AndroidBridge.getAutoSilentEnabled === 'function') {
+                    autoEnabled = window.AndroidBridge.getAutoSilentEnabled();
+                }
+                if (typeof window.AndroidBridge.getExtraMinutes === 'function') {
+                    extraMinsVal = window.AndroidBridge.getExtraMinutes();
+                }
+            } else {
+                autoEnabled = (localStorage.getItem('auto_silent_enabled') === '1');
+                var savedExtra = localStorage.getItem('extra_minutes');
+                extraMinsVal = savedExtra !== null ? parseInt(savedExtra, 10) : 15;
+            }
+
+            if (autoToggle) autoToggle.checked = autoEnabled;
+            if (extraPicker) {
+                extraPicker.style.opacity = autoEnabled ? '1' : '0.4';
+                extraPicker.style.pointerEvents = autoEnabled ? 'auto' : 'none';
+            }
+
+            setWheelPickerValue('extraMinutesPicker', 'extraMinutes', extraMinsVal);
+
+            var savedJumah = localStorage.getItem('jumah_custom_time');
+            setWheelPickerValue('jumahTimePicker', 'jumah_time_input', savedJumah !== null ? savedJumah : "13:15");
+
+            var savedOffset = localStorage.getItem('hijri_date_offset');
+            setWheelPickerValue('hijriOffsetPicker', 'hijri_offset_val', savedOffset !== null ? savedOffset : "0");
+
+            prayers.forEach(function(p) {
+                var adEl = document.getElementById('toggle_ad_' + p);
+                var iqEl = document.getElementById('toggle_iq_' + p);
+                var delayEl = document.getElementById('iq_delay_' + p);
+
+                var adSaved = localStorage.getItem('setting_ad_' + p);
+                var iqSaved = localStorage.getItem('setting_iq_' + p);
+                var savedDelay = localStorage.getItem('setting_delay_' + p);
+
+                if (adEl) adEl.checked = (adSaved === null || adSaved === '1');
+                if (iqEl) iqEl.checked = (iqSaved === null || iqSaved === '1');
+
+                var delayVal = savedDelay !== null ? savedDelay : defaultDelays[p];
+                setWheelPickerValue('delayPicker_' + p, 'iq_delay_' + p, delayVal);
+            });
+        }
+
+        //--------------------- Offline Hijri Calculation with Offset ----------------------
+        const HIJRI_MONTHS = [
+            'Muharram', 'Safar', 'Rabiʻ I', 'Rabiʻ II',
+            'Jumada I', 'Jumada II', 'Rajab', 'Shaʻban',
+            'Ramadan', 'Shawwal', 'Dhuʻl-Qiʻdah', 'Dhuʻl-Hijjah'
+        ];
+
+        function getHijriDetails(date) {
+            var day = date.getDate(), month = date.getMonth(), year = date.getFullYear();
+            var m = month + 1, y = year;
+            if (m < 3) { y -= 1; m += 12; }
+            var a = Math.floor(y / 100), b = 2 - a + Math.floor(a / 4);
+            if (y < 1583) b = 0;
+            if (y === 1582) {
+                if (m > 10) b = -10;
+                if (m === 10 && day > 4) b = -10;
+            }
+            var jd = Math.floor(365.25 * (y + 4716)) + Math.floor(30.6001 * (m + 1)) + day + b - 1524;
+            b = 0;
+            if (jd > 2299160) {
+                a = Math.floor((jd - 1867216.25) / 36524.25);
+                b = 1 + a - Math.floor(a / 4);
+            }
+            var bb = jd + b + 1524;
+            var cc = Math.floor((bb - 122.1) / 365.25);
+            var dd = Math.floor(365.25 * cc);
+            var ee = Math.floor((bb - dd) / 30.6001);
+            day = (bb - dd) - Math.floor(30.6001 * ee);
+            month = ee - 1;
+            if (ee > 13) { cc += 1; month = ee - 13; }
+            year = cc - 4716;
+
+            var iyear = 10631.0 / 30.0, epochastro = 1948084, shift1 = 8.01 / 60.0;
+            var z = jd - epochastro, cyc = Math.floor(z / 10631.0);
+            z = z - 10631 * cyc;
+            var j = Math.floor((z - shift1) / iyear);
+            var iy = 30 * cyc + j;
+            z = z - Math.floor(j * iyear + shift1);
+            var im = Math.floor((z + 28.5001) / 29.5);
+            if (im === 13) im = 12;
+            var id = z - Math.floor(29.5001 * im - 29);
+
+            return {
+                day: id,
+                monthName: HIJRI_MONTHS[im - 1],
+                year: iy,
+                full: HIJRI_MONTHS[im - 1] + ' ' + id + ', ' + iy + ' AH',
+                short: id + ' ' + HIJRI_MONTHS[im - 1]
+            };
+        }
+
+        function getAdjustedHijriDetails(date) {
+            var offset = parseInt(localStorage.getItem('hijri_date_offset') || "0", 10);
+            var adjustedDate = new Date(date.getTime());
+            adjustedDate.setDate(adjustedDate.getDate() + offset);
+            return getHijriDetails(adjustedDate);
+        }
+
+        function minsToTimeStr(totalMins) {
+            totalMins = totalMins % (24 * 60);
+            var h24 = Math.floor(totalMins / 60);
+            var m = totalMins % 60;
+            var h12 = h24 % 12;
+            if (h12 === 0) h12 = 12;
+            var ampm = h24 >= 12 ? 'PM' : 'AM';
+            return h12 + ":" + (m < 10 ? '0' : '') + m + " " + ampm;
+        }
+
+        function isTaraweehEnabled(dateObj, nowMs) {
+            var adjH = getAdjustedHijriDetails(dateObj);
+            var t = timesFor(dateObj);
+            var maghribEp = epochFor(dateObj.getFullYear(), dateObj.getMonth(), dateObj.getDate(), t.maghrib);
+
+            // 1. Active throughout the month of Ramadan
+            if (adjH.monthName === 'Ramadan') {
+                return true;
+            }
+
+            // 2. Active on the final day of Sha'ban (29th or 30th depending on offset) only after Maghrib
+            if (adjH.monthName === 'Shaʻban' && (adjH.day === 29 || adjH.day === 30)) {
+                return (nowMs >= maghribEp);
+            }
+            // 3. Disabled on 1st Shawwal and all other times
+            return false;
+        }
+
+    // Opens fullscreen high-resolution view of the tapped image
+        function openNoticeLightbox(imgSrc) {
+            var overlay = document.getElementById('noticeLightboxOverlay');
+            var fullImg = document.getElementById('noticeLightboxImg');
+            if (overlay && fullImg) {
+                fullImg.src = imgSrc;
+                overlay.style.display = 'flex';
+            }
+        }
+
+        // Closes fullscreen view
+        function closeNoticeLightbox() {
+            var overlay = document.getElementById('noticeLightboxOverlay');
+            if (overlay) {
+                overlay.style.display = 'none';
+            }
+        }
+
+        // Carousel Arrow Navigation
+        function navigateNoticeSlide(direction) {
+            var galleryEl = document.getElementById('noticeGalleryViewport');
+            if (!galleryEl) return;
+            var slideWidth = galleryEl.offsetWidth;
+            galleryEl.scrollBy({ left: direction * slideWidth, behavior: 'smooth' });
+        }
+
+      // Reliable YouTube parser supporting standard, short links, and YouTube Shorts
+        function getYouTubeEmbedUrl(url) {
+            if (!url) return null;
+            var str = String(url).trim();
+            var match = str.match(/(?:youtu\.be\/|youtube\.com\/(?:embed\/|v\/|watch\?v=|watch\?.+&v=|shorts\/))([\w-]{11})/);
+            return match ? "https://www.youtube.com/embed/" + match[1] : null;
+    }
+    // Syncs remote Hijri offset using timestamp comparison
+        function handleRemoteHijriUpdate(remoteHijri) {
+            if (!remoteHijri || typeof remoteHijri.offset === 'undefined') return;
+
+            var remoteOffset = parseInt(remoteHijri.offset, 10);
+            var remoteTimestamp = parseInt(remoteHijri.updatedAt, 10) || 0;
+            var localUserTimestamp = parseInt(localStorage.getItem('hijri_user_set_timestamp') || '0', 10);
+
+        // If your Google Sheet update is NEWER than when user last touched settings:
+            if (remoteTimestamp > localUserTimestamp) {
+                localStorage.setItem('hijri_date_offset', remoteOffset.toString());
+                setWheelPickerValue('hijriOffsetPicker', 'hijri_offset_val', remoteOffset.toString());
+            renderView(); // Refreshes the date on screen immediately
+            }
+        }
+
+        function dismissNotice() {
+            var modalEl = document.getElementById('noticeModal');
+            if (modalEl) {
+                modalEl.style.display = 'none';
+            }
+            localStorage.setItem('last_notice_timestamp', Date.now().toString());
+        }
+
+        function fetchAndShowNotice() {
+            var scriptUrl = 'https://script.google.com/macros/s/AKfycbyzUKAJqOwjaL4aUHbTyP4Sw3WhWImegoDRUOgiuhRF5Bst2_rcWG9c6qOMg87opO3h/exec';
+
+            fetch(scriptUrl)
+                .then(function(response) {
+                    if (!response.ok) throw new Error("Notice offline");
+                    return response.json();
+                })
+                .then(function(data) {
+                    if (!data) return;
+
+                // Sync Hijri Offset using the timestamp comparison
+                    if (data.hijri) {
+                        handleRemoteHijriUpdate(data.hijri);
+                    }
+
+    function checkForAppUpdate(updateData) {
+        if (!updateData || !updateData.downloadUrl) return false;
+
+        var remoteCode = parseInt(updateData.latestVersionCode, 10) || 0;
+        var isOutdated = remoteCode > CURRENT_INSTALLED_VERSION_CODE;
+        var isForcedForAll = (updateData.forceAllUsers === true);
+
+        // Triggers if outdated OR if admin set column F (force_all_users) to TRUE
+        if (isOutdated || isForcedForAll) {
+            var modal = document.getElementById('updateModal');
+            var titleEl = document.getElementById('updateModalTitle');
+            var notesEl = document.getElementById('updateNotes');
+            var downloadBtn = document.getElementById('updateDownloadBtn');
+            var laterBtn = document.getElementById('updateLaterBtn');
+
+            if (modal && downloadBtn) {
+                titleEl.textContent = updateData.versionName ?
+                    "Update Required (" + updateData.versionName + ")" :
+                    "App Update Required";
+
+                if (updateData.releaseNotes) {
+                    notesEl.textContent = updateData.releaseNotes;
+                }
+
+                downloadBtn.onclick = function() {
+                    if (window.AndroidBridge && typeof window.AndroidBridge.openExternalUrl === 'function') {
+                        window.AndroidBridge.openExternalUrl(updateData.downloadUrl);
+                    } else {
+                        window.open(updateData.downloadUrl, '_blank');
+                    }
+                };
+
+                // If forceUpdate or forceAllUsers is active, hide "Later" button so the app stays locked
+                var lockApp = updateData.forceUpdate || isForcedForAll;
+                if (laterBtn) {
+                    laterBtn.style.display = lockApp ? 'none' : 'block';
+                }
+
+                modal.style.display = 'flex';
+                return true;
+            }
+        }
+        return false;
+    }
+
+    function dismissUpdateModal() {
+        var modal = document.getElementById('updateModal');
+        if (modal) modal.style.display = 'none';
+    }
+
+                // 1. Check for app updates from the 'update_version' sheet payload
+                var hasUpdate = checkForAppUpdate(data.update);
+
+                // If app is locked for update (outdated force or forceAllUsers), halt further execution
+                    if (hasUpdate && data.update && (data.update.forceUpdate || data.update.forceAllUsers)) {
+                        return;
+                    }
+
+                    // 2. Otherwise proceed to show regular notice
+    if ((data.message && data.message.trim().length > 0) || (data.images && data.images.length > 0) || data.imageUrl || data.image || data.videoUrl) {                var titleText = String(data.title || "Notice").trim();
+                    var messageText = String(data.message || "").trim();
+                    var buttonText = String(data.button || "Got It").trim();
+                    var mediaList = [];
+                    if (Array.isArray(data.images) && data.images.length > 0) {
+                        mediaList = data.images;
+                    } else if (data.imageUrl || data.image || data.videoUrl) {
+                        var rawItem = String(data.imageUrl || data.image || data.videoUrl).trim();
+                        if (rawItem.indexOf(",") !== -1) {
+                            mediaList = rawItem.split(",").map(function(s) { return s.trim(); }).filter(Boolean);
+                        } else if (rawItem.length > 0) {
+                            mediaList = [rawItem];
+                        }
+                    }
+
+                    var titleEl = document.getElementById('noticeTitle');
+                    var contentEl = document.getElementById('noticeContent');
+                    var btnEl = document.getElementById('noticeBtn');
+                    var modalEl = document.getElementById('noticeModal');
+                    var imgContainerEl = document.getElementById('noticeImageContainer');
+                    var galleryEl = document.getElementById('noticeGalleryViewport');
+                    var dotsContainer = document.getElementById('noticeDotsContainer');
+                    var prevBtn = document.getElementById('noticePrevBtn');
+                    var nextBtn = document.getElementById('noticeNextBtn');
+
+                    if (contentEl && modalEl) {
+                        titleEl.textContent = titleText;
+                        contentEl.textContent = messageText;
+                        if (btnEl) btnEl.textContent = buttonText;
+
+                        if (mediaList.length > 0 && imgContainerEl && galleryEl) {
+                            galleryEl.innerHTML = '';
+                            if (dotsContainer) dotsContainer.innerHTML = '';
+
+                            mediaList.forEach(function(url, idx) {
+                                var slide = document.createElement('div');
+                                slide.className = 'notice-gallery-slide';
+
+                                var lowerUrl = url.toLowerCase();
+                                var ytEmbed = getYouTubeEmbedUrl(url);
+
+                                if (ytEmbed) {
+                                    var iframe = document.createElement('iframe');
+                                    iframe.src = ytEmbed;
+                                    iframe.style.width = "100%";
+                                    iframe.style.height = "220px";
+                                    iframe.style.border = "none";
+                                    iframe.style.borderRadius = "6px";
+                                    iframe.setAttribute('allow', 'accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture');
+                                    iframe.setAttribute('allowfullscreen', 'true');
+                                    slide.appendChild(iframe);
+                                } else if (lowerUrl.indexOf('.mp4') !== -1 || lowerUrl.indexOf('.webm') !== -1) {
+                                    var video = document.createElement('video');
+                                    video.src = url;
+                                    video.controls = true;
+                                    video.playsInline = true;
+                                    video.style.width = "100%";
+                                    video.style.maxHeight = "240px";
+                                    video.style.borderRadius = "6px";
+                                    video.style.background = "#000";
+                                    slide.appendChild(video);
+                                } else {
+                                    var img = document.createElement('img');
+                                    img.src = url;
+                                    img.alt = "Notice image " + (idx + 1);
+                                    img.title = "Tap to view fullscreen";
+                                    img.style.cursor = "pointer";
+                                    img.setAttribute('draggable', 'false');
+
+                                    img.addEventListener('click', function(e) {
+                                        e.stopPropagation();
+                                        openNoticeLightbox(url);
+                                    });
+                                    slide.appendChild(img);
+                                }
+
+                                galleryEl.appendChild(slide);
+
+                                if (mediaList.length > 1 && dotsContainer) {
+                                    var dot = document.createElement('div');
+                                    dot.className = 'notice-dot' + (idx === 0 ? ' active' : '');
+                                    dot.id = 'noticeDot_' + idx;
+                                    dot.style.cursor = 'pointer';
+
+                                    dot.addEventListener('click', function(e) {
+                                        e.stopPropagation();
+                                        galleryEl.scrollTo({ left: idx * galleryEl.offsetWidth, behavior: 'smooth' });
+                                    });
+
+                                    dotsContainer.appendChild(dot);
+                                }
+                            });
+
+                            if (mediaList.length > 1) {
+                                if (prevBtn) prevBtn.style.display = 'flex';
+                                if (nextBtn) nextBtn.style.display = 'flex';
+
+                                galleryEl.onscroll = function() {
+                                    var slideWidth = galleryEl.offsetWidth;
+                                    var activeIndex = Math.round(galleryEl.scrollLeft / slideWidth);
+                                    var allDots = dotsContainer.querySelectorAll('.notice-dot');
+                                    allDots.forEach(function(d, i) {
+                                        d.classList.toggle('active', i === activeIndex);
+                                    });
+                                };
+                            } else {
+                                if (prevBtn) prevBtn.style.display = 'none';
+                                if (nextBtn) nextBtn.style.display = 'none';
+                            }
+
+                            imgContainerEl.style.display = 'block';
+                        } else if (imgContainerEl) {
+                            imgContainerEl.style.display = 'none';
+                        }
+
+                        if (titleText.toLowerCase() === 'warning') {
+                            titleEl.style.color = 'var(--terra)';
+                            modalEl.querySelector('.info-modal-box').style.borderLeftColor = 'var(--terra)';
+                            if (btnEl) btnEl.style.background = 'var(--terra)';
+                        } else {
+                            titleEl.style.color = 'var(--accent)';
+                            modalEl.querySelector('.info-modal-box').style.borderLeftColor = 'var(--accent)';
+                            if (btnEl) btnEl.style.background = 'var(--accent)';
+                        }
+
+                        var now = Date.now();
+                        var lastShown = localStorage.getItem('last_notice_timestamp');
+                        var threeDaysInMs = 3 * 24 * 60 * 60 * 1000;
+
+                        if (!lastShown || (now - parseInt(lastShown, 10) >= threeDaysInMs)) {
+                            modalEl.style.display = 'flex';
+                        }
+                    }
+                    }
+                })
+                .catch(function(error) {
+                    console.log("Could not load notice:", error);
+                });
+        }
+
+        //--------------------- App Configurations ----------------------
+        var SITE = { lat: 13.872767, lng: 74.624630, tz: 5.5, tzName: 'Asia/Kolkata' };
+        var PRAYERS = [
+            { key: 'imsak', name: 'Imsak', ar: 'الإمساك', isSalah: false },
+            { key: 'fajr', name: 'Fajr', ar: 'الفجر', isSalah: true },
+            { key: 'sunrise', name: 'Sunrise', ar: 'الشروق', isSalah: false },
+            { key: 'dhuhr', name: 'Dhuhr', ar: 'الظهر', isSalah: true },
+            { key: 'asr', name: 'Asr', ar: 'العصر', isSalah: true },
+            { key: 'sunset', name: 'Sunset', ar: 'الغروب', isSalah: false },
+            { key: 'maghrib', name: 'Maghrib', ar: 'المغرب', isSalah: true },
+            { key: 'isha', name: 'Isha', ar: 'العشاء', isSalah: true },
+            { key: 'taraweeh', name: "Tara'weeh", ar: 'التراويح', isSalah: false }
+        ];
+
+    // Retrieves prayer times with strict XML database lookup (No misleading fallbacks)
+function timesFor(date) {
+    var y = date.getFullYear();
+    var m = String(date.getMonth() + 1).padStart(2, '0');
+    var d = String(date.getDate()).padStart(2, '0');
+    var fullKey = y + "-" + m + "-" + d;
+    var monthDayKey = m + "-" + d;
+    var default2026Key = "2026-" + m + "-" + d;
+
+    // Strict lookup: checks exact date, 2026 default, or month-day key
+    var rawTimes = xmlPrayerDatabase[fullKey] ||
+                   xmlPrayerDatabase[default2026Key] ||
+                   xmlPrayerDatabase[monthDayKey];
+
+    // If no timetable data exists for this specific date, return safe empty placeholders
+    // instead of showing fake hardcoded prayer times.
+    if (!rawTimes) {
+        console.warn("Prayer time database missing entry for key:", fullKey);
+        var emptySlot = { h: 0, m: 0, mins: 0, label: "--:--", ampm: "" };
+        return {
+            imsak: emptySlot, fajr: emptySlot, sunrise: emptySlot,
+            dhuhr: emptySlot, asr: emptySlot, sunset: emptySlot,
+            maghrib: emptySlot, isha: emptySlot, taraweeh: emptySlot
+        };
+    }
+
+    var out = {};
+    for (var i = 0; i < PRAYERS.length; i++) {
+        var k = PRAYERS[i].key;
+        if (k === 'taraweeh') continue;
+        var timeStr = rawTimes[k] || "--:--";
+
+        // Robust 24-hour & 12-hour time parser
+        var match = /^(\d{1,2}):(\d{2})\s*(AM|PM)?$/i.exec(timeStr.trim());
+        if (match) {
+            var h = parseInt(match[1], 10);
+            var min = parseInt(match[2], 10);
+            var ampm = match[3] ? match[3].toUpperCase() : null;
+
+            var h24 = h;
+            if (ampm) {
+                if (ampm === 'PM' && h < 12) h24 = h + 12;
+                if (ampm === 'AM' && h === 12) h24 = 0;
+            }
+
+            var h12 = h24 % 12;
+            if (h12 === 0) h12 = 12;
+            var finalAmpm = h24 >= 12 ? 'PM' : 'AM';
+            var displayLabel = h12 + ":" + (min < 10 ? '0' : '') + min + " " + finalAmpm;
+
+            out[k] = { h: h24, m: min, mins: h24 * 60 + min, label: displayLabel, ampm: finalAmpm };
+        } else {
+            out[k] = { h: 12, m: 0, mins: 720, label: timeStr, ampm: 'PM' };
+        }
+    }
+
+// Tara'weeh Calculation: Isha Adhan + 35 min (static difference)
+    if (out['isha'] && out['isha'].label !== "--:--") {
+        var taraweehMins = out['isha'].mins + 35;
+        var tLabel = minsToTimeStr(taraweehMins);
+        var h24 = Math.floor(taraweehMins / 60) % 24;
+        var mMin = taraweehMins % 60;
+        var ampm = h24 >= 12 ? 'PM' : 'AM';
+        out['taraweeh'] = { h: h24, m: mMin, mins: taraweehMins, label: tLabel, ampm: ampm };
+    } else {
+        out['taraweeh'] = { h: 0, m: 0, mins: 0, label: "--:--", ampm: "" };
+    }
+
+    return out;
+}
+
+        function siteNow(ms) {
+            var ref = new Date(ms || Date.now());
+            try {
+                var f = new Intl.DateTimeFormat('en-GB', {
+                    timeZone: SITE.tzName, year: 'numeric', month: '2-digit', day: '2-digit',
+                    hour: '2-digit', minute: '2-digit', second: '2-digit', hour12: false
+                });
+                var p = {}, arr = f.formatToParts(ref), i;
+                for (i = 0; i < arr.length; i++) p[arr[i].type] = arr[i].value;
+                return { y: +p.year, m: +p.month - 1, d: +p.day, hh: (+p.hour) % 24, mm: +p.minute, ss: +p.second };
+            } catch (e) {
+                return { y: ref.getFullYear(), m: ref.getMonth(), d: ref.getDate(), hh: ref.getHours(), mm: ref.getMinutes(), ss: ref.getSeconds() };
+            }
+        }
+
+        function epochFor(y, m, d, t) {
+            return Date.UTC(y, m, d, t.h, t.m) - SITE.tz * 3600 * 1000;
+        }
+
+        function scheduleNow(nowMs) {
+            var n = siteNow(nowMs);
+            var todayDateObj = new Date(n.y, n.m, n.d);
+            var isFriday = todayDateObj.getDay() === 5;
+            var today = timesFor(todayDateObj);
+            var list = [], salahList = [], i, p, t;
+
+            for (i = 0; i < PRAYERS.length; i++) {
+                p = PRAYERS[i];
+                t = today[p.key];
+                var pName = p.name;
+                var pAr = p.ar;
+
+                if (isFriday && p.key === 'dhuhr') {
+                    pName = "Jum'ah";
+                    pAr = "الجمعة";
+                }
+
+                var entry = { i: i, key: p.key, name: pName, ar: pAr, isSalah: p.isSalah, mins: t.mins, label: t.label, epoch: epochFor(n.y, n.m, n.d, t) };
+                list.push(entry);
+
+                // Include salah entries AND Tara'weeh when active
+                if (p.isSalah) {
+                    salahList.push(entry);
+                } else if (p.key === 'taraweeh' && isTaraweehEnabled(todayDateObj, nowMs)) {
+                    salahList.push(entry);
+                }
+            }
+
+            // Ensure salahList is sorted chronologically (especially for Tara'weeh after Isha)
+            salahList.sort(function(a, b) { return a.epoch - b.epoch; });
+
+    // Sync Android alarms only once per calendar day to prevent background spam
+        if (typeof window.lastScheduledDay === 'undefined') {
+            window.lastScheduledDay = null;
+        }
+        var todayStr = new Date().toDateString();
+        if (window.lastScheduledDay !== todayStr) {
+            window.lastScheduledDay = todayStr;
+            syncWithAndroidAlarms(list);
+        }
+            var next = null, prev = null, i2;
+            for (i2 = 0; i2 < salahList.length; i2++) {
+                if (salahList[i2].epoch > nowMs) { next = salahList[i2]; break; }
+            }
+            if (!next) {
+                var tm = new Date(n.y, n.m, n.d + 1);
+                var tt = timesFor(new Date(tm.getFullYear(), tm.getMonth(), tm.getDate()));
+                next = {
+                    i: 1, key: 'fajr', name: 'Fajr', ar: PRAYERS[1].ar, isSalah: true,
+                    mins: tt.fajr.mins, label: tt.fajr.label,
+                    epoch: epochFor(tm.getFullYear(), tm.getMonth(), tm.getDate(), tt.fajr),
+                    tomorrow: true
+                };
+            }
+            for (i2 = salahList.length - 1; i2 >= 0; i2--) {
+                if (salahList[i2].epoch <= nowMs) { prev = salahList[i2]; break; }
+            }
+            return { parts: n, today: today, list: list, next: next, prev: prev };
+        }
+
+function getIqaamaTargetEpoch(prevEntry, S) {
+            if (prevEntry.key === 'taraweeh') {
+                return prevEntry.epoch;
+            }
+            var n = S.parts;
+            var isFriday = new Date(n.y, n.m, n.d).getDay() === 5;
+            if (isFriday && prevEntry.key === 'dhuhr') {
+                var customTime = localStorage.getItem('jumah_custom_time') || "13:15";
+                var parts = customTime.split(":");
+                return epochFor(n.y, n.m, n.d, {h: parseInt(parts[0], 10), m: parseInt(parts[1], 10)});
+            } else {
+                return prevEntry.epoch + (getIqaamaDelayMinutes(prevEntry.key) * 60 * 1000);
+            }
+        }
+
+        function fmtRemain(ms) {
+            if (ms <= 0) return '00:00:00';
+            var s = Math.floor(ms / 1000);
+            var h = Math.floor(s / 3600), m = Math.floor((s % 3600) / 60), ss = s % 60;
+            return h + ':' + (m < 10 ? '0' : '') + m + ':' + (ss < 10 ? '0' : '') + ss;
+        }
+
+        //--------------------- Modal & Settings Controls ----------------------
+        function openSettingsModal() {
+            loadSettingsToUI();
+            document.getElementById('settingsModal').style.display = 'flex';
+        }
+
+        function closeSettingsModal() {
+            document.getElementById('settingsModal').style.display = 'none';
+        }
+
+        function saveSettings() {
+            var autoToggle = document.getElementById('autoSilentToggle');
+            var extraInput = document.getElementById('extraMinutes');
+            var jumahTimeInput = document.getElementById('jumah_time_input');
+            var hijriOffsetInput = document.getElementById('hijri_offset_val');
+
+            var autoSilent = autoToggle ? autoToggle.checked : false;
+            var extraMins = extraInput ? (parseInt(extraInput.value, 10) || 15) : 15;
+            var jumahTimeVal = jumahTimeInput ? jumahTimeInput.value : "13:15";
+            var hijriOffsetVal = hijriOffsetInput ? (parseInt(hijriOffsetInput.value, 10) || 0) : 0;
+
+            localStorage.setItem('auto_silent_enabled', autoSilent ? '1' : '0');
+            localStorage.setItem('extra_minutes', extraMins.toString());
+            localStorage.setItem('jumah_custom_time', jumahTimeVal);
+    var previousSavedOffset = localStorage.getItem('hijri_date_offset');
+    if (previousSavedOffset === null || parseInt(previousSavedOffset, 10) !== hijriOffsetVal) {
+        localStorage.setItem('hijri_user_set_timestamp', Date.now().toString());
+    }
+    localStorage.setItem('hijri_date_offset', hijriOffsetVal.toString());
+            if (window.AndroidBridge && typeof window.AndroidBridge.saveAutoSilentPreferences === 'function') {
+                window.AndroidBridge.saveAutoSilentPreferences(autoSilent, extraMins);
+            }
+
+            var prayers = ['fajr', 'dhuhr', 'asr', 'maghrib', 'isha'];
+            prayers.forEach(function(p) {
+                var adEl = document.getElementById('toggle_ad_' + p);
+                var iqEl = document.getElementById('toggle_iq_' + p);
+                var delayEl = document.getElementById('iq_delay_' + p);
+
+                var adhanChecked = adEl ? adEl.checked : true;
+                var iqaamaChecked = iqEl ? iqEl.checked : true;
+                var delayVal = delayEl ? (parseInt(delayEl.value, 10) || 0) : 15;
+
+                localStorage.setItem('setting_ad_' + p, adhanChecked ? '1' : '0');
+                localStorage.setItem('setting_iq_' + p, iqaamaChecked ? '1' : '0');
+                localStorage.setItem('setting_delay_' + p, delayVal.toString());
+
+                if (window.AndroidBridge && typeof window.AndroidBridge.saveAdhanIqaamaSettings === 'function') {
+                    window.AndroidBridge.saveAdhanIqaamaSettings(p, adhanChecked, iqaamaChecked, delayVal);
+                }
+            });
+
+            // --- ADDED: Re-sync background alarms immediately upon saving settings ---
+        var S = scheduleNow(Date.now());
+        syncWithAndroidAlarms(S.list);
+        // -----------------------------------------------------------------------
+
+            renderView();
+        }
+
+        function getIqaamaDelayMinutes(prayerKey) {
+            var defaultDelays = { fajr: 20, dhuhr: 20, asr: 15, maghrib: 5, isha: 15, taraweeh: 15 };
+            var saved = localStorage.getItem('setting_delay_' + prayerKey);
+            var delay = saved !== null ? parseInt(saved, 10) : defaultDelays[prayerKey];
+            // Safety fallback: ensure delay is never 0 or negative for prayers
+            return (isNaN(delay) || delay <= 0) ? (defaultDelays[prayerKey] || 5) : delay;
+        }
+
+    //--------------------- Dedicated Voice Note Recorder ----------------------
+        var mediaRecorder = null;
+        var audioChunks = [];
+        var audioBlob = null;
+        var recordInterval = null;
+        var recordSeconds = 0;
+
+        function toggleVoiceRecording() {
+            if (mediaRecorder && mediaRecorder.state === "recording") {
+                stopRecording();
+            } else {
+                startRecording();
+            }
+        }
+
+        function startRecording() {
+            if (!navigator.mediaDevices || !navigator.mediaDevices.getUserMedia) {
+                alert("Audio recording is not supported on this device or permission is not granted.");
+                return;
+            }
+
+            navigator.mediaDevices.getUserMedia({ audio: true })
+                .then(function(stream) {
+                    audioChunks = [];
+                    mediaRecorder = new MediaRecorder(stream);
+
+                    mediaRecorder.ondataavailable = function(e) {
+                        if (e.data.size > 0) audioChunks.push(e.data);
+                    };
+
+                    mediaRecorder.onstop = function() {
+                        audioBlob = new Blob(audioChunks, { type: 'audio/webm' });
+                        var audioUrl = URL.createObjectURL(audioBlob);
+                        var audioPreview = document.getElementById('audioPreview');
+                        if (audioPreview) {
+                            audioPreview.src = audioUrl;
+                            audioPreview.style.display = 'block';
+                        }
+                        document.getElementById('recordingIndicator').style.display = 'none';
+                        document.getElementById('stopRecordBtn').style.display = 'none';
+                        document.getElementById('uploadVoiceBtn').style.display = 'inline-block';
+                        document.getElementById('deleteAudioBtn').style.display = 'inline-block';
+
+                        // Release microphone
+                        stream.getTracks().forEach(function(track) { track.stop(); });
+                    };
+
+                    mediaRecorder.start();
+
+                    // UI adjustments
+                    document.getElementById('voiceRecorderBox').style.display = 'block';
+                    document.getElementById('recordingIndicator').style.display = 'block';
+                    document.getElementById('stopRecordBtn').style.display = 'inline-block';
+                    document.getElementById('audioPreview').style.display = 'none';
+                    document.getElementById('uploadVoiceBtn').style.display = 'none';
+                    document.getElementById('deleteAudioBtn').style.display = 'none';
+
+                    recordSeconds = 0;
+                    document.getElementById('recordTimer').textContent = "00:00";
+                    if (recordInterval) clearInterval(recordInterval);
+                    recordInterval = setInterval(function() {
+                        recordSeconds++;
+                        var m = Math.floor(recordSeconds / 60);
+                        var s = recordSeconds % 60;
+                        document.getElementById('recordTimer').textContent =
+                            (m < 10 ? '0' : '') + m + ':' + (s < 10 ? '0' : '') + s;
+
+                        if (recordSeconds >= 120) {
+                            stopRecording();
+                        }
+                    }, 1000);
+                })
+                .catch(function(err) {
+                    alert("Microphone permission required: " + (err.message || err));
+                });
+        }
+
+        function stopRecording() {
+            if (mediaRecorder && mediaRecorder.state === "recording") {
+                mediaRecorder.stop();
+            }
+            if (recordInterval) clearInterval(recordInterval);
+        }
+
+        function discardAudio() {
+            audioBlob = null;
+            audioChunks = [];
+            document.getElementById('voiceRecorderBox').style.display = 'none';
+            document.getElementById('audioPreview').style.display = 'none';
+            document.getElementById('uploadVoiceBtn').style.display = 'none';
+            document.getElementById('deleteAudioBtn').style.display = 'none';
+        }
+
+        // Upload Audio directly to Google Drive via Google Apps Script
+        function submitVoiceRecording() {
+            if (!audioBlob) {
+                alert("No audio recorded.");
+                return;
+            }
+
+
+            var uploadBtn = document.getElementById('uploadVoiceBtn');
+            if (uploadBtn) {
+                uploadBtn.textContent = "Uploading...";
+                uploadBtn.disabled = true;
+            }
+
+            var name = document.getElementById('issueName').value.trim() || "Anonymous";
+            var reader = new FileReader();
+            reader.onloadend = function() {
+                var base64data = reader.result.split(',')[1];
+                var scriptUrl = 'https://script.google.com/macros/s/AKfycbyzUKAJqOwjaL4aUHbTyP4Sw3WhWImegoDRUOgiuhRF5Bst2_rcWG9c6qOMg87opO3h/exec';
+
+                var payload = {
+                    type: "voice_feedback",
+                    name: name,
+                    message: "Voice recording from app user",
+                    filename: "voice_" + Date.now() + ".webm",
+                    mimeType: "audio/webm",
+                    audioBase64: base64data
+                };
+
+                fetch(scriptUrl, {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'text/plain;charset=utf-8' },
+                    body: JSON.stringify(payload)
+                })
+                .then(function(res) { return res.json(); })
+                .then(function(data) {
+                    alert("Thank you! Your voice note has been sent to developer.");
+                    discardAudio();
+                    if (uploadBtn) {
+                        uploadBtn.textContent = "Send Voice Feedback ☁️";
+                        uploadBtn.disabled = false;
+                    }
+                })
+                .catch(function(err) {
+                    alert("Upload failed. Please check internet connection.");
+                    if (uploadBtn) {
+                        uploadBtn.textContent = "Send Voice Feedback ☁️";
+                        uploadBtn.disabled = false;
+                    }
+                });
+            };
+            reader.readAsDataURL(audioBlob);
+        }
+
+        function openInfoModal() { document.getElementById('infoModal').style.display = 'flex'; }
+        function closeInfoModal() { document.getElementById('infoModal').style.display = 'none'; }
+
+        function submitIssue() {
+            var name = document.getElementById('issueName').value.trim();
+            var message = document.getElementById('issueMessage').value.trim();
+            if(!message) {
+                alert("Please enter a message or issue.");
+                return;
+            }
+            fetch('https://formspree.io/f/moevazbp', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json', 'Accept': 'application/json' },
+                body: JSON.stringify({ name: name || 'Anonymous', message: message })
+            }).then(response => {
+                if (response.ok) {
+                    alert("Thank you! Your feedback has been sent successfully.");
+                    document.getElementById('issueName').value = '';
+                    document.getElementById('issueMessage').value = '';
+                    closeInfoModal();
+                } else { alert("Failed to send message. Please try again."); }
+            }).catch(error => { alert("Network error. Please check your internet connection."); });
+        }
+
+        //--------------------- Detail / Zoom Modal System ----------------------
+        var detailDataCache = {};
+        function openZoomModal(cacheKey) {
+            var item = detailDataCache[cacheKey];
+            if (!item) return;
+            document.getElementById('modalTitle').textContent = item.title;
+            document.getElementById('modalSub').textContent = item.sub;
+            var html = '';
+            PRAYERS.forEach(function(p) {
+                var val = item.times[p.key] ? item.times[p.key].label : '---';
+                var displayNm = p.name;
+                var displayAr = p.ar;
+                if (p.key === 'dhuhr' && item.isFriday) {
+                    displayNm = "Jum'ah";
+                    displayAr = "الجمعة";
+                }
+                html += '<div style="display:flex; justify-content:space-between; align-items:center; padding:6px 0; border-bottom:1px solid var(--line-soft);"><span>' + displayNm + ' <small style="color:var(--muted)">' + displayAr + '</small></span><strong>' + val + '</strong></div>';
+            });
+            document.getElementById('modalList').innerHTML = html;
+            document.getElementById('zoomModal').style.display = 'flex';
+        }
+
+        function closeZoom() { document.getElementById('zoomModal').style.display = 'none'; }
+
+        //--------------------- Navigation & Views ----------------------
+        var currentTab = 'today';
+        var selectedYear = 2026;
+        var selectedMonth = new Date().getMonth();
+
+        function switchTab(tab) {
+            currentTab = tab;
+            document.querySelectorAll('.nav a').forEach(function(el) { el.removeAttribute('aria-current'); });
+            var activeNav = document.getElementById('nav-' + tab);
+            if (activeNav) activeNav.setAttribute('aria-current', 'page');
+            renderView();
+        }
+
+        function renderView() {
+            var container = document.getElementById('app-view');
+            if (currentTab === 'today') {
+                container.innerHTML = `
+                    <section>
+                        <div class="nextbox" id="nextbox">
+                            <div class="nb-half">
+                                <span class="nb-label" id="nbMainLabel">Next prayer</span>
+                                <span class="nb-name" id="nbName">&mdash;</span>
+                                <span class="nb-at" id="nbAt"></span>
+                            </div>
+                            <div class="nb-half right">
+                                <span class="nb-label" id="nbSubLabel">Time remaining</span>
+                                <span class="nb-count" id="nbCount">&mdash;:--:--</span>
+                                <span class="nb-when" id="nbWhen"></span>
+                            </div>
+                        </div>
+                        <div class="day-carousel-viewport" id="dayCarousel">
+                            <div class="day-carousel-track" id="dayCarouselTrack">
+                                <div class="day-slide" id="slide-today">
+                                    <ul class="plist" id="plist"></ul>
+                                </div>
+                                <div class="day-slide" id="slide-tomorrow">
+                                    <div class="tomorrow-banner">
+                                        <span>Tomorrow</span>
+                                        <span class="date" id="tomorrowDateLabel"></span>
+                                    </div>
+                                    <ul class="plist" id="plistTomorrow"></ul>
+                                </div>
+                            </div>
+                        </div>
+                    </section>
+                `;
+                initTodayPage();
+            } else if (currentTab === 'monthly') {
+                var monthNames = ['January', 'February', 'March', 'April', 'May', 'June', 'July', 'August', 'September', 'October', 'November', 'December'];
+                container.innerHTML = `
+                    <section>
+                        <div class="pager">
+                            <button class="linkbtn" onclick="changeMonth(-1)">&larr; Prev</button>
+                            <span id="monthLabel" style="font-weight:500; font-size:14px">${monthNames[selectedMonth]} ${selectedYear}</span>
+                            <button class="linkbtn" onclick="changeMonth(1)">Next &rarr;</button>
+                        </div>
+   <button class="floating-side-btn left" onclick="changeMonth(-1)" title="Previous Month">
+    <div class="lens-view-port"><div class="lens-projected-content"></div></div>
+    <span class="water-lens-content">&#10094;</span>
+</button>
+<button class="floating-side-btn right" onclick="changeMonth(1)" title="Next Month">
+    <div class="lens-view-port"><div class="lens-projected-content"></div></div>
+    <span class="water-lens-content">&#10095;</span>
+</button>
+                        <div class="scroll-x">
+                            <table class="tt" id="monthlyTable">
+                                <thead>
+                                    <tr>
+                                        <th>Date</th>
+                                        <th class="num">Imsak</th><th class="num">Fajr</th><th class="num">Sunrise</th>
+                                        <th class="num">Dhuhr</th><th class="num">Asr</th><th class="num">Sunset</th>
+                                        <th class="num">Maghrib</th><th class="num">Isha</th>
+                                    </tr>
+                                </thead>
+                                <tbody id="monthlyRows"></tbody>
+                            </table>
+                        </div>
+                    </section>
+                `;
+                loadMonthlyTable();
+            } else if (currentTab === 'yearly') {
+                container.innerHTML = `
+                    <section>
+                        <div class="pager">
+                            <button class="linkbtn" onclick="changeYear(-1)">&larr; Prev year</button>
+                            <span style="font-weight:500; font-size:14px">Year ${selectedYear}</span>
+                            <button class="linkbtn" onclick="changeYear(1)">Next year &rarr;</button>
+                        </div>
+                        <div class="yearly-wrapper" id="yearlyGrid"></div>
+                    </section>
+                `;
+                loadYearlyGrid();
+            }
+        }
+
+        function changeMonth(dir) {
+            selectedMonth += dir;
+            if (selectedMonth > 11) { selectedMonth = 0; selectedYear++; }
+            else if (selectedMonth < 0) { selectedMonth = 11; selectedYear--; }
+            renderView();
+        }
+        function changeYear(dir) { selectedYear += dir; renderView(); }
+
+var showJumahFlip = false;
+var globalRenderTodayRef = null;
+
+// Clean 5-second interval that updates the active view smoothly without wiping the carousel or DOM
+setInterval(function() {
+    if (currentTab === 'today' && typeof globalRenderTodayRef === 'function') {
+        var now = Date.now();
+        var S = scheduleNow(now);
+        var todayDateObj = new Date(S.parts.y, S.parts.m, S.parts.d);
+        var isFriday = (todayDateObj.getDay() === 5);
+
+        if (isFriday) {
+            var dhuhrTimes = timesFor(todayDateObj);
+            var dhuhrEpoch = epochFor(S.parts.y, S.parts.m, S.parts.d, dhuhrTimes['dhuhr']);
+
+            // Once Friday Adhan is reached, permanently lock to Jum'ah and stop flipping
+            if (now >= dhuhrEpoch) {
+                showJumahFlip = true;
+            } else {
+                // Before Adhan, flip every 5 seconds between Dhuhr and Jum'ah
+                showJumahFlip = !showJumahFlip;
+            }
+        } else {
+            showJumahFlip = !showJumahFlip;
+        }
+
+        globalRenderTodayRef(S, S.next.epoch - now);
+    }
+}, 5000);
+
+
+function getPrayerDurationMs(key) {
+    switch(key) {
+        case 'fajr': return 35 * 60 * 1000;
+        case 'dhuhr': return 35 * 60 * 1000;
+        case 'asr': return 30 * 60 * 1000;
+        case 'maghrib': return 20 * 60 * 1000;
+        case 'isha': return 30 * 60 * 1000;
+        default: return 30 * 60 * 1000;
+    }
+}
+
+        //--------------------- Today Page Logic ----------------------
+        var liveTimer = null;
+        var firedAdhan = {};
+        var firedIq = {};
+
+        function initTodayPage() {
+            var track = document.getElementById('dayCarouselTrack');
+            if (!track) return;
+            track.innerHTML = '';
+
+            var slidesData = [];
+
+            // Build 7 dynamic carousel slides (Day 0 = Today, Day 1 = Tomorrow, ..., Day 6)
+            for (var dayOffset = 0; dayOffset < 7; dayOffset++) {
+                var slide = document.createElement('div');
+                slide.className = 'day-slide';
+                slide.id = 'slide-day-' + dayOffset;
+
+                var bannerHtml = '';
+                if (dayOffset > 0) {
+                    var bannerTitle = (dayOffset === 1) ? 'Tomorrow' : '';
+                    bannerHtml = `
+                        <div class="tomorrow-banner">
+                            <span id="bannerTitle_${dayOffset}">${bannerTitle}</span>
+                            <span class="date" id="dateLabel_${dayOffset}"></span>
+                        </div>
+                    `;
+                }
+
+                slide.innerHTML = bannerHtml + `<ul class="plist" id="plist_${dayOffset}"></ul>`;
+                track.appendChild(slide);
+
+                var plist = slide.querySelector('.plist');
+                var timeCells = {};
+                var liElements = {};
+
+                for (var pIdx = 0; pIdx < PRAYERS.length; pIdx++) {
+                    var prayer = PRAYERS[pIdx];
+                    var el = document.createElement('li');
+                    el.setAttribute('data-key', prayer.key);
+                    el.innerHTML = '<span class="p-name">' + prayer.name + ' <span class="p-ar">' + prayer.ar + '</span></span><span class="p-time num"></span>';
+                    plist.appendChild(el);
+
+                    liElements[prayer.key] = el;
+                    timeCells[prayer.key] = el.querySelector('.p-time');
+                }
+
+                slidesData.push({
+                    offset: dayOffset,
+                    timeCells: timeCells,
+                    liElements: liElements
+                });
+            }
+
+            var nbMainLabel = document.getElementById('nbMainLabel');
+            var nbSubLabel = document.getElementById('nbSubLabel');
+            var nbName = document.getElementById('nbName');
+            var nbAt = document.getElementById('nbAt');
+            var nbCount = document.getElementById('nbCount');
+            var nextbox = document.getElementById('nextbox');
+
+            var isIqaamaActive = false;
+            var activeIqaamaTargetEpoch = 0;
+            var activePrayerName = "";
+            var activePrayerKey = null;
+
+            function renderToday(S, remainMs) {
+                var n = S.parts;
+                var nowMs = Date.now();
+                var todayDateObj = new Date(n.y, n.m, n.d);
+
+                // 1. Update Masthead Hijri Label
+                var hToday = getAdjustedHijriDetails(todayDateObj);
+                var hijriEl = document.getElementById('hijri');
+                if (hijriEl) {
+                    hijriEl.textContent = hToday.full + ' \u00b7 ' +
+                        todayDateObj.toLocaleDateString('en-IN', { weekday: 'short', day: 'numeric', month: 'short', year: 'numeric' });
+                }
+
+                // 2. Active Highlight Key Calculation
+                var activeHighlightKey = null;
+                var highlightTomorrow = false;
+                var activeEvents = S.list.filter(function(i) {
+                    if (i.isSalah) return true;
+                    if (i.key === 'taraweeh' && isTaraweehEnabled(todayDateObj, nowMs)) return true;
+                    return false;
+                });
+                activeEvents.sort(function(a, b) { return a.epoch - b.epoch; });
+
+            for (var idx = 0; idx < activeEvents.length; idx++) {
+                var item = activeEvents[idx];
+                var startMs = item.epoch;
+                var endMs = item.epoch;
+
+                if (item.key === 'taraweeh') {
+                    // Taraweeh: 33 min after Isha Adhan for the next 1 hour (60 min)
+                    var ishaItem = activeEvents.find(function(e) { return e.key === 'isha'; });
+                    if (ishaItem) {
+                        startMs = ishaItem.epoch + (33 * 60000);
+                        endMs = startMs + (60 * 60000);
+                    }
+                } else if (item.key === 'fajr') {
+                    // Fajr: 10 min before Fajr Adhan till 40 min after Adhan (50 min total)
+                    startMs = item.epoch - (10 * 60000);
+                    endMs = item.epoch + (40 * 60000);
+                } else if (item.key === 'dhuhr') {
+                    var isFriday = (todayDateObj.getDay() === 5);
+                    var customTime = localStorage.getItem('jumah_custom_time') || "13:15";
+                    var parts = customTime.split(":");
+                    var jumahIqEpoch = epochFor(n.y, n.m, n.d, { h: parseInt(parts[0], 10), m: parseInt(parts[1], 10) });
+
+                    if (isFriday) {
+                        // Friday Dhuhr / Jum'ah: 10 min before Dhuhr till 25 min after Jum'ah Iqaama
+                        startMs = item.epoch - (10 * 60000);
+                        endMs = jumahIqEpoch + (25 * 60000);
+                    } else {
+                        // Regular Dhuhr: 10 min before Dhuhr till 40 min after Dhuhr Adhan
+                        startMs = item.epoch - (10 * 60000);
+                        endMs = item.epoch + (40 * 60000);
+                    }
+                } else if (item.key === 'asr') {
+                    // Asr: 10 min before Asr Adhan till 40 min after Asr Adhan
+                    startMs = item.epoch - (10 * 60000);
+                    endMs = item.epoch + (40 * 60000);
+                } else if (item.key === 'maghrib') {
+                    // Maghrib: 15 min before Maghrib Adhan till 20 min after Maghrib Adhan
+                    startMs = item.epoch - (15 * 60000);
+                    endMs = item.epoch + (20 * 60000);
+                } else if (item.key === 'isha') {
+                    // Isha: 10 min before Isha Adhan till 18 min after Isha Adhan
+                    startMs = item.epoch - (10 * 60000);
+                    endMs = item.epoch + (33 * 60000);
+                }
+
+                if (nowMs >= startMs && nowMs < endMs) {
+                    activeHighlightKey = item.key;
+                    break;
+                }
+
+                }
+                if (!activeHighlightKey) {
+                    activeHighlightKey = 'fajr';
+                    highlightTomorrow = true;
+                }
+
+// 3. Top Nextbox Flip & Countdown Logic
+                var nowMs = Date.now();
+                var n = S.parts;
+                var isFriday = (todayDateObj.getDay() === 5);
+
+                // Calculate Jum'ah custom settings for Friday use
+                var customJumahTime = localStorage.getItem('jumah_custom_time') || "13:15";
+                var jParts = customJumahTime.split(":");
+                var iqMinutes = parseInt(jParts[0], 10) * 60 + parseInt(jParts[1], 10);
+                var adhanMinutes = iqMinutes - 10;
+                var jumahAdhanEpoch = epochFor(n.y, n.m, n.d, { h: Math.floor(adhanMinutes / 60), m: adhanMinutes % 60 });
+                var jumahIqEpoch = epochFor(n.y, n.m, n.d, { h: parseInt(jParts[0], 10), m: parseInt(jParts[1], 10) });
+                var jumahStayDuration = 15 * 60 * 1000; // 15 minutes stay after Jum'ah Iqaama
+
+                var adhanH = Math.floor(adhanMinutes / 60);
+                var adhanM = adhanMinutes % 60;
+                var adhanSuffix = adhanH >= 12 ? "PM" : "AM";
+                var adhanH12 = adhanH % 12 || 12;
+                var jumahTimeStr = adhanH12 + ":" + (adhanM < 10 ? '0' : '') + adhanM + " " + adhanSuffix;
+
+                // Helper function for prayer durations
+                function getDuration(key) {
+                    switch(key) {
+                        case 'fajr': return 35 * 60 * 1000;
+                        case 'dhuhr': return 35 * 60 * 1000;
+                        case 'asr': return 30 * 60 * 1000;
+                        case 'maghrib': return 20 * 60 * 1000;
+                        case 'isha': return 30 * 60 * 1000;
+                        default: return 30 * 60 * 1000;
+                    }
+                }
+
+                var isFridayDhuhrActive = isFriday && S.prev && S.prev.key === 'dhuhr' && nowMs >= S.prev.epoch;
+
+                if (isFridayDhuhrActive && nowMs < jumahAdhanEpoch) {
+                    // Phase 1: Counting down to Jum'ah Adhan (Iqaama - 10 min)
+                    if (nbMainLabel) nbMainLabel.textContent = "Next prayer";
+                    if (nbSubLabel) nbSubLabel.textContent = "Time remaining";
+                    if (nbName) nbName.textContent = "Jum'ah";
+                    if (nbAt) nbAt.textContent = jumahTimeStr;
+                    var remainToJumahAdhan = jumahAdhanEpoch - nowMs;
+                    if (nbCount) {
+                        nbCount.textContent = fmtRemain(remainToJumahAdhan);
+                        nbCount.classList.toggle('timer-flashing', remainToJumahAdhan <= 60000);
+                    }
+                } else if (isFridayDhuhrActive && nowMs >= jumahAdhanEpoch && nowMs < jumahIqEpoch) {
+                    // Phase 2: Jum'ah Iqaama countdown state
+                    if (nbMainLabel) nbMainLabel.textContent = "Iqaama";
+                    if (nbSubLabel) nbSubLabel.textContent = "Time remaining";
+                    if (nbName) nbName.textContent = "Jum'ah";
+                    if (nbAt) nbAt.textContent = new Date(jumahIqEpoch).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
+                    var iqaamaRemain = jumahIqEpoch - nowMs;
+                    if (nbCount) {
+                        nbCount.textContent = fmtRemain(iqaamaRemain);
+                        nbCount.classList.toggle('timer-flashing', iqaamaRemain <= 60000);
+                    }
+                } else if (isFridayDhuhrActive && nowMs >= jumahIqEpoch && nowMs < jumahIqEpoch + jumahStayDuration) {
+                    // Phase 3: Stay as "Current Prayer" for 15 mins after Jum'ah Iqaama
+                    if (nbMainLabel) nbMainLabel.textContent = "Current Prayer";
+                    if (nbSubLabel) nbSubLabel.textContent = "Time remaining";
+                    if (nbName) nbName.textContent = "Jum'ah";
+                    if (nbAt) nbAt.textContent = jumahTimeStr;
+                    var stayRemain = (jumahIqEpoch + jumahStayDuration) - nowMs;
+                    if (nbCount) {
+                        nbCount.textContent = fmtRemain(stayRemain);
+                        nbCount.classList.toggle('timer-flashing', false);
+                    }
+                } else {
+                    // Standard Prayers & Non-Friday Dhuhr handling
+                    var targetIqaamaMs = S.prev ? getIqaamaTargetEpoch(S.prev, S) : 0;
+                    var prayerDuration = S.prev ? getDuration(S.prev.key) : 30 * 60 * 1000;
+
+                    if (S.prev && nowMs >= S.prev.epoch && nowMs < targetIqaamaMs) {
+                        // State A: Iqaama countdown (Strictly locks onto S.prev)
+                        if (!isIqaamaActive || activePrayerKey !== S.prev.key) {
+                            isIqaamaActive = true;
+                            activePrayerKey = S.prev.key;
+                            activePrayerName = S.prev.name;
+                            activeIqaamaTargetEpoch = targetIqaamaMs;
+
+                            if (nextbox) nextbox.classList.remove('current-prayer-active');
+
+                            if (nextbox) {
+                                nextbox.style.transition = 'transform 1.2s cubic-bezier(0.4, 0.2, 0.2, 1)';
+                                nextbox.style.transform = 'rotateX(90deg)';
+                            }
+                            setTimeout(function() {
+                                if (nbMainLabel) nbMainLabel.textContent = "Iqaama";
+                                if (nbSubLabel) nbSubLabel.textContent = "Time remaining";
+                                if (nextbox) nextbox.style.transform = 'rotateX(0deg)';
+                            }, 600);
+                        }
+                        var iqaamaRemain = activeIqaamaTargetEpoch - nowMs;
+                        if (nbName) nbName.textContent = activePrayerName;
+                        if (nbAt) nbAt.textContent = new Date(activeIqaamaTargetEpoch).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
+                        if (nbCount) {
+                            nbCount.textContent = fmtRemain(iqaamaRemain);
+                            nbCount.classList.toggle('timer-flashing', iqaamaRemain <= 60000);
+                        }
+                    } else if (S.prev && nowMs >= targetIqaamaMs && nowMs < (S.prev.epoch + prayerDuration)) {
+                    // State B: "Current Prayer" window after Iqaama triggers
+                        if (isIqaamaActive || activePrayerKey !== S.prev.key) {
+                            isIqaamaActive = false;
+                            activePrayerKey = S.prev.key;
+                            if (nextbox) {
+                                nextbox.classList.add('current-prayer-active');
+                                nextbox.classList.remove('current-prayer-ambient');
+                                nextbox.style.transform = 'rotateX(0deg)';
+                            }
+                        }
+
+                        if (nbMainLabel) nbMainLabel.textContent = "Current Prayer";
+                        if (nbSubLabel) nbSubLabel.textContent = "Time elapsed";
+                        if (nbName) nbName.textContent = S.prev.name;
+
+                        // Displays the exact Iqaama time underneath the prayer name
+                        if (nbAt) nbAt.textContent = new Date(targetIqaamaMs).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
+
+                        // Stopwatch counts upward from 0:00:00 starting precisely when Iqaama triggers
+                        var elapsedMs = nowMs - targetIqaamaMs;
+                        if (nbCount) {
+                            nbCount.textContent = fmtRemain(elapsedMs);
+                            nbCount.style.fontSize = ""; // Reset to default font size
+                            nbCount.classList.toggle('timer-flashing', false);
+                        }
+                        }
+                      else {
+                        // State C: Next Prayer countdown (standard)
+                        if (isIqaamaActive) {
+                            isIqaamaActive = false;
+                            activePrayerKey = null;
+
+                            if (nextbox) nextbox.classList.remove('current-prayer-active');
+
+                            if (nextbox) {
+                                nextbox.style.transition = 'transform 1.2s cubic-bezier(0.4, 0.2, 0.2, 1)';
+                                nextbox.style.transform = 'rotateX(-90deg)';
+                            }
+                            setTimeout(function() {
+                                if (nbMainLabel) nbMainLabel.textContent = "Next prayer";
+                                if (nbSubLabel) nbSubLabel.textContent = "Time remaining";
+                                if (nextbox) nextbox.style.transform = 'rotateX(0deg)';
+                            }, 600);
+                        }
+
+                        if (nbMainLabel) nbMainLabel.textContent = "Next prayer";
+                        if (nbSubLabel) nbSubLabel.textContent = "Time remaining";
+
+                        // Friday Dhuhr pre-Adhan flip check
+                        var isFridayDhuhrNext = (isFriday && S.next.key === 'dhuhr');
+                        if (isFridayDhuhrNext) {
+                            var dhuhrEpoch = S.next.epoch;
+                            var isBeforeAdhan = nowMs < dhuhrEpoch;
+                            var remainToJumahAdhan = jumahAdhanEpoch - nowMs;
+
+                            if (isBeforeAdhan) {
+                                if (showJumahFlip) {
+                                    if (nbName) nbName.textContent = "Jum'ah";
+                                    if (nbAt) nbAt.textContent = jumahTimeStr;
+                                    if (nbCount) {
+                                        nbCount.textContent = fmtRemain(remainToJumahAdhan);
+                                        nbCount.classList.toggle('timer-flashing', remainToJumahAdhan <= 60000);
+                                    }
+                                } else {
+                                    if (nbName) nbName.textContent = "Dhuhr";
+                                    if (nbAt) nbAt.textContent = S.next.label;
+                                    if (nbCount) {
+                                        nbCount.textContent = fmtRemain(remainMs);
+                                        nbCount.classList.toggle('timer-flashing', remainMs <= 60000);
+                                    }
+                                }
+                            } else {
+                                if (nbName) nbName.textContent = "Jum'ah";
+                                if (nbAt) nbAt.textContent = jumahTimeStr;
+                                if (nbCount) {
+                                    nbCount.textContent = fmtRemain(remainToJumahAdhan);
+                                    nbCount.classList.toggle('timer-flashing', remainToJumahAdhan <= 60000);
+                                }
+                            }
+                        } else {
+                            if (nbName) nbName.textContent = S.next.name;
+                            if (nbAt) nbAt.textContent = S.next.label;
+                            if (nbCount) {
+                                nbCount.textContent = fmtRemain(remainMs);
+                                nbCount.classList.toggle('timer-flashing', remainMs <= 60000);
+                            }
+                        }
+                    }
+
+}
+
+                 // 4. Populate Each of the 7 Days Across the Track
+                slidesData.forEach(function(slideObj) {
+                    var offset = slideObj.offset;
+                    var currentD = new Date(n.y, n.m, n.d + offset);
+                    var currentTimes = timesFor(currentD);
+                    var currentHijri = getAdjustedHijriDetails(currentD);
+                    var isFriday = currentD.getDay() === 5;
+
+                    // Update Banners for Future Days
+                    if (offset > 0) {
+                        var titleSpan = document.getElementById('bannerTitle_' + offset);
+                        var dateLabel = document.getElementById('dateLabel_' + offset);
+                        if (titleSpan) {
+                            titleSpan.textContent = (offset === 1) ? 'Tomorrow' : currentD.toLocaleDateString('en-IN', { weekday: 'long' });
+                        }
+                        if (dateLabel) {
+                            dateLabel.textContent = currentHijri.short + ' \u00b7 ' + currentD.toLocaleDateString('en-IN', { day: 'numeric', month: 'short' });
+                        }
+                    }
+
+                    for (var i = 0; i < PRAYERS.length; i++) {
+                        var k = PRAYERS[i].key;
+                        var timeLabel = currentTimes[k] ? currentTimes[k].label : '';
+                        var rowEl = slideObj.liElements[k];
+                        var timeEl = slideObj.timeCells[k];
+
+                        // Ramadan Imsak Visibility
+                        if (k === 'imsak' && rowEl) {
+                            rowEl.style.display = (currentHijri.monthName === 'Ramadan') ? 'flex' : 'none';
+                        }
+
+                        // Tara'weeh Visibility (Active 29th/30th Sha'ban after Maghrib, and during Ramadan)
+                        if (k === 'taraweeh' && rowEl) {
+                            var slideNowMs = nowMs + (offset * 24 * 3600 * 1000);
+                            var activeTaraweeh = isTaraweehEnabled(currentD, slideNowMs);
+                            rowEl.style.display = activeTaraweeh ? 'flex' : 'none';
+                        }
+
+                        // Active highlight assignment
+                        var isHighlighted = false;
+                        if (offset === 0 && k === activeHighlightKey && !highlightTomorrow) isHighlighted = true;
+                        if (offset === 1 && k === activeHighlightKey && highlightTomorrow) isHighlighted = true;
+
+                        // Apply Friday Flip to ANY slide that is a Friday, not just Today
+                        if (k === 'dhuhr' && isFriday) {
+                            // Calculate epoch accurately for the specific slide's date
+                            var dhuhrEpoch = epochFor(currentD.getFullYear(), currentD.getMonth(), currentD.getDate(), currentTimes['dhuhr']);
+                            var isBeforeAdhan = nowMs < dhuhrEpoch;
+
+                            var frontClass = isHighlighted && isBeforeAdhan ? ' active-face' : '';
+                            var backClass = isHighlighted && !isBeforeAdhan ? ' active-face' : '';
+
+                            if (!rowEl.querySelector('.friday-flip-inner')) {
+                                rowEl.innerHTML = `
+                                    <div class="friday-flip-inner">
+                                        <div class="flip-face flip-front">
+                                            <span class="p-name">Dhuhr <span class="p-ar">الظهر</span></span>
+                                            <span class="p-time num front-time"></span>
+                                        </div>
+                                        <div class="flip-face flip-back">
+                                            <span class="p-name">Jum'ah <span class="p-ar">الجمعة</span></span>
+                                            <span class="p-time num back-time"></span>
+                                        </div>
+                                    </div>
+                                `;
+                            }
+
+                            var customJumahTime = localStorage.getItem('jumah_custom_time') || "13:15";
+                            var jParts = customJumahTime.split(":");
+                            var iqMinutes = parseInt(jParts[0], 10) * 60 + parseInt(jParts[1], 10);
+                            var adhanMinutes = iqMinutes - 10;
+                            var adhanH = Math.floor(adhanMinutes / 60);
+                            var adhanM = adhanMinutes % 60;
+                            var adhanSuffix = adhanH >= 12 ? "PM" : "AM";
+                            var adhanH12 = adhanH % 12 || 12;
+                            var jumahDisplayStr = adhanH12 + ":" + (adhanM < 10 ? '0' : '') + adhanM + " " + adhanSuffix;
+
+                            rowEl.querySelector('.flip-front').className = 'flip-face flip-front' + frontClass;
+                            rowEl.querySelector('.flip-back').className = 'flip-face flip-back' + backClass;
+                            rowEl.querySelector('.front-time').textContent = timeLabel;
+                            rowEl.querySelector('.back-time').textContent = jumahDisplayStr;
+                            rowEl.className = 'friday-flip-row' + (showJumahFlip ? ' is-flipped' : '');
+                            continue;
+                        }
+
+                        // Standard Rows
+                        if (rowEl.classList.contains('friday-flip-row')) {
+                            rowEl.className = '';
+                            rowEl.innerHTML = '<span class="p-name"></span><span class="p-time num"></span>';
+                            slideObj.timeCells[k] = rowEl.querySelector('.p-time');
+                            timeEl = slideObj.timeCells[k];
+                        }
+
+                        if (timeEl) timeEl.textContent = timeLabel;
+                        if (rowEl) {
+                            rowEl.className = isHighlighted ? 'next' : '';
+                            var pNameSpan = rowEl.querySelector('.p-name');
+                            if (pNameSpan && k === 'dhuhr') {
+                                pNameSpan.innerHTML = isFriday ? 'Jum\'ah <span class="p-ar">الجمعة</span>' : 'Dhuhr <span class="p-ar">الظهر</span>';
+                            }
+                        }
+                    }
+                });
+            }
+
+            globalRenderTodayRef = renderToday;
+
+ if (liveTimer) clearInterval(liveTimer);
+
+            var step = function() {
+                if (currentTab !== 'today') return;
+                var now = Date.now();
+                var S = scheduleNow(now);
+                var remain = S.next.epoch - now;
+
+                // --- ADD THIS SMALL BLOCK HERE ---
+               S.list.forEach(function(item) {
+                   if (now < item.epoch) {
+                       firedAdhan[item.key] = false;
+                       firedIq[item.key] = false;
+                   }
+               });
+
+                if (S.prev) {
+                    var prevKey = S.prev.key;
+
+                    // 1. INDEPENDENT ADHAN CHECK
+                    var timeSincePrayerStarted = now - S.prev.epoch;
+
+                    if (timeSincePrayerStarted >= 0 && timeSincePrayerStarted <= 60000) {
+                        if (!firedAdhan[prevKey] && prevKey !== 'taraweeh') {
+                            firedAdhan[prevKey] = true;
+                            playAzaanAudio(prevKey);
+                        }
+                    }
+                    else if (timeSincePrayerStarted < 0 || timeSincePrayerStarted > 65000) {
+                        firedAdhan[prevKey] = false;
+                    }
+
+// 2. INDEPENDENT IQAAMA CHECK
+                    if (prevKey !== 'taraweeh') {
+                        var targetIqaamaMs = getIqaamaTargetEpoch(S.prev, S);
+                        var timeSinceIqaama = now - targetIqaamaMs;
+
+                        if (timeSinceIqaama >= 0 && timeSinceIqaama <= 60000) {
+                            if (!firedIq[prevKey]) {
+                                firedIq[prevKey] = true;
+                                var iqState = localStorage.getItem('setting_iq_' + prevKey);
+                            if (iqState === null || iqState === '1') {
+                                // Block Iqaama audio for Friday Jum'ah using app's official timezone date
+                                var todayDateObj = new Date(S.parts.y, S.parts.m, S.parts.d);
+                                var isFriday = (todayDateObj.getDay() === 5);
+                                if (!(isFriday && prevKey === 'dhuhr')) {
+                                    playIqaamaAudio();
+                                }
+                            }
+                            }
+                        }
+                        else if (timeSinceIqaama < 0 || timeSinceIqaama > 65000) {
+                            firedIq[prevKey] = false;
+                        }
+                    }
+                }
+                renderToday(S, remain);
+            };
+
+            step();
+            liveTimer = setInterval(step, 1000);
+
+        function renderTodayUI(S, remainMs) {
+            if (globalRenderTodayRef) globalRenderTodayRef(S, remainMs);
+        }
+
+
+        //--------------------- Audio Handling ----------------------
+        let activeIqaamaTimer = null;
+
+function playAzaanAudio(prayerKey) {
+            if (prayerKey === 'taraweeh') return;
+
+            try {
+                var adhanState = localStorage.getItem('setting_ad_' + prayerKey);
+                var isAdhanAllowed = (adhanState === null || adhanState === '1');
+
+                if (isAdhanAllowed) {
+                    if (window.AndroidBridge && typeof window.AndroidBridge.playAudio === 'function') {
+                        window.AndroidBridge.playAudio(prayerKey);
+                    } else {
+                        var azaanAudio = document.getElementById('azaanAudio');
+                        if (azaanAudio) {
+                            azaanAudio.src = (prayerKey === 'fajr') ? "fajradhan.mp3" : "adhan.mp3";
+                            azaanAudio.currentTime = 0;
+                            azaanAudio.play().catch(e => {});
+                        }
+                    }
+                }
+            } catch (e) { console.error(e); }
+        }
+
+        function playIqaamaAudio() {
+            try {
+                var iqaamaAudio = document.getElementById('iqaamaAudio');
+                if (iqaamaAudio) {
+                    iqaamaAudio.currentTime = 0;
+                    iqaamaAudio.play().catch(e => {});
+                }
+            } catch (e) {}
+        }
+}
+        //--------------------- Monthly & Yearly Tables ----------------------
+        function loadMonthlyTable() {
+            var tbody = document.getElementById('monthlyRows');
+            var daysInMonth = new Date(selectedYear, selectedMonth + 1, 0).getDate();
+            var todayDate = new Date();
+            var html = '';
+            var isCurrentMonthSelected = (selectedYear === todayDate.getFullYear() && selectedMonth === todayDate.getMonth());
+
+            for (var d = 1; d <= daysInMonth; d++) {
+                var dateObj = new Date(selectedYear, selectedMonth, d);
+                var t = timesFor(dateObj);
+                var isToday = (isCurrentMonthSelected && d === todayDate.getDate());
+                var hObj = getAdjustedHijriDetails(dateObj);
+                var isFriday = dateObj.getDay() === 5;
+                var cacheKey = 'm-' + d;
+
+                detailDataCache[cacheKey] = {
+                    title: d + ' ' + dateObj.toLocaleDateString('en-IN', {month:'short'}) + ' ' + selectedYear,
+                    sub: hObj.full + ' \u00b7 ' + dateObj.toLocaleDateString('en-IN', {weekday:'long'}),
+                    times: t,
+                    isFriday: isFriday
+                };
+
+                html += '<tr onclick="openZoomModal(\'' + cacheKey + '\')" id="' + (isToday ? 'monthlyTodayRow' : '') + '" class="clickable-row ' + (isToday ? 'today' : '') + '">';
+                html += '<td class="day">' + d + ' ' + dateObj.toLocaleDateString('en-IN', {month:'short'}) + ' <span class="wd">' + dateObj.toLocaleDateString('en-IN', {weekday:'short'}) + '</span><span class="arabic-date">' + hObj.short + '</span></td>';
+                html += '<td class="num">' + t.imsak.label + '</td><td class="num">' + t.fajr.label + '</td><td class="num">' + t.sunrise.label + '</td>';
+                html += '<td class="num">' + t.dhuhr.label + '</td><td class="num">' + t.asr.label + '</td><td class="num">' + t.sunset.label + '</td>';
+                html += '<td class="num">' + t.maghrib.label + '</td><td class="num">' + t.isha.label + '</td>';
+                html += '</tr>';
+            }
+
+tbody.innerHTML = html;
+
+        if (isCurrentMonthSelected) {
+            // Wait for DOM paint cycle using requestAnimationFrame
+            setTimeout(function() {
+                requestAnimationFrame(function() {
+                    requestAnimationFrame(function() {
+                        var target = document.getElementById('monthlyTodayRow');
+                        if (target) {
+                            // Method 1: Standard smooth scroll into view centered
+                            target.scrollIntoView({ behavior: 'smooth', block: 'center', inline: 'nearest' });
+
+                            // Method 2: Fallback direct window coordinate scroll
+                            try {
+                                var rect = target.getBoundingClientRect();
+                                var absoluteTop = rect.top + window.pageYOffset;
+                                var centeredTop = absoluteTop - (window.innerHeight / 2) + (rect.height / 2);
+                                window.scrollTo({ top: Math.max(0, centeredTop), behavior: 'smooth' });
+                            } catch (e) {}
+                        }
+                    });
+                });
+            }, 150);
+        }
+        }
+
+        function loadYearlyGrid() {
+            var container = document.getElementById('yearlyGrid');
+            var monthNames = ['January', 'February', 'March', 'April', 'May', 'June', 'July', 'August', 'September', 'October', 'November', 'December'];
+            var todayDate = new Date();
+            var isCurrentYearSelected = (selectedYear === todayDate.getFullYear());
+            var html = '';
+
+            for (var m = 0; m < 12; m++) {
+                var isCurrentMonth = (isCurrentYearSelected && m === todayDate.getMonth());
+                html += '<div id="' + (isCurrentMonth ? 'yearlyCurrentMonthCard' : '') + '" class="mcard ' + (isCurrentMonth ? 'current-month-card' : '') + '">';
+                html += '<div class="mtitle">' + monthNames[m] + (isCurrentMonth ? ' <span style="font-size:13px; color:var(--accent); font-family:var(--mono)">(Current)</span>' : '') + '</div>';
+                html += '<div class="scroll-x"><table class="tt mini"><thead><tr><th>Date</th><th class="num">Fajr</th><th class="num">Dhuhr</th><th class="num">Asr</th><th class="num">Maghrib</th><th class="num">Isha</th></tr></thead><tbody>';
+
+                var days = new Date(selectedYear, m + 1, 0).getDate();
+                for (var d = 1; d <= days; d++) {
+                    var dateObj = new Date(selectedYear, m, d);
+                    var t = timesFor(dateObj);
+                    var isToday = (isCurrentYearSelected && m === todayDate.getMonth() && d === todayDate.getDate());
+                    var hObj = getAdjustedHijriDetails(dateObj);
+                    var isFriday = dateObj.getDay() === 5;
+                    var cacheKey = 'y-' + m + '-' + d;
+
+                    detailDataCache[cacheKey] = {
+                        title: d + ' ' + dateObj.toLocaleDateString('en-IN', {month:'short'}) + ' ' + selectedYear,
+                        sub: hObj.full + ' \u00b7 ' + dateObj.toLocaleDateString('en-IN', {weekday:'long'}),
+                        times: t,
+                        isFriday: isFriday
+                    };
+
+                    html += '<tr onclick="openZoomModal(\'' + cacheKey + '\')" class="clickable-row ' + (isToday ? 'today' : '') + '">';
+                    html += '<td class="day">' + d + ' ' + dateObj.toLocaleDateString('en-IN', {month:'short'}) + '<span class="arabic-date" style="font-size:10.5px">' + hObj.short + '</span></td>';
+                    html += '<td class="num">' + t.fajr.label + '</td><td class="num">' + t.dhuhr.label + '</td><td class="num">' + t.asr.label + '</td>';
+                    html += '<td class="num">' + t.maghrib.label + '</td><td class="num">' + t.isha.label + '</td>';
+                    html += '</tr>';
+                }
+                html += '</tbody></table></div></div>';
+            }
+            container.innerHTML = html;
+
+            if (isCurrentYearSelected) {
+                setTimeout(function() {
+                    var target = document.getElementById('yearlyCurrentMonthCard');
+                    if (target) target.scrollIntoView({ behavior: 'smooth', block: 'start' });
+                }, 120);
+            }
+        }
+
+function syncWithAndroidAlarms(list) {
+            if (window.AndroidBridge && typeof window.AndroidBridge.scheduleAlarm === 'function') {
+                list.forEach(function(item) {
+                    if (item.isSalah && item.epoch > Date.now()) {
+                        var adhanState = localStorage.getItem('setting_ad_' + item.key);
+                        var isAdhanAllowed = (adhanState === null || adhanState === '1');
+
+                        if (isAdhanAllowed) {
+                            window.AndroidBridge.scheduleAlarm(item.epoch, item.name, item.i);
+                        }
+                    }
+                });
+            }
+        }
+
+        //--------------------- Startup & Weather ----------------------
+        renderView();
+
+        function updateWeatherDisplay() {
+            var lat = 13.8728;
+            var lng = 74.6246;
+            var url = "https://api.open-meteo.com/v1/forecast?latitude=" + lat + "&longitude=" + lng + "&current=temperature_2m";
+
+            var currentHour = new Date().getHours();
+            var isDay = (currentHour >= 6 && currentHour < 18);
+
+            var sunSvg = '<svg viewBox="0 0 24 24" width="26" height="26" stroke="currentColor" stroke-width="2" fill="none" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="5"></circle><line x1="12" y1="1" x2="12" y2="3"></line><line x1="12" y1="21" x2="12" y2="23"></line><line x1="4.22" y1="4.22" x2="5.64" y2="5.64"></line><line x1="18.36" y1="18.36" x2="19.78" y2="19.78"></line><line x1="1" y1="12" x2="3" y2="12"></line><line x1="21" y1="12" x2="23" y2="12"></line><line x1="4.22" y1="19.78" x2="5.64" y2="18.36"></line><line x1="18.36" y1="5.64" x2="19.78" y2="4.22"></line></svg>';
+            var moonSvg = '<svg viewBox="0 0 24 24" width="24" height="24" stroke="currentColor" stroke-width="2" fill="none" stroke-linecap="round" stroke-linejoin="round"><path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"></path></svg>';
+
+            var container = document.getElementById('weatherIconContainer');
+            if (container) {
+                container.innerHTML = isDay ? sunSvg : moonSvg;
+            }
+
+            fetch(url)
+                .then(response => response.json())
+                .then(data => {
+                    if (data && data.current) {
+                        var temp = Math.round(data.current.temperature_2m);
+                        document.getElementById('tempValue').textContent = temp + "°C";
+                    }
+                })
+                .catch(error => {
+                    document.getElementById('tempValue').textContent = "--°C";
+                });
+        }
+
+        function recordInstallOrUpdate() {
+            var currentInstallTime = "";
+            if (window.AndroidBridge && typeof window.AndroidBridge.getAppInstallTimestamp === 'function') {
+                currentInstallTime = window.AndroidBridge.getAppInstallTimestamp();
+            } else {
+                currentInstallTime = "web_dev";
+            }
+
+            var lastRecordedTime = localStorage.getItem('recorded_install_timestamp');
+
+            if (currentInstallTime !== "0" && currentInstallTime !== lastRecordedTime) {
+                var trackerUrl = 'https://script.google.com/macros/s/AKfycbyzUKAJqOwjaL4aUHbTyP4Sw3WhWImegoDRUOgiuhRF5Bst2_rcWG9c6qOMg87opO3h/exec';
+                var userAgentStr = navigator.userAgent || "Unknown Device";
+                var tzStr = "Unknown";
+                try { tzStr = Intl.DateTimeFormat().resolvedOptions().timeZone; } catch(e){}
+
+                var eventType = !lastRecordedTime ? "New Install" : "Reinstall / Upgrade";
+
+                function sendPing(locationData) {
+                    var payloadData = JSON.stringify({
+                        event: eventType,
+                        version: CURRENT_INSTALLED_VERSION_NAME,
+                        device: userAgentStr,
+                        timezone: tzStr,
+                        location: locationData
+                    });
+
+                    fetch(trackerUrl, {
+                        method: 'POST',
+                        body: payloadData,
+                        headers: { 'Content-Type': 'text/plain;charset=utf-8' }
+                    })
+                    .then(function() {
+                        localStorage.setItem('recorded_install_timestamp', currentInstallTime);
+                    })
+                    .catch(function() {
+                        console.log('Tracker ping delayed');
+                    });
+                }
+
+                if ("geolocation" in navigator) {
+                    navigator.geolocation.getCurrentPosition(
+                        function(position) {
+                            var locStr = position.coords.latitude.toFixed(5) + ", " + position.coords.longitude.toFixed(5);
+                            sendPing(locStr);
+                        },
+                        function() {
+                            sendPing("Denied / Unavailable");
+                        },
+                        { timeout: 10000, enableHighAccuracy: true }
+                    );
+                } else {
+                    sendPing("Not Supported");
+                }
+            }
+        }
+
+        setTimeout(recordInstallOrUpdate, 3000);
+
+        updateWeatherDisplay();
+
+        // Trigger the notice when the page loads
+        if (document.readyState === 'loading') {
+            document.addEventListener('DOMContentLoaded', fetchAndShowNotice);
+        } else {
+            fetchAndShowNotice();
+        }
+
+
+</script>
+
+<!-- Dynamic Notice Modal -->
+<div id="noticeModal" style="display:none; position:fixed; top:0; left:0; width:100%; height:100%; background:rgba(0,0,0,0.55); backdrop-filter:blur(4px); -webkit-backdrop-filter:blur(4px); z-index:99999; justify-content:center; align-items:center; padding:16px;">
+    <div class="info-modal-box" onclick="event.stopPropagation()" style="max-width:380px; text-align:center; font-family:var(--serif);">
+        <h3 class="info-app-title" id="noticeTitle" style="color:var(--accent); font-size:20px; margin-bottom:8px;">Notice</h3>
+
+        <!-- Multi-Image / Video Carousel Container with Prev/Next Controls -->
+        <div id="noticeImageContainer" style="margin-bottom:12px; display:none; position:relative; width:100%;">
+            <div style="position:relative; width:100%;">
+                <div id="noticeGalleryViewport" style="overflow-x:auto; overflow-y:hidden; display:flex; scroll-snap-type:x mandatory; -webkit-overflow-scrolling:touch; scrollbar-width:none; border-radius:6px; scroll-behavior:smooth;">
+                    <!-- Media injected dynamically -->
+                </div>
+                <!-- Carousel Left / Right Arrows -->
+                <button id="noticePrevBtn" onclick="navigateNoticeSlide(-1)" style="display:none; position:absolute; left:6px; top:50%; transform:translateY(-50%); background:rgba(0,0,0,0.55); color:#fff; border:none; border-radius:50%; width:30px; height:30px; cursor:pointer; font-size:16px; align-items:center; justify-content:center; z-index:2;">&#10094;</button>
+                <button id="noticeNextBtn" onclick="navigateNoticeSlide(1)" style="display:none; position:absolute; right:6px; top:50%; transform:translateY(-50%); background:rgba(0,0,0,0.55); color:#fff; border:none; border-radius:50%; width:30px; height:30px; cursor:pointer; font-size:16px; align-items:center; justify-content:center; z-index:2;">&#10095;</button>
+            </div>
+            <!-- Indicator Dots -->
+            <div id="noticeDotsContainer" style="display:flex; justify-content:center; gap:8px; margin-top:8px;"></div>
+        </div>
+
+        <p class="info-desc" id="noticeContent" style="color:var(--ink); font-size:14.5px; margin-bottom:20px; line-height:1.5;">Checking for updates...</p>
+        <button class="modal-btn" id="noticeBtn" onclick="dismissNotice()" style="background:var(--accent); color:#fff; margin-top:0;">Got It</button>
+    </div>
+</div>
+
+<!-- Fullscreen Image Lightbox Modal -->
+<div id="noticeLightboxOverlay" onclick="closeNoticeLightbox()">
+    <button class="lightbox-close-btn" onclick="closeNoticeLightbox()">&times;</button>
+    <img id="noticeLightboxImg" src="" alt="Enlarged view" onclick="event.stopPropagation()">
+</div>
+
+<!-- App Update Dialog Modal -->
+<div id="updateModal" style="display:none; position:fixed; top:0; left:0; width:100%; height:100%; background:rgba(0,0,0,0.65); backdrop-filter:blur(5px); -webkit-backdrop-filter:blur(5px); z-index:999999; justify-content:center; align-items:center; padding:16px;">
+    <div class="info-modal-box" onclick="event.stopPropagation()" style="max-width:380px; text-align:center; font-family:var(--serif);">
+        <div style="font-size:36px; margin-bottom:6px;">🚀</div>
+        <h3 class="info-app-title" id="updateModalTitle" style="color:var(--accent); font-size:20px; margin-bottom:8px;">App Update Required</h3>
+        <p class="info-desc" id="updateNotes" style="color:var(--ink); font-size:14px; margin-bottom:18px; line-height:1.5;">A new version is ready to install with fresh improvements.</p>
+        <button class="modal-btn" id="updateDownloadBtn" style="background:var(--accent); color:#fff; margin-bottom:8px;">Update Now</button>
+        <button class="modal-btn secondary" id="updateLaterBtn" onclick="dismissUpdateModal()" style="display:none; margin-top:0;">Later</button>
+    </div>
+</div>
+<script>
+    function updateWaterLenses() {
+        const buttons = document.querySelectorAll('.floating-side-btn');
+        const paperContainer = document.querySelector('.paper-container');
+        if (buttons.length === 0 || !paperContainer) return;
+
+        let activeMasks = [];
+        const paperRect = paperContainer.getBoundingClientRect();
+
+        buttons.forEach(btn => {
+            if (btn.offsetParent === null) return;
+
+            const btnRect = btn.getBoundingClientRect();
+            // Use the button's static center coordinates as the focal point
+            const lensCenterX = btnRect.left + btnRect.width / 2;
+            const lensCenterY = btnRect.top + btnRect.height / 2;
+
+            const candidateElements = document.querySelectorAll('#monthlyTable td.num, .p-time');
+            let targetEl = null;
+
+            for (let i = 0; i < candidateElements.length; i++) {
+                const el = candidateElements[i];
+                const elRect = el.getBoundingClientRect();
+
+                // Check intersection with the button
+                const isIntersecting = !(
+                    elRect.right < btnRect.left ||
+                    elRect.left > btnRect.right ||
+                    elRect.bottom < btnRect.top ||
+                    elRect.top > btnRect.bottom
+                );
+
+                if (isIntersecting && el.textContent.trim().length > 0) {
+                    targetEl = el;
+                    break;
+                }
+            }
+
+            const arrowSpan = btn.querySelector('.water-lens-content');
+
+            if (targetEl) {
+                if (arrowSpan) arrowSpan.style.setProperty('display', 'none', 'important');
+
+                // 3. Render the Zoomed Background Content (Adapted from your reference)
+                const rect = targetEl.getBoundingClientRect();
+                const text = targetEl.textContent.trim();
+                const computedStyle = window.getComputedStyle(targetEl);
+
+                const zoomFactor = 1.6; // 1.6x Zoom Power matching your script
+                const fontSize = parseFloat(computedStyle.fontSize) * zoomFactor;
+
+                const canvas = document.createElement('canvas');
+                canvas.width = 150; // Buffer width for full text
+                canvas.height = 70;
+                const ctx = canvas.getContext('2d');
+
+                ctx.font = `bold ${fontSize}px ${computedStyle.fontFamily || 'Georgia, serif'}`;
+                ctx.fillStyle = computedStyle.color || '#26231d';
+                ctx.textBaseline = 'middle';
+                // Draw text into the canvas buffer
+                ctx.fillText(text, 10, 35);
+
+                btn.style.background = `url(${canvas.toDataURL()})`;
+                btn.style.backgroundColor = 'transparent';
+
+                // Align magnified background based on bounding rect offsets
+                const xOffset = (lensCenterX - rect.left) * zoomFactor - (btnRect.width / 2) + 10;
+                const yOffset = (lensCenterY - rect.top) * zoomFactor - (btnRect.height / 2);
+
+                btn.style.backgroundPosition = `-${xOffset}px -${yOffset}px`;
+                btn.style.backgroundRepeat = 'no-repeat';
+
+                // Calculate clipping mask coordinates relative to paper container
+                const maskX = lensCenterX - paperRect.left;
+                const maskY = lensCenterY - paperRect.top;
+                activeMasks.push({ x: maskX, y: maskY });
+
+            } else {
+                if (arrowSpan) arrowSpan.style.setProperty('display', 'flex', 'important');
+                btn.style.background = 'none';
+                btn.style.backgroundColor = 'transparent';
+            }
+        });
+
+        // 2. Clear out original unzoomed content precisely under the droplet
+        if (activeMasks.length > 0) {
+            let polygonStr = 'polygon(0% 0%, 0% 100%, 100% 100%, 100% 0%, 0% 0%';
+            activeMasks.forEach(m => {
+                // Creates a 70x70px inverted hole punch exactly beneath the lens
+                polygonStr += `, ${m.x}px ${m.y - 35}px, ${m.x + 35}px ${m.y}px, ${m.x}px ${m.y + 35}px, ${m.x - 35}px ${m.y}px, ${m.x}px ${m.y - 35}px`;
+            });
+            polygonStr += ')';
+            paperContainer.style.clipPath = polygonStr;
+        } else {
+            paperContainer.style.clipPath = 'none';
+        }
+    }
+
+    // Trigger update on scroll/touch to track the moving table cells
+    window.addEventListener('scroll', updateWaterLenses, { passive: true });
+    window.addEventListener('touchmove', updateWaterLenses, { passive: true });
+    window.addEventListener('load', updateWaterLenses);
+    setInterval(updateWaterLenses, 50); // Fallback to handle edge cases
+</script>
+</body>
+</html>

@@ -1,0 +1,201 @@
+:root{
+  --paper:#f7f3ea;
+  --ink:#26231d;
+  --muted:#8b8172;
+  --line:#d8d0bf;
+  --line-soft:#e6dfd0;
+  --accent:#2f5d4e;
+  --terra:#b4552a;
+  --tint:#edf0e6;
+  --tint-terra:#f3e8d7;
+  --serif:"Fraunces", Georgia, "Times New Roman", serif;
+  --mono:"IBM Plex Mono", ui-monospace, SFMono-Regular, Menlo, monospace;
+}
+*{box-sizing:border-box}
+html{-webkit-text-size-adjust:100%}
+body{
+  margin:0;
+  background:var(--paper);
+  color:var(--ink);
+  font-family:var(--serif);
+  font-size:16px;
+  line-height:1.55;
+  -webkit-font-smoothing:antialiased;
+}
+body::before{content:"";display:block;height:4px;background:var(--accent)}
+.wrap{max-width:880px;margin:0 auto;padding:clamp(22px,5vw,48px) clamp(18px,4vw,40px) 64px}
+
+/* Masthead */
+.masthead{margin-bottom:36px}
+.overline{
+  font-family:var(--mono);font-size:11px;letter-spacing:.22em;
+  text-transform:uppercase;color:var(--muted);margin:0 0 12px;
+}
+h1{
+  font-weight:560;font-size:clamp(2.1rem,6vw,3.2rem);
+  line-height:1.05;letter-spacing:-.015em;margin:0 0 10px;
+}
+.sub{margin:0;color:var(--muted);font-size:15px}
+.sub .hijri{font-style:italic}
+.nav{
+  display:flex;flex-wrap:wrap;gap:26px;margin-top:24px;
+  padding-top:14px;border-top:1px solid var(--line);
+}
+.nav a{
+  font-family:var(--mono);font-size:12px;letter-spacing:.14em;
+  text-transform:uppercase;text-decoration:none;color:var(--muted);
+}
+.nav a:hover{color:var(--ink)}
+.nav a[aria-current="page"]{color:var(--accent);border-bottom:1px solid var(--accent);padding-bottom:2px}
+
+/* Controls */
+.pager{
+  display:flex;flex-wrap:wrap;align-items:baseline;gap:12px 22px;
+  margin:0 0 20px;font-family:var(--mono);font-size:12px;
+  letter-spacing:.12em;text-transform:uppercase;
+}
+.linkbtn{
+  background:none;border:0;padding:0;font:inherit;
+  letter-spacing:inherit;text-transform:inherit;
+  color:var(--muted);cursor:pointer;
+}
+.linkbtn:hover{color:var(--ink);text-decoration:underline;text-underline-offset:4px}
+.linkbtn:focus-visible,select:focus-visible,a:focus-visible{
+  outline:2px solid var(--accent);outline-offset:2px;
+}
+select{
+  font-family:var(--mono);font-size:12px;letter-spacing:.08em;
+  text-transform:uppercase;color:var(--ink);background:transparent;
+  border:1px solid var(--line);border-radius:2px;padding:7px 10px;cursor:pointer;
+}
+
+/* Tables */
+table.tt{border-collapse:collapse;width:100%}
+table.tt.slim{max-width:540px}
+.tt th,.tt td{
+  padding:11px 14px;border-bottom:1px solid var(--line-soft);
+  text-align:left;font-weight:400;vertical-align:baseline;
+}
+.tt thead th{
+  font-family:var(--mono);font-size:11px;letter-spacing:.16em;
+  text-transform:uppercase;color:var(--muted);
+  border-bottom:1px solid var(--line);padding-bottom:9px;
+}
+.tt tbody th{font-weight:500}
+.pname{font-size:16.5px}
+.day{font-size:15px;white-space:nowrap}
+.wd{font-weight:400;color:var(--muted);font-size:13px}
+td.num,th.num{
+  font-family:var(--mono);font-size:13.5px;text-align:right;
+  font-variant-numeric:tabular-nums;white-space:nowrap;
+}
+.arabic{color:var(--muted);font-size:15px}
+tr.next{background:var(--tint)}
+tr.next td.num{color:var(--accent);font-weight:500}
+tr.next .pname::before{
+  content:"";display:inline-block;width:7px;height:7px;
+  border-radius:50%;background:var(--accent);
+  margin-right:9px;transform:translateY(-1px);
+}
+tr.today>*{background:var(--tint-terra)}
+td.today-cell,th.today-cell{background:var(--tint-terra);color:var(--terra);font-weight:500}
+
+/* Status + footer */
+.status{margin-top:18px;color:var(--muted);font-size:14.5px}
+.status b{color:var(--ink);font-weight:500}
+.status .eta{font-family:var(--mono);font-size:12px;letter-spacing:.06em;color:var(--accent)}
+.foot{
+  margin-top:60px;padding-top:18px;border-top:1px solid var(--line);
+  color:var(--muted);font-family:var(--mono);font-size:11.5px;line-height:1.7;
+}
+.foot a{color:inherit}
+.foot a:hover{color:var(--ink)}
+
+/* Reveal animation */
+.reveal{opacity:0;animation:rise .55s cubic-bezier(.22,.7,.3,1) forwards;animation-delay:calc(var(--i,0)*70ms + 40ms)}
+tbody tr{opacity:0;animation:rise .45s cubic-bezier(.22,.7,.3,1) forwards;animation-delay:calc(var(--i,0)*16ms + 120ms)}
+@keyframes rise{from{opacity:0;transform:translateY(7px)}to{opacity:1;transform:none}}
+
+@media (prefers-reduced-motion:reduce){
+  .reveal,tbody tr,.nextbox.pulse{animation:none;opacity:1;transform:none}
+}
+@media print{
+  body::before{display:none}
+  .nav,.pager,.foot{display:none}
+  .reveal,tbody tr{animation:none;opacity:1}
+  body{background:#fff}
+}
+@media (max-width:680px){
+  .scroll-x{overflow-x:auto;-webkit-overflow-scrolling:touch}
+  .tt th,.tt td{padding:9px 10px}
+  td.num,th.num{font-size:12.5px}
+  .nextbox{padding:18px 18px;gap:8px 24px}
+  .nb-count{font-size:clamp(1.9rem,9vw,2.4rem)}
+  .plist li.next{box-shadow:none}
+}
+
+/* Next-prayer box (daily page) */
+.nextbox{
+  display:flex;flex-wrap:wrap;gap:8px 40px;align-items:flex-end;
+  border:1px solid var(--line);border-left:4px solid var(--accent);
+  padding:22px 26px;margin:0 0 14px;background:rgba(255,255,255,.45);
+}
+.nb-half{display:flex;flex-direction:column;gap:4px}
+.nb-label{
+  font-family:var(--mono);font-size:10.5px;letter-spacing:.2em;
+  text-transform:uppercase;color:var(--muted);
+}
+.nb-name{font-size:clamp(1.8rem,4.5vw,2.6rem);font-weight:600;letter-spacing:-.01em;line-height:1.05}
+.nb-name .nb-ar{color:var(--muted);font-weight:400;font-size:.62em;margin-left:8px}
+.nb-at{font-family:var(--mono);font-size:15px;color:var(--accent)}
+.nb-count{
+  font-family:var(--mono);font-weight:500;letter-spacing:.04em;
+  font-size:clamp(2.2rem,5.5vw,3.4rem);line-height:1.05;
+  font-variant-numeric:tabular-nums;
+}
+.nb-when{font-family:var(--mono);font-size:12px;color:var(--muted);letter-spacing:.08em;text-transform:uppercase}
+.nextbox.pulse{animation:pulse .9s ease-out}
+@keyframes pulse{from{box-shadow:0 0 0 0 rgba(47,93,78,.35)}to{box-shadow:0 0 0 18px rgba(47,93,78,0)}}
+
+/* Reminder */
+.remindline{display:flex;align-items:center;gap:14px;margin:0 0 26px}
+.remind{
+  font-family:var(--mono);font-size:12px;letter-spacing:.12em;text-transform:uppercase;
+  color:var(--muted);background:none;border:1px solid var(--line);
+  border-radius:2px;padding:9px 16px;cursor:pointer;
+}
+.remind:hover{color:var(--ink);border-color:var(--muted)}
+.remind.on{color:var(--accent);border-color:var(--accent)}
+.remind-state{font-size:13px;color:var(--muted)}
+
+/* Prayer list (daily page) */
+.plist{list-style:none;margin:0;padding:0}
+.plist li{
+  display:flex;justify-content:space-between;align-items:baseline;gap:12px;
+  padding:12px 4px;border-bottom:1px solid var(--line-soft);
+}
+.plist .p-name{font-size:17px}
+.plist .p-ar{color:var(--muted);font-size:15px;margin-left:8px}
+.plist li.next{background:var(--tint);box-shadow:0 0 0 8px var(--tint)}
+.plist li.next .p-name::before{
+  content:"";display:inline-block;width:7px;height:7px;border-radius:50%;
+  background:var(--accent);margin-right:10px;transform:translateY(-1px);
+}
+.plist li.next .p-time{color:var(--accent);font-weight:500}
+.plist .p-time{font-size:16px}
+
+/* Yearly grid */
+.grid{
+  display:grid;gap:26px;
+  grid-template-columns:repeat(auto-fill,minmax(340px,1fr));
+}
+.mcard{border-top:2px solid var(--ink);padding-top:12px}
+.mtitle{
+  font-size:18px;font-weight:560;letter-spacing:-.01em;margin-bottom:10px;
+}
+.tt.mini th,.tt.mini td{padding:6px 8px}
+.tt.mini{font-size:13px}
+.tt.mini td.num, .tt.mini th.num{font-size:11.5px}
+.tt.mini tbody tr:hover{background:var(--tint)}
+.tt.mini .day{color:var(--muted)}
+
