@@ -858,6 +858,41 @@ h1{
         @keyframes shine {
             0% { left: -100%; } 20% { left: 150%; } 100% { left: 150%; }
         }
+
+/* --- DARK / NIGHT THEME PALETTE --- */
+        body.dark-theme {
+            --paper: #1a1814;
+            --ink: #f0ede6;
+            --muted: #a3998b;
+            --line: #3a352d;
+            --line-soft: #2c2822;
+            --accent: #4a8b75;
+            --terra: #d96b3d;
+            --tint: #22332c;
+            --tint-terra: #3d2c22;
+        }
+
+        /* Dark mode overrides for explicit white backgrounds (Modals & Pickers) */
+        body.dark-theme .info-modal-box {
+            background: #23201b !important;
+            color: var(--ink) !important;
+        }
+        body.dark-theme .wheel-picker-container {
+            background: #2c2822 !important;
+            border-color: var(--line) !important;
+        }
+        body.dark-theme .wheel-picker-container::after {
+            background: linear-gradient(to bottom, rgba(35,32,27,0.85) 0%, transparent 35%, transparent 65%, rgba(35,32,27,0.85) 100%) !important;
+        }
+        body.dark-theme .form-control {
+            background: #2c2822 !important;
+            color: var(--ink) !important;
+            border-color: var(--line) !important;
+        }
+        body.dark-theme .nextbox {
+            background: rgba(35, 32, 27, 0.75) !important;
+        }
+        
     </style>
 </head>
 <body>
@@ -928,6 +963,16 @@ h1{
 
         <div style="display:flex; flex-direction:column; gap:8px; margin-bottom:2px; font-family:var(--mono); font-size:11.5px;">
 
+ <!-- Night Mode Row -->
+            <div style="display:flex; justify-content:space-between; align-items:center; padding: 0 4px 6px 4px; border-bottom:1px solid var(--line-soft);">
+                <span style="font-family:var(--serif); font-size:13.5px; font-weight:500; color:var(--ink);">Night Mode</span>
+                <label class="switch small" style="margin:0;">
+                    <input type="checkbox" id="nightModeToggle" onchange="handleNightModeToggle()">
+                    <span class="slider"></span>
+                </label>
+            </div>
+
+            
             <!-- Auto-silent Single Line Layout -->
             <div style="display:flex; justify-content:space-between; align-items:center; padding: 0 4px 6px 4px; border-bottom:1px solid var(--line-soft);">
                 <div style="display:flex; align-items:center; gap:8px;">
@@ -1218,6 +1263,32 @@ h1{
 <audio id="iqaamaAudio" src="iqaama.mp3" preload="auto"></audio>
 
 <script>
+
+    // Toggle Handler
+   function handleNightModeToggle() {
+        var toggle = document.getElementById('nightModeToggle');
+        if (!toggle) return;
+        if (toggle.checked) {
+            document.body.classList.add('dark-theme');
+            localStorage.setItem('night_mode_enabled', '1');
+        } else {
+            document.body.classList.remove('dark-theme');
+            localStorage.setItem('night_mode_enabled', '0');
+        }
+    }
+
+    // Sync toggle state inside loadSettingsToUI()
+    // (Add these lines inside your existing loadSettingsToUI function)
+    var nightToggle = document.getElementById('nightModeToggle');
+    var nightEnabled = (localStorage.getItem('night_mode_enabled') === '1');
+    if (nightToggle) nightToggle.checked = nightEnabled;
+
+    // Apply saved theme immediately on page load (place this right before or at the end of your script)
+    if (localStorage.getItem('night_mode_enabled') === '1') {
+        document.body.classList.add('dark-theme');
+    }
+
+    
     //--------------------- Unified Synchronous XML Database Loader ----------------------
         var xmlPrayerDatabase = {};
 
