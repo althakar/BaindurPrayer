@@ -1,10 +1,11 @@
 {
-  "name": "Byndoor Prayer Times",
-  "short_name": "Byndoor Prayer",
-  "start_url": "index.html",
+  "name": "Baindur Prayer",
+  "short_name": "Baindur",
+  "description": "Offline prayer timetable and adhan application.",
+  "start_url": "./index.html",
   "display": "standalone",
   "background_color": "#f7f3ea",
-  "theme_color": "#2f5d4e",
+  "theme_color": "#f7f3ea",
   "icons": [
     {
       "src": "logo.png",
