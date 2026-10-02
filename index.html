@@ -16,6 +16,19 @@
     
     <script src="prayer_data.js"></script>
     <script src="prayer_engine.js"></script>
+<script src="https://cdn.onesignal.com/sdks/web/v16/OneSignalSDK.page.js" defer></script>
+<script>
+  window.OneSignalDeferred = window.OneSignalDeferred || [];
+  OneSignalDeferred.push(async function(OneSignal) {
+    await OneSignal.init({
+      appId: "781aa30d-8281-4f3a-b186-69718ab9047d", // Replace with your actual App ID
+      safari_web_id: "web.onesignal.auto.YOUR_SAFARI_ID",
+      notifyButton: {
+        enable: true, // This adds a floating bell icon so iOS users can subscribe
+      },
+    });
+  });
+</script>
     
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin="anonymous">
