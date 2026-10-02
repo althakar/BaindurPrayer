@@ -24,13 +24,15 @@ self.addEventListener('fetch', event => {
   event.respondWith(
     caches.match(event.request)
       .then(response => {
-        // Return cached response if found
         if (response) {
             return response;
         }
-        // Otherwise fetch from network
+        // Return a graceful empty response if the network fails or is blocked by an adblocker
         return fetch(event.request).catch(() => {
-            // Fallback for offline if not in cache (could be extended)
+            return new Response('Network error or blocked by extension', { 
+                status: 408, 
+                headers: { 'Content-Type': 'text/plain' } 
+            });
         });
       })
   );
