@@ -22,10 +22,9 @@
   window.OneSignalDeferred = window.OneSignalDeferred || [];
   OneSignalDeferred.push(async function(OneSignal) {
     await OneSignal.init({
-      appId: "781aa30d-8281-4f3a-b186-69718ab9047d", // Replace with your actual App ID
-      safari_web_id: "web.onesignal.auto.YOUR_SAFARI_ID",
+      appId: "781aa30d-8281-4f3a-b186-69718ab9047d",
       notifyButton: {
-        enable: true, // This adds a floating bell icon so iOS users can subscribe
+        enable: true,
       },
     });
   });
