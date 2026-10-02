@@ -1,4 +1,6 @@
 var xmlPrayerDatabase = {};
+var CURRENT_INSTALLED_VERSION_CODE = 7;
+var CURRENT_INSTALLED_VERSION_NAME = "v2.4";
 var SITE = { lat: 13.872767, lng: 74.624630, tz: 5.5, tzName: 'Asia/Kolkata' };
 var PRAYERS = [
     { key: 'imsak', name: 'Imsak', ar: 'الإمساك', isSalah: false },
@@ -23,12 +25,17 @@ document.addEventListener('DOMContentLoaded', function() {
 
     loadXMLDatabase();
     renderView();
-    startSplashTransition();
 
+    startSplashTransition();
+    var isDiagEnabled = (localStorage.getItem('advanced_diag_enabled') === '1');
+    var diagToggle = document.getElementById('advancedDiagToggle');
+    if (diagToggle) diagToggle.checked = isDiagEnabled;
+    if (isDiagEnabled) scheduleDiagnosticUploadTimer();
+
+    setTimeout(recordInstallOrUpdate, 3000);
     updateWeatherDisplay();
     fetchAndShowNotice();
     
-    // Crucial for iOS web apps: Unlock audio engine on first user tap
     document.addEventListener('click', unlockAudioOnTouch, { once: true });
     updateWaterLenses();
 });
@@ -45,6 +52,13 @@ function unlockAudioOnTouch() {
 }
 
 function initSettingsWheels() {
+    let extraMinsHtml = '';
+    for(let m=0; m<=20; m++) {
+        extraMinsHtml += '<div class="wheel-item ' + (m===15?'selected':'') + '" data-val="'+m+'">'+m+' Min</div>';
+    }
+    var emScroll = document.getElementById('extraMinutesScroll');
+    if(emScroll) emScroll.innerHTML = extraMinsHtml;
+
     let jumahHtml = '';
     for(let m=0; m<=45; m++) {
         let minStr = m < 10 ? '0' + m : m;
@@ -107,7 +121,6 @@ function loadNotificationHistory() {
         container.innerHTML = html;
     } catch (e) {}
 }
-
 function deleteNotification(index) {
     try {
         var stored = localStorage.getItem('app_notifications');
@@ -116,7 +129,6 @@ function deleteNotification(index) {
         checkStoredNotificationsState();
     } catch (e) {}
 }
-
 function checkStoredNotificationsState() {
     try {
         var jsonStr = localStorage.getItem('app_notifications') || "[]";
@@ -124,7 +136,6 @@ function checkStoredNotificationsState() {
         setBellStatus(list && list.length > 0);
     } catch(e) {}
 }
-
 function setBellStatus(hasNotification) {
     const bellPath = document.getElementById('bellIcon');
     const bellBadge = document.getElementById('bellBadge');
@@ -134,7 +145,6 @@ function setBellStatus(hasNotification) {
     }
     if (bellBadge) bellBadge.style.display = hasNotification ? 'block' : 'none';
 }
-
 function clearAllNotifications() {
     localStorage.removeItem('app_notifications');
     loadNotificationHistory();
@@ -191,13 +201,16 @@ function handleNightModeToggle() {
     if (toggle.checked) { document.body.classList.add('dark-theme'); localStorage.setItem('night_mode_enabled', '1'); } 
     else { document.body.classList.remove('dark-theme'); localStorage.setItem('night_mode_enabled', '0'); }
 }
+function saveAdhanReciter(reciterValue) {
+    localStorage.setItem('setting_adhan_reciter', reciterValue);
+    if (window.AndroidBridge && typeof window.AndroidBridge.saveAdhanReciter === 'function') window.AndroidBridge.saveAdhanReciter(reciterValue);
+}
 
 function getTagText(node, tag1, tag2) {
     var el = node.getElementsByTagName(tag1)[0];
     if (!el && tag2) el = node.getElementsByTagName(tag2)[0];
     return el && el.textContent ? el.textContent.trim() : "";
 }
-
 function formatXmlTime(time24) {
     if (!time24) return "--:--";
     var str = String(time24).trim();
@@ -212,7 +225,6 @@ function formatXmlTime(time24) {
     if (h12 === 0) h12 = 12;
     return h12 + ":" + m + " " + suffix;
 }
-
 function loadXMLDatabase() {
     if (typeof window.EMBEDDED_PRAYER_XML === 'undefined' || !window.EMBEDDED_PRAYER_XML) return;
     try {
@@ -241,6 +253,31 @@ function loadXMLDatabase() {
     } catch(e) {}
 }
 
+function checkForAppUpdate(updateData) {
+    if (!updateData || !updateData.downloadUrl) return false;
+    var remoteCode = parseInt(updateData.latestVersionCode, 10) || 0;
+    if (remoteCode > CURRENT_INSTALLED_VERSION_CODE || updateData.forceAllUsers) {
+        var modal = document.getElementById('updateModal');
+        var titleEl = document.getElementById('updateModalTitle');
+        var notesEl = document.getElementById('updateNotes');
+        var downloadBtn = document.getElementById('updateDownloadBtn');
+        var laterBtn = document.getElementById('updateLaterBtn');
+        if (modal && downloadBtn) {
+            titleEl.textContent = updateData.versionName ? "Update Required (" + updateData.versionName + ")" : "App Update Required";
+            if (updateData.releaseNotes) notesEl.textContent = updateData.releaseNotes;
+            downloadBtn.onclick = function() {
+                if (window.AndroidBridge && typeof window.AndroidBridge.openExternalUrl === 'function') window.AndroidBridge.openExternalUrl(updateData.downloadUrl);
+                else window.open(updateData.downloadUrl, '_blank');
+            };
+            if (laterBtn) laterBtn.style.display = (updateData.forceUpdate || updateData.forceAllUsers) ? 'none' : 'block';
+            modal.style.display = 'flex';
+            return true;
+        }
+    }
+    return false;
+}
+function dismissUpdateModal() { var m = document.getElementById('updateModal'); if (m) m.style.display = 'none'; }
+
 function handleWheelScroll(scrollEl, targetInputId) {
     clearTimeout(scrollEl.scrollTimer);
     scrollEl.scrollTimer = setTimeout(function() {
@@ -254,7 +291,6 @@ function handleWheelScroll(scrollEl, targetInputId) {
         }
     }, 70);
 }
-
 function scrollWheelToNext(containerId, targetInputId) {
     var scrollEl = document.getElementById(containerId).querySelector('.wheel-picker-scroll');
     var items = scrollEl.querySelectorAll('.wheel-item');
@@ -268,7 +304,6 @@ function scrollWheelToNext(containerId, targetInputId) {
         }
     }, 80);
 }
-
 function setWheelPickerValue(containerId, targetInputId, val) {
     var container = document.getElementById(containerId);
     if (!container) return;
@@ -286,7 +321,47 @@ function setWheelPickerValue(containerId, targetInputId, val) {
     });
 }
 
+function handleAutoSilentToggle() {
+    try {
+        var autoToggle = document.getElementById('autoSilentToggle');
+        var extraPicker = document.getElementById('extraMinutesPicker');
+        if (!autoToggle) return;
+        if (extraPicker) {
+            extraPicker.style.opacity = autoToggle.checked ? '1' : '0.4';
+            extraPicker.style.pointerEvents = autoToggle.checked ? 'auto' : 'none';
+        }
+        if (autoToggle.checked && window.AndroidBridge && typeof window.AndroidBridge.checkDndPermission === 'function') {
+            if (!window.AndroidBridge.checkDndPermission()) {
+                if (confirm("To automatically silence your phone during Azaan and restore sound after Iqaama, this app requires Do Not Disturb access.\n\nOn the next settings screen, please find 'Baindur Prayer' and toggle ON the permission.")) {
+                    window.AndroidBridge.openDndSettings();
+                } else {
+                    autoToggle.checked = false;
+                    if (extraPicker) { extraPicker.style.opacity = '0.4'; extraPicker.style.pointerEvents = 'none'; }
+                }
+            }
+        }
+        saveSettings();
+    } catch (e) {}
+}
+
 function loadSettingsToUI() {
+    var autoToggle = document.getElementById('autoSilentToggle');
+    var extraPicker = document.getElementById('extraMinutesPicker');
+    var autoEnabled = false, extraMinsVal = 15;
+    if (window.AndroidBridge) {
+        if (typeof window.AndroidBridge.getAutoSilentEnabled === 'function') autoEnabled = window.AndroidBridge.getAutoSilentEnabled();
+        if (typeof window.AndroidBridge.getExtraMinutes === 'function') extraMinsVal = window.AndroidBridge.getExtraMinutes();
+    } else {
+        autoEnabled = (localStorage.getItem('auto_silent_enabled') === '1');
+        var savedExtra = localStorage.getItem('extra_minutes');
+        extraMinsVal = savedExtra !== null ? parseInt(savedExtra, 10) : 15;
+    }
+    if (autoToggle) autoToggle.checked = autoEnabled;
+    if (extraPicker) {
+        extraPicker.style.opacity = autoEnabled ? '1' : '0.4';
+        extraPicker.style.pointerEvents = autoEnabled ? 'auto' : 'none';
+    }
+    setWheelPickerValue('extraMinutesPicker', 'extraMinutes', extraMinsVal);
     var savedJumah = localStorage.getItem('jumah_custom_time');
     setWheelPickerValue('jumahTimePicker', 'jumah_time_input', savedJumah !== null ? savedJumah : "13:15");
     var savedOffset = localStorage.getItem('hijri_date_offset');
@@ -331,14 +406,12 @@ function getHijriDetails(date) {
     var id = z - Math.floor(29.5001 * im - 29);
     return { day: id, monthName: HIJRI_MONTHS[im - 1], year: iy, full: HIJRI_MONTHS[im - 1] + ' ' + id + ', ' + iy + ' AH', short: id + ' ' + HIJRI_MONTHS[im - 1] };
 }
-
 function getAdjustedHijriDetails(date) {
     var offset = parseInt(localStorage.getItem('hijri_date_offset') || "0", 10);
     var adjustedDate = new Date(date.getTime());
     adjustedDate.setDate(adjustedDate.getDate() + offset);
     return getHijriDetails(adjustedDate);
 }
-
 function minsToTimeStr(totalMins) {
     totalMins = totalMins % (24 * 60);
     var h24 = Math.floor(totalMins / 60), m = totalMins % 60, h12 = h24 % 12;
@@ -352,18 +425,15 @@ function openNoticeLightbox(imgSrc) {
     if (overlay && fullImg) { fullImg.src = imgSrc; overlay.style.display = 'flex'; }
 }
 function closeNoticeLightbox() { var m = document.getElementById('noticeLightboxOverlay'); if(m) m.style.display = 'none'; }
-
 function navigateNoticeSlide(direction) {
     var galleryEl = document.getElementById('noticeGalleryViewport');
     if(galleryEl) galleryEl.scrollBy({ left: direction * galleryEl.offsetWidth, behavior: 'smooth' });
 }
-
 function getYouTubeEmbedUrl(url) {
     if (!url) return null;
     var match = String(url).trim().match(/(?:youtu\.be\/|youtube\.com\/(?:embed\/|v\/|watch\?v=|watch\?.+&v=|shorts\/))([\w-]{11})/);
     return match ? "https://www.youtube.com/embed/" + match[1] : null;
 }
-
 function handleRemoteHijriUpdate(remoteHijri) {
     if (!remoteHijri || typeof remoteHijri.offset === 'undefined') return;
     var remoteOffset = parseInt(remoteHijri.offset, 10);
@@ -375,21 +445,19 @@ function handleRemoteHijriUpdate(remoteHijri) {
         renderView();
     }
 }
-
 function dismissNotice() {
     var m = document.getElementById('noticeModal');
     if (m) m.style.display = 'none';
     localStorage.setItem('last_notice_timestamp', Date.now().toString());
 }
-
 function fetchAndShowNotice() {
     fetch('https://script.google.com/macros/s/AKfycbyzUKAJqOwjaL4aUHbTyP4Sw3WhWImegoDRUOgiuhRF5Bst2_rcWG9c6qOMg87opO3h/exec')
         .then(response => { if (!response.ok) throw new Error("Notice offline"); return response.json(); })
         .then(data => {
             if (!data) return;
             if (data.hijri) handleRemoteHijriUpdate(data.hijri);
-            
-            // Render basic alerts
+            if (checkForAppUpdate(data.update) && data.update && (data.update.forceUpdate || data.update.forceAllUsers)) return;
+
             if ((data.message && data.message.trim().length > 0) || (data.images && data.images.length > 0) || data.imageUrl || data.image || data.videoUrl) {
                 var titleText = String(data.title || "Notice").trim();
                 var mediaList = [];
@@ -544,16 +612,24 @@ function fmtRemain(ms) {
 function openSettingsModal() { loadSettingsToUI(); document.getElementById('settingsModal').style.display = 'flex'; }
 function closeSettingsModal() { document.getElementById('settingsModal').style.display = 'none'; }
 function saveSettings() {
+    var autoToggle = document.getElementById('autoSilentToggle');
+    var extraInput = document.getElementById('extraMinutes');
     var jumahTimeInput = document.getElementById('jumah_time_input');
     var hijriOffsetInput = document.getElementById('hijri_offset_val');
 
+    var autoSilent = autoToggle ? autoToggle.checked : false;
+    var extraMins = extraInput ? (parseInt(extraInput.value, 10) || 15) : 15;
     var jumahTimeVal = jumahTimeInput ? jumahTimeInput.value : "13:15";
     var hijriOffsetVal = hijriOffsetInput ? (parseInt(hijriOffsetInput.value, 10) || 0) : 0;
 
+    localStorage.setItem('auto_silent_enabled', autoSilent ? '1' : '0');
+    localStorage.setItem('extra_minutes', extraMins.toString());
     localStorage.setItem('jumah_custom_time', jumahTimeVal);
     var prevOffset = localStorage.getItem('hijri_date_offset');
     if (prevOffset === null || parseInt(prevOffset, 10) !== hijriOffsetVal) localStorage.setItem('hijri_user_set_timestamp', Date.now().toString());
     localStorage.setItem('hijri_date_offset', hijriOffsetVal.toString());
+
+    if (window.AndroidBridge && typeof window.AndroidBridge.saveAutoSilentPreferences === 'function') window.AndroidBridge.saveAutoSilentPreferences(autoSilent, extraMins);
 
     ['fajr', 'dhuhr', 'asr', 'maghrib', 'isha'].forEach(function(p) {
         var adEl = document.getElementById('toggle_ad_' + p), iqEl = document.getElementById('toggle_iq_' + p), delayEl = document.getElementById('iq_delay_' + p);
@@ -561,8 +637,10 @@ function saveSettings() {
         localStorage.setItem('setting_ad_' + p, adhanChecked ? '1' : '0');
         localStorage.setItem('setting_iq_' + p, iqaamaChecked ? '1' : '0');
         localStorage.setItem('setting_delay_' + p, delayVal.toString());
+        if (window.AndroidBridge && typeof window.AndroidBridge.saveAdhanIqaamaSettings === 'function') window.AndroidBridge.saveAdhanIqaamaSettings(p, adhanChecked, iqaamaChecked, delayVal);
     });
 
+    syncWithAndroidAlarms();
     renderView();
 }
 
@@ -769,19 +847,40 @@ function initTodayPage() {
         var hijriEl = document.getElementById('hijri');
         if (hijriEl) hijriEl.textContent = hToday.full + ' \u00b7 ' + todayDateObj.toLocaleDateString('en-IN', { weekday: 'short', day: 'numeric', month: 'short', year: 'numeric' });
 
+        if (window.AndroidBridge && typeof window.AndroidBridge.updateWidgetData === 'function') {
+            var widgetName = (S.next && S.next.name) ? S.next.name : "Fajr", widgetTime = (S.next && S.next.label) ? S.next.label : "5:05 AM";
+            var followingName = "Sunrise", followingTime = "6:20 AM";
+            if (S.list && S.next) {
+                var nextIdx = S.list.findIndex(i => i.key === S.next.key);
+                if (nextIdx !== -1 && nextIdx + 1 < S.list.length) { followingName = S.list[nextIdx + 1].name || S.list[nextIdx + 1].key; followingTime = S.list[nextIdx + 1].label || ""; }
+            }
+            window.AndroidBridge.updateWidgetData(widgetName, widgetTime, followingName, followingTime, new Date().toLocaleTimeString([], { hour: 'numeric', minute: '2-digit' }));
+        }
+
         var activeHighlightKey = S.next ? S.next.key : 'fajr';
         var highlightTomorrow = S.next ? (S.next.tomorrow === true) : true;
+
         if (S.prev) {
             var isFridayDhuhr = (isFriday && S.prev.key === 'dhuhr');
             var pDur = (S.prev.key === 'maghrib') ? 20*60000 : (S.prev.key === 'asr' || S.prev.key === 'isha') ? 30*60000 : 35*60000;
+
             if (isFridayDhuhr) {
                 var p = (localStorage.getItem('jumah_custom_time') || "13:15").split(":");
                 var jumahIqEpoch = epochFor(n.y, n.m, n.d, { h: parseInt(p[0], 10), m: parseInt(p[1], 10) });
-                if (nowMs >= S.prev.epoch && nowMs < jumahIqEpoch + 15*60000) { activeHighlightKey = S.prev.key; highlightTomorrow = false; }
+                if (nowMs >= S.prev.epoch && nowMs < jumahIqEpoch + 15*60000) {
+                    activeHighlightKey = S.prev.key;
+                    highlightTomorrow = false;
+                }
             } else if (S.prev.key === 'taraweeh') {
-                if (nowMs >= S.prev.epoch && nowMs < S.prev.epoch + 60*60000) { activeHighlightKey = S.prev.key; highlightTomorrow = false; }
+                if (nowMs >= S.prev.epoch && nowMs < S.prev.epoch + 60*60000) {
+                    activeHighlightKey = S.prev.key;
+                    highlightTomorrow = false;
+                }
             } else {
-                if (nowMs >= S.prev.epoch && nowMs < S.prev.epoch + pDur) { activeHighlightKey = S.prev.key; highlightTomorrow = false; }
+                if (nowMs >= S.prev.epoch && nowMs < S.prev.epoch + pDur) {
+                    activeHighlightKey = S.prev.key;
+                    highlightTomorrow = false;
+                }
             }
         }
 
@@ -790,14 +889,18 @@ function initTodayPage() {
         var jumahTimeStr = (Math.floor((iqMinutes - 10) / 60) % 12 || 12) + ":" + ((iqMinutes - 10) % 60 < 10 ? '0' : '') + ((iqMinutes - 10) % 60) + " " + (Math.floor((iqMinutes - 10) / 60) >= 12 ? "PM" : "AM");
 
         var getDur = k => k==='maghrib'?20*60000 : k==='asr'||k==='isha'?30*60000 : 35*60000;
-        if (isFriday && S.prev && S.prev.key === 'dhuhr' && nowMs >= S.prev.epoch) {
+        
+        // --- FIX: Ensure Jum'ah logic exactly encapsulates its active timeframe ---
+        var isFridayDhuhrActive = (isFriday && S.prev && S.prev.key === 'dhuhr' && nowMs >= S.prev.epoch && nowMs < (jumahIqEpoch + 900000));
+
+        if (isFridayDhuhrActive) {
             if (nowMs < jumahAdhanEpoch) {
                 if (nbMainLabel) nbMainLabel.textContent = "Next prayer"; if (nbSubLabel) nbSubLabel.textContent = "Time remaining"; if (nbName) nbName.textContent = "Jum'ah"; if (nbAt) nbAt.textContent = jumahTimeStr;
                 if (nbCount) { nbCount.textContent = fmtRemain(jumahAdhanEpoch - nowMs); nbCount.classList.toggle('timer-flashing', (jumahAdhanEpoch - nowMs) <= 60000); }
             } else if (nowMs >= jumahAdhanEpoch && nowMs < jumahIqEpoch) {
                 if (nbMainLabel) nbMainLabel.textContent = "Iqaama"; if (nbSubLabel) nbSubLabel.textContent = "Time remaining"; if (nbName) nbName.textContent = "Jum'ah"; if (nbAt) nbAt.textContent = new Date(jumahIqEpoch).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
                 if (nbCount) { nbCount.textContent = fmtRemain(jumahIqEpoch - nowMs); nbCount.classList.toggle('timer-flashing', (jumahIqEpoch - nowMs) <= 60000); }
-            } else if (nowMs >= jumahIqEpoch && nowMs < jumahIqEpoch + 900000) {
+            } else {
                 if (nbMainLabel) nbMainLabel.textContent = "Current Prayer"; if (nbSubLabel) nbSubLabel.textContent = "Time remaining"; if (nbName) nbName.textContent = "Jum'ah"; if (nbAt) nbAt.textContent = jumahTimeStr;
                 if (nbCount) { nbCount.textContent = fmtRemain((jumahIqEpoch + 900000) - nowMs); nbCount.classList.toggle('timer-flashing', false); }
             }
@@ -889,15 +992,12 @@ function playAzaanAudio(prayerKey) {
     try {
         var adhanState = localStorage.getItem('setting_ad_' + prayerKey);
         if (adhanState === null || adhanState === '1') {
-            var az = document.getElementById('azaanAudio'); 
-            if (az) { az.src = (prayerKey === 'fajr') ? "fajradhan.mp3" : "adhan.mp3"; az.currentTime = 0; az.play().catch(e => {}); }
+            if (window.AndroidBridge && typeof window.AndroidBridge.playAudio === 'function') window.AndroidBridge.playAudio(prayerKey);
+            else { var az = document.getElementById('azaanAudio'); if (az) { az.src = (prayerKey === 'fajr') ? "fajradhan.mp3" : "adhan.mp3"; az.currentTime = 0; az.play().catch(e => {}); } }
         }
     } catch (e) {}
 }
-
-function playIqaamaAudio() { 
-    try { var iq = document.getElementById('iqaamaAudio'); if (iq) { iq.currentTime = 0; iq.play().catch(e => {}); } } catch (e) {} 
-}
+function playIqaamaAudio() { try { var iq = document.getElementById('iqaamaAudio'); if (iq) { iq.currentTime = 0; iq.play().catch(e => {}); } } catch (e) {} }
 
 function loadMonthlyTable() {
     var tbody = document.getElementById('monthlyRows'), daysInMonth = new Date(selectedYear, selectedMonth + 1, 0).getDate(), todayDate = new Date();
@@ -927,6 +1027,32 @@ function loadYearlyGrid() {
     if (isCurrentYearSelected) setTimeout(function() { var target = document.getElementById('yearlyCurrentMonthCard'); if (target) target.scrollIntoView({ behavior: 'smooth', block: 'start' }); }, 120);
 }
 
+function syncWithAndroidAlarms() {
+    if (window.AndroidBridge && typeof window.AndroidBridge.scheduleAlarm === 'function') {
+        var nowMs = Date.now();
+        var n = siteNow(nowMs);
+        for (var dayOffset = 0; dayOffset <= 30; dayOffset++) {
+            var targetDate = new Date(n.y, n.m, n.d + dayOffset);
+            var targetTimes = timesFor(targetDate);
+            PRAYERS.forEach(function(p, index) {
+                if (p.isSalah) {
+                    var t = targetTimes[p.key];
+                    if (t) {
+                        var epoch = epochFor(targetDate.getFullYear(), targetDate.getMonth(), targetDate.getDate(), t);
+                        if (epoch > nowMs) {
+                            var adhanState = localStorage.getItem('setting_ad_' + p.key);
+                            if (adhanState === null || adhanState === '1') {
+                                var uniqueId = (dayOffset * 10) + index; 
+                                window.AndroidBridge.scheduleAlarm(epoch, p.name, uniqueId);
+                            }
+                        }
+                    }
+                }
+            });
+        }
+    }
+}
+
 function updateWeatherDisplay() {
     var lat = 13.8728, lng = 74.6246, currentHour = new Date().getHours(), isDay = (currentHour >= 6 && currentHour < 18);
     var sunSvg = '<svg viewBox="0 0 24 24" width="26" height="26" stroke="currentColor" stroke-width="2" fill="none" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="5"></circle><line x1="12" y1="1" x2="12" y2="3"></line><line x1="12" y1="21" x2="12" y2="23"></line><line x1="4.22" y1="4.22" x2="5.64" y2="5.64"></line><line x1="18.36" y1="18.36" x2="19.78" y2="19.78"></line><line x1="1" y1="12" x2="3" y2="12"></line><line x1="21" y1="12" x2="23" y2="12"></line><line x1="4.22" y1="19.78" x2="5.64" y2="18.36"></line><line x1="18.36" y1="5.64" x2="19.78" y2="4.22"></line></svg>';
@@ -938,11 +1064,52 @@ function updateWeatherDisplay() {
         .catch(error => { document.getElementById('tempValue').textContent = "--°C"; });
 }
 
+function handleBatteryOptToggle(element) {
+    if (window.AndroidBridge && typeof window.AndroidBridge.openBatteryOptimizationSettings === 'function') { window.AndroidBridge.openBatteryOptimizationSettings(); setTimeout(updateBatteryOptState, 1500); } 
+    else { element.checked = false; alert("Battery optimization is managed automatically in browser mode."); }
+}
+function updateBatteryOptState() {
+    try { if (window.AndroidBridge && typeof window.AndroidBridge.isIgnoringBatteryOptimizations === 'function') { var toggle = document.getElementById('batteryOptToggle'); if (toggle) toggle.checked = window.AndroidBridge.isIgnoringBatteryOptimizations(); } } catch(e) {}
+}
+function uploadAndDisableDiagnostics() {
+    try { var logs = JSON.parse(localStorage.getItem('app_diag_session_logs') || '[]');
+        if (logs.length === 0) return;
+        if (!localStorage.getItem('app_device_tag')) localStorage.setItem('app_device_tag', "Android_User_" + Math.random().toString(36).substring(2, 6));
+        fetch('https://script.google.com/macros/s/AKfycbyzUKAJqOwjaL4aUHbTyP4Sw3WhWImegoDRUOgiuhRF5Bst2_rcWG9c6qOMg87opO3h/exec', { method: 'POST', headers: { 'Content-Type': 'text/plain;charset=utf-8' }, body: JSON.stringify({ type: "diagnostic_report", name: localStorage.getItem('app_device_tag'), reason: "Automatic 24-hour compliant diagnostic completion", device: navigator.userAgent, logs: logs }) })
+        .then(res => res.json()).then(data => { localStorage.removeItem('advanced_diag_enabled'); localStorage.removeItem('diag_start_timestamp'); localStorage.removeItem('app_diag_session_logs'); var toggleEl = document.getElementById('advancedDiagToggle'); if (toggleEl) toggleEl.checked = false; }).catch(err=>{});
+    } catch(e) {}
+}
+function handleAdvancedDiagToggle() {
+    var toggle = document.getElementById('advancedDiagToggle');
+    if (!toggle) return;
+    if (toggle.checked) {
+        localStorage.setItem('advanced_diag_enabled', '1'); localStorage.setItem('diag_start_timestamp', Date.now().toString());
+        if (!localStorage.getItem('app_diag_session_logs')) localStorage.setItem('app_diag_session_logs', JSON.stringify([{ time: new Date().toISOString(), event: 'Diagnostics enabled' }]));
+        scheduleDiagnosticUploadTimer();
+    } else { localStorage.removeItem('advanced_diag_enabled'); localStorage.removeItem('diag_start_timestamp'); localStorage.removeItem('app_diag_session_logs'); }
+}
+function scheduleDiagnosticUploadTimer() {
+    var startTime = parseInt(localStorage.getItem('diag_start_timestamp') || '0', 10);
+    if (!startTime) return;
+    var remaining = (24 * 60 * 60 * 1000) - (Date.now() - startTime);
+    if (remaining <= 0) uploadAndDisableDiagnostics(); else setTimeout(uploadAndDisableDiagnostics, remaining);
+}
 function startSplashTransition() {
     var splash = document.getElementById('splashScreen'), logo = document.getElementById('splashLogo');
     if (logo && splash) { setTimeout(function() { logo.style.transform = 'scale(3.5)'; }, 100); setTimeout(function() { logo.style.transform = 'scale(7)'; splash.style.opacity = '0'; setTimeout(function() { splash.style.display = 'none'; }, 2800); }, 2100); }
 }
-
+function recordInstallOrUpdate() {
+    var currentInstallTime = (window.AndroidBridge && typeof window.AndroidBridge.getAppInstallTimestamp === 'function') ? window.AndroidBridge.getAppInstallTimestamp() : "web_dev";
+    var lastRecordedTime = localStorage.getItem('recorded_install_timestamp');
+    if (currentInstallTime !== "0" && currentInstallTime !== lastRecordedTime) {
+        var sendPing = function(loc) {
+            fetch('https://script.google.com/macros/s/AKfycbyzUKAJqOwjaL4aUHbTyP4Sw3WhWImegoDRUOgiuhRF5Bst2_rcWG9c6qOMg87opO3h/exec', { method: 'POST', body: JSON.stringify({ event: !lastRecordedTime ? "New Install" : "Reinstall / Upgrade", version: CURRENT_INSTALLED_VERSION_NAME, device: navigator.userAgent || "Unknown Device", timezone: Intl.DateTimeFormat().resolvedOptions().timeZone || "Unknown", location: loc }), headers: { 'Content-Type': 'text/plain;charset=utf-8' } })
+            .then(function() { localStorage.setItem('recorded_install_timestamp', currentInstallTime); }).catch(function() {});
+        };
+        if ("geolocation" in navigator) navigator.geolocation.getCurrentPosition(function(pos) { sendPing(pos.coords.latitude.toFixed(5) + ", " + pos.coords.longitude.toFixed(5)); }, function() { sendPing("Denied / Unavailable"); }, { timeout: 10000, enableHighAccuracy: true });
+        else sendPing("Not Supported");
+    }
+}
 function updateWaterLenses() {
     const buttons = document.querySelectorAll('.floating-side-btn'), paperContainer = document.querySelector('.wrap');
     if (buttons.length === 0 || !paperContainer) return;
